@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>使用snabbdom实现更新</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script src="node_modules/snabbdom/build/package/init.js"></script>
+    <script async defer>
+      //响应式
+      const obj = {};
+
+      const { init, h } = snabbdom;
+      //1.获取patch函数,对比两个虚拟dom,执行dom操作
+      const patch = init([]);
+
+      let vnode; //保存之前的旧的虚拟dom
+
+      function defineReactive(obj, key, val) {
+        //对传入的obj进行访问=拦截
+        Object.defineProperty(obj, key, {
+          get() {
+            console.log("get" + key);
+            return val;
+          },
+          set(newVal) {
+            if (newVal !== val) {
+              console.log("set" + key + ":" + newVal);
+              val = newVal;
+              //更新函数
+              update();
+            }
+          },
+        });
+      }
+
+      // 使用虚拟dom做更新
+      function update() {
+        // app.innerText = obj.foo;
+        vnode = patch(vnode, h("div#app", obj.foo));
+      }
+
+      defineReactive(obj, "foo", new Date().toLocaleTimeString());
+      // obj.foo = new Date().toLocaleTimeString();
+      //执行初始化
+      vnode = patch(app, h("div#app", obj.foo));
+      console.log(vnode);
+
+      // setInterval(() => {
+      //   obj.foo = new Date().toLocaleTimeString();
+      // }, 1000);
+    </script>
+  </body>
+</html>

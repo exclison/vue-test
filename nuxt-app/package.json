@@ -1,0 +1,20 @@
+{
+  "name": "nuxt-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "@koa/router": "^9.4.0",
+    "@nuxtjs/axios": "^5.12.2",
+    "iview": "^3.5.4",
+    "koa": "^2.13.0",
+    "koa-router": "^9.4.0",
+    "nuxt": "^2.14.0"
+  },
+  "devDependencies": {}
+}

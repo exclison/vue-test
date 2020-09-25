@@ -5,6 +5,8 @@ import store from './kstore'
 // import store from './store'
 // import router from './router'
 
+import './assets/icons/index'
+
 Vue.config.productionTip = false
 
 new Vue({

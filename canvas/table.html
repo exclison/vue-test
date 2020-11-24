@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 200px;
+        }
+        table,th,td{
+            width: 800px;
+            border: 1px solid rgba(199,205,218,.7);
+            text-align: center;
+        }
+        
+    </style>
+</head>
+<body>
+    <div>
+        <table border="1" cellpadding="0" cellspacing="0">
+            <thead>
+                <th colspan="4" style="padding: 10px;background: #e8effb;">
+                    <div style="text-align: left;">
+                        <span style="color: red;">「课程问卷管理」</span>
+                        <span>A(50分) 二级指标管理</span>
+                    </div>
+                    <div style="text-align: right;cursor: pointer;">
+                        <span style="color:rgb(22, 139, 245);font-wight:500;font-size:14px">添加二级指标项目</span>
+                    </div>
+                </th>
+                
+            </thead>
+            <thead>
+                <th>序号</th>
+                <th>二级指标</th>
+                <th>操作</th>
+                <th>显示顺序</th>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+</body>
+<script>
+    var tableList = [
+    '这是第一个二级指标',
+    '这是第一个二级指标',
+    '这是第一个二级指标',
+    ]
+
+    var tableBody = document.getElementById('tableBody')
+    tableBody.innerHTML = ''
+
+    tableList.forEach(i=>{
+        var tr = document.createElement('tr')
+        var tdIndex = document.createElement('td')//序号
+        var tdIndicator = document.createElement('td')//二级直指标
+        var tdOperation = document.createElement('td')//操作
+        var tdIndex = document.createElement('td')
+    })
+
+
+    console.log(tableBody,'dddd')
+
+
+
+
+</script>
+</html>

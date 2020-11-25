@@ -1,86 +1,284 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
-        body{
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding-top: 200px;
-        }
-        table,th,td{
-            width: 800px;
-            border: 1px solid rgba(199,205,218,.7);
-            text-align: center;
-        }
-        
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 200px;
+      }
+      table,
+      th,
+      td {
+        width: 800px;
+        border: 1px solid rgba(199, 205, 218, 0.7);
+        text-align: center;
+      }
+      td span{
+          margin: 10px;
+      }
+      .mask-add {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .con-add {
+        width: 500px;
+        height: 200px;
+        padding: 50px;
+        background-color: #fff;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+      .close-icon {
+        display: block;
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        font-size: 30px;
+        font-style: normal;
+        transform: rotate(45deg);
+        position: absolute;
+        right: -10px;
+        top: -10px;
+        cursor: pointer;
+      }
+      .input-add {
+      }
+      input {
+        outline-style: none;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        padding: 13px 14px;
+        width: 470px;
+        font-size: 14px;
+        font-weight: 700;
+        font-family: "Microsoft soft";
+      }
+      input:focus {
+        border-color: #66afe9;
+        outline: 0;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+          0 0 8px rgba(102, 175, 233, 0.6);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+          0 0 8px rgba(102, 175, 233, 0.6);
+      }
+      .button-add {
+        /* 按钮美化 */
+        width: 270px; /* 宽度 */
+        height: 40px; /* 高度 */
+        border-width: 0px; /* 边框宽度 */
+        border-radius: 3px; /* 边框半径 */
+        background: #1e90ff; /* 背景颜色 */
+        cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+        outline: none; /* 不显示轮廓线 */
+        font-family: Microsoft YaHei; /* 设置字体 */
+        color: white; /* 字体颜色 */
+        font-size: 17px; /* 字体大小 */
+        margin: 20px;
+      }
+      .button-add:hover {
+        /* 鼠标移入按钮范围时改变颜色 */
+        background: #5599ff;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div id="maskAdd"></div>
     <div>
-        <table border="1" cellpadding="0" cellspacing="0">
-            <thead>
-                <th colspan="4" style="padding: 10px;background: #e8effb;">
-                    <div style="text-align: left;">
-                        <span style="color: red;">「课程问卷管理」</span>
-                        <span>A(50分) 二级指标管理</span>
-                    </div>
-                    <div style="text-align: right;cursor: pointer;">
-                        <span style="color:rgb(22, 139, 245);font-wight:500;font-size:14px">添加二级指标项目</span>
-                    </div>
-                </th>
-                
-            </thead>
-            <thead>
-                <th>序号</th>
-                <th>二级指标</th>
-                <th>操作</th>
-                <th>显示顺序</th>
-            </thead>
-            <tbody id="tableBody">
-                <tr>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                </tr>
-                <tr>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                    <td>1</td>
-                </tr>
-            </tbody>
-        </table>
+      <table border="1" cellpadding="0" cellspacing="0">
+        <thead>
+          <th colspan="4" style="padding: 10px; background: #e8effb">
+            <div style="text-align: left">
+              <span style="color: red">「课程问卷管理」</span>
+              <span>A(50分) 二级指标管理</span>
+            </div>
+            <div style="text-align: right; cursor: pointer">
+              <span
+                style="
+                  color: rgb(22, 139, 245);
+                  font-wight: 500;
+                  font-size: 14px;
+                "
+                onclick="onAdd(1)"
+                >添加二级指标项目</span
+              >
+            </div>
+          </th>
+        </thead>
+        <thead>
+          <th>序号</th>
+          <th>二级指标</th>
+          <th>操作</th>
+          <th>显示顺序</th>
+        </thead>
+        <tbody id="tableBody">
+        </tbody>
+      </table>
     </div>
-    
-</body>
-<script>
+  </body>
+  <script>
     var tableList = [
-    '这是第一个二级指标',
-    '这是第一个二级指标',
-    '这是第一个二级指标',
-    ]
+      "这是第一个二级指标",
+      "这是第二个二级指标",
+      "这是第三个二级指标",
+    ];
 
-    var tableBody = document.getElementById('tableBody')
-    tableBody.innerHTML = ''
+    var tableBody = document.getElementById("tableBody");
 
-    tableList.forEach(i=>{
-        var tr = document.createElement('tr')
-        var tdIndex = document.createElement('td')//序号
-        var tdIndicator = document.createElement('td')//二级直指标
-        var tdOperation = document.createElement('td')//操作
-        var tdIndex = document.createElement('td')
-    })
+    /*
+     *@name:doQuery
+     *@description:重新创建dom以更新页面
+     *@date: 2020-11-25 09:22:32
+     */
+    function doQuery() {
+      //首先将tbody内容清空,避免出现重复数据
+      tableBody.innerHTML = "";
 
+      //对数据进行遍历,创建相应的dom并添加到tbody中
+      tableList.forEach((i, index) => {
+        var tr = document.createElement("tr"); //创建tr
+        var tdIndex = createTd(index + 1); //序号
+        var tdIndicator = createTd(i); //二级直指标
+        var tdOperation = createTd(); //操作
+        var tdSort = createTd(); //排序
+        var textEdit = createSpan("修改"); //修改按钮
+        var textDelete = createSpan("删除"); //删除按钮
+        var upSpan = createSpan("上移"); //上移按钮
+        var downSpan = createSpan("下移"); //下移按钮
 
-    console.log(tableBody,'dddd')
+        textEdit.style.color = "#0000ff";//设置样式
+        textDelete.style.color = "#0000ff";//设置样式
 
+        //注册事件
+        textEdit.onclick = function () {
+          onAdd(2, index);
+        };
+        textDelete.onclick = function () {
+            tableList.splice(index,1)
+            doQuery()
+        };
 
+        if (index > 0) {
+          //为上移按钮注册点击事件
+          upSpan.onclick = function () {
+            changeArray(tableList, index, index - 1); //改变数组
+            doQuery(); //重新渲染dom
+          };
+          upSpan.style.color = "#0000ff"; //追加样式
+        }
+        if (index < tableList.length - 1) {
+          //为下移按钮注册点击事件
+          downSpan.onclick = function () {
+            changeArray(tableList, index, index + 1); //改变数组
+            doQuery(); //重新渲染dom
+          };
+          downSpan.style.color = "#0000ff"; //追加样式
+        }
 
+        tdOperation.append(textEdit, textDelete);
+        tdSort.append(upSpan, downSpan); //将上移下移按钮添加到对应排序的td元素中
 
-</script>
+        tr.append(tdIndex, tdIndicator, tdOperation, tdSort); //将这一行的所有元素添加到tr元素中
+
+        tableBody.appendChild(tr); //将这一行到数据添加到tbody中,实现最终渲染
+      });
+    }
+
+    //创建td元素
+    function createTd(text) {
+      var td = document.createElement("td");
+      td.innerHTML = text || "";
+      return td;
+    }
+    //创建span元素
+    function createSpan(text) {
+      var span = document.createElement("span");
+      span.innerHTML = text || "";
+      span.style.cursor = "pointer";
+      return span;
+    }
+    /*
+     *@name:changeArray
+     *@description: 实现数组内数据交换位置 注意:该方法会改变目标数组
+     *@date: 2020-11-25 09:19:55
+     *@params {array} array: 目标数组
+     *@params {number} index1: 索引1
+     *@params {number} index2: 索引2
+     */
+    function changeArray(array, index1, index2) {
+      array.splice(index2, 1, ...array.splice(index1, 1, array[index2]));
+    }
+    /*
+     *@name:onAdd
+     *@description:创建添加指标到蒙板以及内容
+     *@date: 2020-11-25 10:02:55
+     *@params {number} type: 类型 1:添加 2:修改
+     *@params {number} index: 修改对应的索引
+     */
+    function onAdd(type, index) {
+      console.log(type, "eees");
+      //创建添加蒙板中所需要的各种元素
+      var docker = document.getElementById("maskAdd");
+      var fixDiv = document.createElement("div");
+      var conDiv = document.createElement("div");
+      var closeIcon = document.createElement("i");
+      var input = document.createElement("input");
+      var button = document.createElement("button");
+
+      //给创建的元素添加内容以及属性和样式
+      closeIcon.innerText = "+";
+      button.innerText = type === 1 ? "添加" : "修改";
+      fixDiv.setAttribute("class", "mask-add");
+      conDiv.setAttribute("class", "con-add");
+      input.setAttribute("class", "input-add");
+      input.setAttribute("id", "inputAdd");
+      button.setAttribute("class", "button-add");
+      closeIcon.setAttribute("class", "close-icon");
+
+      //给关闭按钮与添加按钮注册点击事件
+      closeIcon.onclick = function () {
+        removeMask();
+      };
+      button.onclick = function () {
+        var inputAdd = document.getElementById("inputAdd"); //获取input
+        var inputValue = inputAdd.value; //获取输入框内容
+        if (type === 1) {
+          tableList.push(inputValue); //将输入框内容添加到数据数组中
+        }
+        if (type === 2) {
+          tableList[index] = inputValue;
+        }
+        removeMask(); //将添加蒙板移除
+        doQuery(); //重新渲染dom
+      };
+
+      //将输入框,关闭按钮,添加按钮添加到蒙板内容对应的div中
+      conDiv.append(closeIcon, input, button);
+
+      fixDiv.append(conDiv); //将内容添加到蒙板中
+
+      docker.append(fixDiv); //将蒙板添加到容器中
+    }
+    //移除蒙板元素
+    function removeMask() {
+      var docker = document.getElementById("maskAdd");
+      docker.innerHTML = "";
+    }
+    doQuery();
+
+  </script>
 </html>

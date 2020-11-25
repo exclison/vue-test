@@ -235,7 +235,6 @@
      *@params {number} index: 修改对应的索引
      */
     function onAdd(type, index) {
-      console.log(type, "eees");
       //创建添加蒙板中所需要的各种元素
       var docker = document.getElementById("maskAdd");
       var fixDiv = document.createElement("div");
@@ -253,6 +252,8 @@
       input.setAttribute("id", "inputAdd");
       button.setAttribute("class", "button-add");
       closeIcon.setAttribute("class", "close-icon");
+
+      if(type ===2) input.value = tableList[index]
 
       //给关闭按钮与添加按钮注册点击事件
       closeIcon.onclick = function () {

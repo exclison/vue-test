@@ -97,9 +97,12 @@
     </style>
   </head>
   <body>
+    <!-- 弹窗预留容器 -->
     <div id="maskAdd"></div>
     <div>
+      <!-- 表格 -->
       <table border="1" cellpadding="0" cellspacing="0">
+        <!-- 表头 -->
         <thead>
           <th colspan="4" style="padding: 10px; background: #e8effb">
             <div style="text-align: left">
@@ -119,14 +122,17 @@
             </div>
           </th>
         </thead>
+        <!-- 表头 (标题) -->
         <thead>
           <th>序号</th>
           <th>二级指标</th>
           <th>操作</th>
           <th>显示顺序</th>
         </thead>
+        <!-- 表格内容 全部有js动态创建 -->
         <tbody id="tableBody">
         </tbody>
+        <!-- 表格尾部 -->
         <tfoot>
             <th colspan="4" style="padding: 10px; background: #e8effb">
                 <span style="font-weight: 500;font-size: 14px;font-style: normal;">单击页面右上角的"添加二级指标项目",可以为一级指标添加二级指标项目</span>
@@ -136,12 +142,14 @@
     </div>
   </body>
   <script>
+    //存储所有数据
     var tableList = [
       "这是第一个二级指标",
       "这是第二个二级指标",
       "这是第三个二级指标",
     ];
 
+    //获取tbody元素以便给其添加或修改内容
     var tableBody = document.getElementById("tableBody");
     console.log(tableBody,'ddd')
 
@@ -168,25 +176,26 @@
           //<span>上移</span>
         //<span>下移</span></td></tr>
        
-        var tdIndex = createTd(index + 1); //序号
-        var tdIndicator = createTd(i); //二级直指标
-        var tdOperation = createTd(); //操作
-        var tdSort = createTd(); //排序
-        var textEdit = createSpan("修改"); //修改按钮
-        var textDelete = createSpan("删除"); //删除按钮
-        var upSpan = createSpan("上移"); //上移按钮
-        var downSpan = createSpan("下移"); //下移按钮
+        var tdIndex = createTd(index + 1); //创建序号td标签
+        var tdIndicator = createTd(i); //创建二级直指标td标签
+        var tdOperation = createTd(); //创建操作td标签
+        var tdSort = createTd(); //创建排序td标签
+        var textEdit = createSpan("修改"); //创建修改span标签
+        var textDelete = createSpan("删除"); //创建删除span标签
+        var upSpan = createSpan("上移"); //创建上移span标签
+        var downSpan = createSpan("下移"); //创建下移span标签
 
         textEdit.style.color = "#0000ff";//设置样式
         textDelete.style.color = "#0000ff";//设置样式
 
-        //注册事件
+        //给修改按钮注册事件
         textEdit.onclick = function () {
           onAdd(2, index);
         };
+        //给删除按钮注册点击事件
         textDelete.onclick = function () {
-            tableList.splice(index,1)
-            doQuery()
+            tableList.splice(index,1)//从数组指定索引删除一项数据
+            doQuery()//重新渲染dom
         };
 
         if (index > 0) {
@@ -206,7 +215,7 @@
           downSpan.style.color = "#0000ff"; //追加样式
         }
 
-        tdOperation.append(textEdit, textDelete);
+        tdOperation.append(textEdit, textDelete);//将编辑和删除按钮添加到操作对应的td元素中
         tdSort.append(upSpan, downSpan); //将上移下移按钮添加到对应排序的td元素中
 
         tr.append(tdIndex, tdIndicator, tdOperation, tdSort); //将这一行的所有元素添加到tr元素中
@@ -217,16 +226,16 @@
 
     //创建td元素
     function createTd(text) {
-      var td = document.createElement("td");
-      td.innerHTML = text || "";
-      return td;
+      var td = document.createElement("td");//创建td标签
+      td.innerHTML = text || "";//给td标签添加内容
+      return td;//将创建好的td元素返回
     }
     //创建span元素
     function createSpan(text) {
-      var span = document.createElement("span");
-      span.innerHTML = text || "";
-      span.style.cursor = "pointer";
-      return span;
+      var span = document.createElement("span");//创建span标签
+      span.innerHTML = text || "";//给span标签添加内容
+      span.style.cursor = "pointer";//设置鼠标移入变小手样式
+      return span;//返回创建好的span元素
     }
     /*
      *@name:changeArray
@@ -256,30 +265,31 @@
      */
     function onAdd(type, index) {
       //创建添加蒙板中所需要的各种元素
-      var docker = document.getElementById("maskAdd");
-      var fixDiv = document.createElement("div");
-      var conDiv = document.createElement("div");
-      var closeIcon = document.createElement("i");
-      var input = document.createElement("input");
-      var button = document.createElement("button");
+      var docker = document.getElementById("maskAdd");//html 中存放弹窗的div
+      var fixDiv = document.createElement("div");//蒙板div
+      var conDiv = document.createElement("div");// 弹窗主体div
+      var closeIcon = document.createElement("i"); //关闭按钮
+      var input = document.createElement("input"); //输入框
+      var button = document.createElement("button"); //添加或修改按钮
 
       //给创建的元素添加内容以及属性和样式
-      closeIcon.innerText = "+";
-      button.innerText = type === 1 ? "添加" : "修改";
-      fixDiv.setAttribute("class", "mask-add");
-      conDiv.setAttribute("class", "con-add");
-      input.setAttribute("class", "input-add");
-      input.setAttribute("id", "inputAdd");
-      button.setAttribute("class", "button-add");
-      closeIcon.setAttribute("class", "close-icon");
+      closeIcon.innerText = "+";//给关闭按钮添加值用来写样式
+      button.innerText = type === 1 ? "添加" : "修改";//给添加或修改按钮添加文字
+      fixDiv.setAttribute("class", "mask-add");//给蒙版设置类名以添加样式
+      conDiv.setAttribute("class", "con-add");//给弹窗主体设置类名以添加样式
+      input.setAttribute("class", "input-add");//给输入框设置类名以添加样式
+      input.setAttribute("id", "inputAdd");//给输入框设置id属性方便后面取值
+      button.setAttribute("class", "button-add");//给添加或删除按钮设置类名以修改样式
+      closeIcon.setAttribute("class", "close-icon");//给关闭按钮设置类名以修改样式
       //<i class="close-icon"></i>
 
-      if(type ===2) input.value = tableList[index]
+      if(type ===2) input.value = tableList[index] //在修改时给新建的输入框设置value值以实现数据回显
 
       //给关闭按钮与添加按钮注册点击事件
       closeIcon.onclick = function () {
-        removeMask();
+        removeMask();//将弹窗移除
       };
+      //给添加或删除按钮注册点击事件
       button.onclick = function () {
         var inputAdd = document.getElementById("inputAdd"); //获取input
         var inputValue = inputAdd.value; //获取输入框内容
@@ -287,7 +297,7 @@
           tableList.push(inputValue); //将输入框内容添加到数据数组中
         }
         if (type === 2) {
-          tableList[index] = inputValue;
+          tableList[index] = inputValue;//将数组中对应的数据覆盖
         }
         removeMask(); //将添加蒙板移除
         doQuery(); //重新渲染dom
@@ -302,8 +312,8 @@
     }
     //移除蒙板元素
     function removeMask() {
-      var docker = document.getElementById("maskAdd");
-      docker.innerHTML = "";
+      var docker = document.getElementById("maskAdd");//获取弹窗存在的容器
+      docker.innerHTML = "";//将容器内容全部删除
     }
     doQuery();
 

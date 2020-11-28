@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>二级指标</title>
     <style>
       body {
         display: flex;
@@ -143,6 +143,7 @@
     ];
 
     var tableBody = document.getElementById("tableBody");
+    console.log(tableBody,'ddd')
 
     /*
      *@name:doQuery
@@ -155,7 +156,18 @@
 
       //对数据进行遍历,创建相应的dom并添加到tbody中
       tableList.forEach((i, index) => {
+        //i = '第一个二级指标' index = 0
         var tr = document.createElement("tr"); //创建tr
+        //<tr>
+           //<td>1</td>
+        //<td>第一个二级指标</td>
+        //<td>
+          //<span>修改</span>
+        //<span>删除</span></td>
+        //<td>
+          //<span>上移</span>
+        //<span>下移</span></td></tr>
+       
         var tdIndex = createTd(index + 1); //序号
         var tdIndicator = createTd(i); //二级直指标
         var tdOperation = createTd(); //操作
@@ -225,8 +237,16 @@
      *@params {number} index2: 索引2
      */
     function changeArray(array, index1, index2) {
+      // var i = array.splice(index1, 1, array[index2])
+      // console.log(i,'替换')
+      // consolw.log(array,'kkk')
+      // array.splice(index2, 1, i[0]);
+      // console.log(array,'bbb')
+
       array.splice(index2, 1, ...array.splice(index1, 1, array[index2]));
     }
+    // var i = ['张三','李四','王五','赵六']
+    // changeArray(i,0,2)
     /*
      *@name:onAdd
      *@description:创建添加指标到蒙板以及内容
@@ -252,6 +272,7 @@
       input.setAttribute("id", "inputAdd");
       button.setAttribute("class", "button-add");
       closeIcon.setAttribute("class", "close-icon");
+      //<i class="close-icon"></i>
 
       if(type ===2) input.value = tableList[index]
 

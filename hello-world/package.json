@@ -12,7 +12,9 @@
     "flv.js": "^1.5.0",
     "vue": "^2.6.11",
     "vue-router": "^3.4.3",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "vxe-table": "^2.10.3",
+    "xe-utils": "^3.0.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

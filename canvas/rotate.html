@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style type="text/css">
+      canvas {
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <canvas id="canvas" width="300" height="150">
+        current stock price: $3.15 +0.15
+      </canvas>
+    </div>
+  </body>
+  <script>
+    // var canvas = document.getElementById("canvas");
+    // var ctx = canvas.getContext("2d");
+    // ctx.fillStyle = "rgb(200,0,0)";
+    // ctx.fillRect(10, 10, 55, 50);
+    function draw() {
+      var ctx = document.getElementById("canvas").getContext("2d");
+      ctx.translate(75, 75);
+      ctx.beginPath();
+      ctx.lineWidth = 2
+
+      for (let i = 0; i < 3; i++) {
+        if (i !== 0) ctx.rotate(radianAngle(60));
+        ctx.moveTo(0, -50);
+        ctx.lineTo(0, 50);
+        ctx.stroke();
+        ctx.save();
+        ctx.translate(0, -25);
+
+        /*
+         *@name:求旋转相应角度后对应的坐标
+         */
+        const axis1 = getAxisForRotate(0,-25,0,0,40)
+        const axis2 = getAxisForRotate(0,-25,0,0,-40)
+
+        ctx.moveTo(0, 0);
+        ctx.lineTo(axis1.x, axis1.y);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(axis2.x, axis2.y);
+        ctx.stroke();
+
+        ctx.translate(0, 50);
+        const axis3 = getAxisForRotate(0,25,0,0,40)
+        const axis4 = getAxisForRotate(0,25,0,0,-40)
+
+        ctx.moveTo(0, 0);
+        ctx.lineTo(axis3.x, axis3.y);
+        ctx.moveTo(0, 0);
+        ctx.lineTo(axis4.x, axis4.y);
+        ctx.stroke();
+
+
+        ctx.translate(0, -25);
+      }
+
+      // for (var i = 1; i < 6; i++) {
+      //   // Loop through rings (from inside to out)
+      //   ctx.save();
+      //   ctx.fillStyle = "rgb(" + 51 * i + "," + (255 - 51 * i) + ",255)";
+
+      //   for (var j = 0; j < i * 6; j++) {
+      //     // draw individual dots
+      //     ctx.rotate((Math.PI * 2) / (i * 6));
+      //     ctx.beginPath();
+      //     ctx.arc(0, i * 12.5, 5, 0, Math.PI * 2, true);
+      //     ctx.fill();
+      //   }
+
+      // ctx.restore();
+      // }
+    }
+    /*
+     *@name:
+     *@description:
+     *@author: hanyuchen
+     *@date: 2020-12-03 17:32:41
+     *@params {number} value: 需要转换的角度或者弧度
+     *@params {string} type: 想要得到的转换类型
+     */
+    function radianAngle(value, type = "radian") {
+      if (type === "radian") return (value * Math.PI) / 180;
+      if (type === "angle") return (value * 180) / Math.PI;
+    }
+
+    /*
+     *@name:getAxisForRotate
+     *@description:获取x1,y1点绕 x2,y2点旋转 angle角度后的坐标
+     *@author: hanyuchen
+     *@date: 2020-12-03 17:35:07
+     *@params {number} x1: 旋转点x坐标
+     *@params {number} y1: 旋转点y坐标
+     *@params {number} x2: 旋转中心点x坐标
+     *@params {number} y2: 旋转中心点y坐标
+     *@params {number} angle: 角度
+     *x=(x1-x2)cosθ-(y1-y2)sinθ+x2  x坐标计算公式
+     *y=(y1-y2)cosθ+(x1-x2)sinθ+y2  y坐标计算公式
+     */
+    function getAxisForRotate(x1,y1,x2 = 0,y2 = 0,angle = 60) {
+      const radian = angle*Math.PI/180
+      const x = (x1-x2)*Math.cos(radian)-(y1-y2)*Math.sin(radian)+x2
+      const y = (y1-y2)*Math.cos(radian)+(x1-x2)*Math.sin(radian)+y2
+      return {
+        x,
+        y,
+      }
+    }
+
+    draw();
+  </script>
+</html>

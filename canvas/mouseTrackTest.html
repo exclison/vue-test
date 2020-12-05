@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      #canvas {
+        position: fixed;
+        z-index: 1;
+      }
+      body {
+        padding: 0;
+        background-color: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"> </canvas>
+    <script>
+      var cn = document.getElementById("canvas");
+      var ctx = cn.getContext("2d");
+      var pointList = []; //围在鼠标周围的点
+
+      //初始化鼠标坐标
+      var m = {
+        x: innerWidth / 2,
+        y: innerHeight / 2,
+      };
+
+      //记录鼠标移动时点鼠标坐标 定义m全局变量以随时访问
+      window.onmousemove = function (e) {
+        m.x = e.clientX;
+        m.y = e.clientY;
+      };
+
+      //页面加载后进行初始化操作
+      window.onload = function () {
+    //     var cn = document.getElementById("canvas");
+    //   var ctx = cn.getContext("2d");
+        cn.lineWidth = "2";
+        cn.globalAlpha = 0.5;
+        init();
+        animation();
+      };
+      function init() {
+        cn.width = innerWidth;
+        cn.height = innerHeight;
+        for (var i = 0; i < 1; i++) {
+          //创建canvas操作类ob
+          const canvasItem = new Ob(m.x,m.y, 2, "#ccc");
+          pointList.push(canvasItem)
+        }
+      }
+      function Ob(x, y, w, c) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.c = c;
+        this.draw = function () {
+          const ls = {
+            x: this.x,
+            y: this.y,
+          };
+          this.x = m.x;
+          this.y = m.y;
+
+          ctx.beginPath();
+          ctx.lineWidth = this.w;
+          ctx.strokeStyle = this.c;
+          ctx.moveTo(ls.x, ls.y);
+          ctx.lineTo(this.x, this.y);
+          ctx.stroke();
+          ctx.closePath();
+        };
+      }
+      function animation() {
+        ctx.fillStyle = "rgba(0,0,0,0.05)";
+        ctx.fillRect(0, 0, cn.width, cn.height);
+        pointList.forEach((v, i) => {
+          v.draw();
+        });
+        requestAnimationFrame(animation);
+      }
+    </script>
+  </body>
+</html>

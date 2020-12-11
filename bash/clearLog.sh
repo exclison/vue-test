@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ######################################################################
 # 日志定时运行时间为每周日4点2分
 # 删除7天之前的日志文件
@@ -7,17 +7,20 @@
 # 其日志格式必须为 ：pro-debug-0-2019-04-13.log ， 即 *2019-04-13.log
 ######################################################################
  
+logpathparam=/Users/Exclison/Documents/Project/vue-test/bash/log
+ 
+clearLogByDate(){
+
 #当前时间
 currTime=$(date +"%Y-%m-%d %T")
 # echo $currTime
-last_date=$(date -d "yesterday" +%Y-%m-%d)
-# echo ${last_date}
+
 #需要删除的日志文件所在目录
-logpath=/Users/Exclison/Documents/Project/vue-test/bash/log
+logpath=$1
+days=$2
  
 #删除日志的记录所在目录
 outpath=/Users/Exclison/Documents/Project/vue-test/bash/out
- 
 #进入日志目录
 cd $logpath
  
@@ -28,7 +31,7 @@ echo $currTime " 清理日志脚本执行开始 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
 #获取7天之前的日期
-del_date=`date +%Y-%m-%d -d "7 days ago"`
+del_date=`date +%Y-%m-%d -d "${days} days ago"`
 echo $del_date
 #获取文件名中的日期字符串，然后对比时间进行相应的操作
 for n in `ls *.log`;do
@@ -46,3 +49,6 @@ done
 echo $currTime" 清理日志脚本执行结束 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>">> ${outpath}/catalina.out
 echo "       ">> ${outpath}/catalina.out
 echo "       ">> ${outpath}/catalina.out
+}
+
+clearLogByDate $logpathparam 7

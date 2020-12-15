@@ -1,0 +1,16 @@
+{
+  "name": "bashrefact",
+  "version": "1.0.0",
+  "description": "bash test",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "exclison",
+  "license": "ISC",
+  "dependencies": {
+    "node": "^15.3.0",
+    "node-schedule": "^1.3.2",
+    "nodemailer": "^6.4.17"
+  }
+}

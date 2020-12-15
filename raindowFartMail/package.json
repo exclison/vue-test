@@ -1,0 +1,17 @@
+{
+  "name": "raindowfartmail",
+  "version": "1.0.0",
+  "description": "彩虹屁邮件",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "exclison",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "node": "^15.3.0",
+    "node-schedule": "^1.3.2",
+    "nodemailer": "^6.4.17"
+  }
+}

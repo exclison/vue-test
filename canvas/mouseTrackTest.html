@@ -74,13 +74,38 @@
           ctx.closePath();
         };
       }
-      function animation() {
-        ctx.fillStyle = "rgba(0,0,0,0.05)";
+      function animation(stamp) {
         ctx.fillRect(0, 0, cn.width, cn.height);
         pointList.forEach((v, i) => {
           v.draw();
         });
         requestAnimationFrame(animation);
+        if(!this.stamp) this.stamp = 0
+        if(stamp - this.stamp > 1000){
+          ctx.fillStyle = "rgba(0,0,0,1)";
+          this.stamp = stamp
+
+        }
+        if(stamp - this.stamp > 800){
+          ctx.fillStyle = "rgba(0,0,0,0.35)";
+          this.stamp = stamp
+
+        }
+        if(stamp - this.stamp > 500){
+          ctx.fillStyle = "rgba(0,0,0,0.2)";
+          this.stamp = stamp
+
+        }
+        if(stamp - this.stamp > 300){
+          ctx.fillStyle = "rgba(0,0,0,0.1)";
+          this.stamp = stamp
+
+        }
+        else{
+          ctx.fillStyle = "rgba(0,0,0,0.05)";
+
+        }
+
       }
     </script>
   </body>

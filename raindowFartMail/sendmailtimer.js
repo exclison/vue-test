@@ -7,8 +7,8 @@ var schedule = require("node-schedule");
 var rule = new schedule.RecurrenceRule();
 
 rule.second = 0;
-// rule.minute = 0;
-// rule.hour = 9;
+rule.minute = 0;
+rule.hour = 9;
 
 var j = schedule.scheduleJob(rule, function () {
   emailList.map((i) => {

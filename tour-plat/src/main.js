@@ -1,7 +1,18 @@
-import { createApp } from 'vue'
+import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import './plugins/iview.js'
+import components from './components/main'
+import './plugins/iview'
+import './assets/styles/index.less'
+console.log(components)
 
-createApp(App).use(store).use(router).mount('#app')
+Object.keys(components).forEach(key=>Vue.component(key,components[key]))
+
+Vue.config.productionTip = false
+
+new Vue({
+  router,
+  store,
+  render: h => h(App)
+}).$mount('#app')

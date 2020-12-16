@@ -1,0 +1,23 @@
+export default [
+    {
+        key:'HOTEL_MANGE',
+        name:'酒店管理',
+        path:'',
+        order:2,
+        role:'1'
+    },
+    {
+        key:'HOTEL_MANGE',
+        name:'机票管理',
+        path:'',
+        order:1,
+        role:'1'
+    },
+    {
+        key:'HOTEL_MANGE',
+        name:'路线查看',
+        path:'',
+        order:3,
+        role:'1'
+    },
+]

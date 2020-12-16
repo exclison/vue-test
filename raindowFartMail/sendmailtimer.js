@@ -15,6 +15,7 @@ var j = schedule.scheduleJob(rule, function () {
     console.log("发送邮件");
     sendRaindow({
       user: i,
+      subject: '彩虹屁',
     });
   });
 

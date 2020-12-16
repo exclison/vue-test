@@ -19,7 +19,7 @@ function sendMailTimer(options) {
         to:`"${userName || user}"<${user}>`,
         subject:`${subject}`,
         text:`${text}`,
-        html:`${html}`,
+        html:`<div style="width:100%;height:100%;background:#e91e63;color:#fff;text-align:center;min-height:300px;display:flex;align-items:center;justify-content:center;">${html}</div>`,
         attachments:[],
     }
     smtpTransport.sendMail(options,function (err,msg) { 

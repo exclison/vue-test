@@ -1,64 +1,41 @@
-/* *@description: index *@author: hanyuchen *@date: 2020-12-17 09:25:10 */
+/* *@description: filght-detail *@author: hanyuchen *@date: 2020-12-17 15:22:10
+*/
 <template>
-  <div class="filght">
-    <div class="filght-search">
-      <Button type="primary" @click="isAddHotel = true">添加航班</Button>
+  <div class="filght-detail">
+    <div class="filght-detail-search">
+      <div class="title-item">
+        <label>航班编号</label>
+        <span>SD223344</span>
+      </div>
+      <div class="title-item">
+        <label>出行时间</label>
+        <span>SD223344</span>
+      </div>
+      <div class="title-item">
+        <label>到达时间</label>
+        <span>SD223344</span>
+      </div>
+      <div class="title-item">
+        <label>出发地</label>
+        <span>SD223344</span>
+      </div>
+      <div class="title-item">
+        <label>到达地</label>
+        <span>SD223344</span>
+      </div>
+      <!-- <Button type="primary" @click="isAddHotel = true">添加航班</Button> -->
     </div>
-    <div class="filght-list">
-      <p class="filght-title">航班列表</p>
+    <div class="filght-detail-list">
+      <p class="filght-detail-title">乘客列表</p>
       <SectionList :columns="columns" :datas="dataList"></SectionList>
     </div>
-    <AlertDrawer v-model="isAddHotel" title="添加航班" @on-confirm="onConfirm">
-      <div class="add-filght">
-        <Form
-          ref="formHotel"
-          :model="formHotel"
-          :rules="ruleHotel"
-          :label-width="110"
-        >
-          <FormItem label="航班名称" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
-          </FormItem>
-          <FormItem label="出发时间" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
-          </FormItem>
-          <FormItem label="到达时间" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
-          </FormItem>
-          <FormItem label="出发地" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
-          </FormItem>
-          <FormItem label="到达地" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
-          </FormItem>
-        </Form>
-      </div>
-    </AlertDrawer>
   </div>
 </template>
 
 <script>
 export default {
+  name: "filght-detail",
+
   components: {},
 
   data() {
@@ -78,27 +55,17 @@ export default {
       },
       columns: [
         {
-          title: "航班名称",
+          title: "乘客姓名",
           key: "name",
           align: "center",
         },
         {
-          title: "出发时间",
+          title: "性别",
           key: "age",
           align: "center",
         },
         {
-          title: "到达时间",
-          key: "address",
-          align: "center",
-        },
-        {
-          title: "出发地",
-          key: "address",
-          align: "center",
-        },
-        {
-          title: "到达地",
+          title: "联系电话",
           key: "address",
           align: "center",
         },
@@ -109,13 +76,6 @@ export default {
           render: (h, params) => {
             return (
               <p class="action">
-                <span
-                  onClick={() => {
-                    this.$router.push("/filght-detail");
-                  }}
-                >
-                  详情
-                </span>
                 <span
                   onClick={() => {
                     this.isAddHotel = true;
@@ -160,6 +120,8 @@ export default {
 
   computed: {},
 
+  props: {},
+
   methods: {
     onConfirm() {
       this.$alertSuccess("操作成功");
@@ -171,16 +133,28 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.filght {
+.filght-detail {
   padding: 50px;
   &-search {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
     margin-bottom: 30px;
+    .title-item {
+      display: flex;
+      align-items: center;
+      margin-right: 30px;
+      span {
+        font-size: 20px;
+        font-family: PingFangSC-Medium, PingFang SC;
+        font-weight: 500;
+        color: #f7a200;
+        line-height: 28px;
+        margin-left: 20px;
+      }
+    }
   }
 }
-.filght-title {
+.filght-detail-title {
   font-size: 20px;
   font-family: PingFangSC-Medium, PingFang SC;
   font-weight: 500;
@@ -188,7 +162,7 @@ export default {
   line-height: 44px;
   margin-bottom: 20px;
 }
-.add-filght {
+.add-filght-detail {
   padding: 20px;
 }
 .action {

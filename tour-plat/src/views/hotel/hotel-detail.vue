@@ -1,50 +1,30 @@
-/* *@description: index *@author: hanyuchen *@date: 2020-12-17 09:25:10 */
+/* *@description: hotel-detail *@author: hanyuchen *@date: 2020-12-17 14:49:27
+*/
 <template>
-  <div class="filght">
-    <div class="filght-search">
-      <Button type="primary" @click="isAddHotel = true">添加航班</Button>
+  <div class="hotel-detail">
+    <div class="hotel-detail-search">
+      <Button type="primary" @click="isAddHotel = true">添加房间</Button>
     </div>
-    <div class="filght-list">
-      <p class="filght-title">航班列表</p>
+    <div class="hotel-detail-list">
+      <p class="room-title">房间列表</p>
       <SectionList :columns="columns" :datas="dataList"></SectionList>
     </div>
-    <AlertDrawer v-model="isAddHotel" title="添加航班" @on-confirm="onConfirm">
-      <div class="add-filght">
+    <AlertDrawer v-model="isAddHotel" title="添加房间" @on-confirm="onConfirm">
+      <div class="add-hotel">
         <Form
           ref="formHotel"
           :model="formHotel"
           :rules="ruleHotel"
           :label-width="110"
         >
-          <FormItem label="航班名称" prop="user">
+          <FormItem label="房间号" prop="user">
             <Input
               type="text"
               v-model="formHotel.user"
               placeholder="Username"
             />
           </FormItem>
-          <FormItem label="出发时间" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
-          </FormItem>
-          <FormItem label="到达时间" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
-          </FormItem>
-          <FormItem label="出发地" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
-          </FormItem>
-          <FormItem label="到达地" prop="user">
+          <FormItem label="房间容量" prop="user">
             <Input
               type="text"
               v-model="formHotel.user"
@@ -59,6 +39,8 @@
 
 <script>
 export default {
+  name: "hotel-detail",
+
   components: {},
 
   data() {
@@ -78,28 +60,18 @@ export default {
       },
       columns: [
         {
-          title: "航班名称",
+          title: "房间号",
           key: "name",
           align: "center",
         },
         {
-          title: "出发时间",
+          title: "状态",
           key: "age",
           align: "center",
         },
         {
-          title: "到达时间",
-          key: "address",
-          align: "center",
-        },
-        {
-          title: "出发地",
-          key: "address",
-          align: "center",
-        },
-        {
-          title: "到达地",
-          key: "address",
+          title: "预定人",
+          key: "age",
           align: "center",
         },
         {
@@ -111,10 +83,9 @@ export default {
               <p class="action">
                 <span
                   onClick={() => {
-                    this.$router.push("/filght-detail");
                   }}
                 >
-                  详情
+                  预定
                 </span>
                 <span
                   onClick={() => {
@@ -123,7 +94,13 @@ export default {
                 >
                   编辑
                 </span>
-                <span onClick={() => {}}>删除</span>
+                <span
+                  onClick={() => {
+                    this.isAddHotel = true;
+                  }}
+                >
+                  删除
+                </span>
               </p>
             );
           },
@@ -160,6 +137,8 @@ export default {
 
   computed: {},
 
+  props: {},
+
   methods: {
     onConfirm() {
       this.$alertSuccess("操作成功");
@@ -171,7 +150,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.filght {
+.hotel-detail {
   padding: 50px;
   &-search {
     display: flex;
@@ -180,7 +159,7 @@ export default {
     margin-bottom: 30px;
   }
 }
-.filght-title {
+.room-title {
   font-size: 20px;
   font-family: PingFangSC-Medium, PingFang SC;
   font-weight: 500;
@@ -188,7 +167,7 @@ export default {
   line-height: 44px;
   margin-bottom: 20px;
 }
-.add-filght {
+.add-hotel {
   padding: 20px;
 }
 .action {

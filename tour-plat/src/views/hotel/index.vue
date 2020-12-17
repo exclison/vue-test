@@ -1,8 +1,6 @@
 <template>
   <div class="home">
-    <Header></Header>
-
-    <router-view></router-view>
+    酒店管理
   </div>
 </template>
 
@@ -10,7 +8,7 @@
 // @ is an alias to /src
 
 export default {
-  name: "hotel",
-  components: {},
-};
+  name: 'hotel',
+  components: {}
+}
 </script>

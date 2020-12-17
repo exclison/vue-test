@@ -4,14 +4,25 @@
     <div class="header-title">
       <span>旅游管理平台</span>
     </div>
-    <div></div>
+    <div class="header-nav">
+      <ul>
+        <li
+          :class="{ 'nav-active': isActive(menu.path) }"
+          v-for="menu in menuList"
+          :key="menu.name"
+          @click="onNavChange(menu)"
+        >
+          {{ menu.name }}
+        </li>
+      </ul>
+    </div>
     <div>
-      <Dropdown>
+      <Dropdown @on-click="onPerson">
         <span class="name-title">
           张三
           <Icon type="ios-arrow-down"></Icon>
         </span>
-        <DropdownMenu slot="list">
+        <DropdownMenu slot="list" >
           <DropdownItem>个人中心</DropdownItem>
         </DropdownMenu>
       </Dropdown>
@@ -20,6 +31,7 @@
 </template>
 
 <script>
+import menus from "../../config/menus";
 export default {
   name: "Header",
 
@@ -29,9 +41,25 @@ export default {
     return {};
   },
 
-  computed: {},
+  computed: {
+    menuList() {
+      return menus;
+    },
+  },
 
-  methods: {},
+  methods: {
+    onNavChange(menu){
+      this.$router.push(menu.path)
+      console.log(this.$route)
+    },
+    isActive(path){
+      return this.$route.path.indexOf(path) === 0
+    },
+    onPerson(e){
+      console.log(e)
+      this.$router.push('/person')
+    }
+  },
 
   mounted() {},
 };
@@ -52,12 +80,34 @@ export default {
     color: #ffffff;
     line-height: 33px;
   }
+  &-nav {
+    margin-right: 50px;
+    ul {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    li {
+      margin: 20px;
+      font-size: 20px;
+      font-family: PingFangSC-Medium, PingFang SC;
+      font-weight: 500;
+      color: #d0e7fd;
+      line-height: 28px;
+      cursor: pointer;
+    }
+  }
+  .nav-active {
+    color: #ffffff;
+    font-size: 24px;
+  }
   .name-title {
     font-size: 18px;
     font-family: PingFangSC-Medium, PingFang SC;
     font-weight: 500;
     color: #d0e7fd;
     line-height: 25px;
+    cursor: pointer;
   }
 }
 </style>

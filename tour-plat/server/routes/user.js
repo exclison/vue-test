@@ -1,46 +1,22 @@
-const Router = require('koa-router')
-const route = new Router()
-// const jwt = require('jsonwebtoken')
+const Router = require("koa-router");
+const query = require("../dbconnect/index");
+const { parseToken } = require("../util/ticket");
+const route = new Router();
 
-// route.get('/getToken', async (ctx)=>{
-//     let {name,id} = ctx.query
-//     if(!name && !id){
-//         ctx.body = {
-//             msg:'不合法',
-//             code:0
-//         }
-//         return
-//     }
-//     //生成token
-//     let token = jwt.sign({name,id},'secret',{ expiresIn: '1h' })
-//     ctx.body = {
-//         token: token,
-//         code:1
-//     }
-// })
+/*
+ *@name:/user/get-user-info
+ *@description:获取个人信息
+ *@date: 2020-12-18 16:02:07
+ *@params 无参数 需要登录权限 存在token中
+*/
+route.get("/get-user-info", async (ctx) => {
+  const info = parseToken(ctx.header.ticket);
+  const sql = `SELECT * FROM user WHERE id='${info.id}'`;
+  const userList = await query(sql);
+  const userInfo = userList[0];
+  ctx.body = userInfo;
+  return;
+});
 
-route.get('/getUser', async ctx=>{
-    let id = ctx.query.id
-    ctx.body = {
-        user:ctx.payload,
-        id,
-        code:1
-    }
-})
 
-route.get('/getAllUser', async ctx=>{
-    let type = ctx.query.type
-    if(type){
-        ctx.body = {
-            type,
-            code:1
-        }
-    }else{
-        ctx.body = {
-            msg:'缺少参数type',
-            code:0
-        }
-    }
-})
-
-module.exports = route
+module.exports = route;

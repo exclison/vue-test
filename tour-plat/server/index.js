@@ -2,6 +2,7 @@ const Koa = require("koa");
 const Router = require("koa-router");
 const bodyParser = require("koa-bodyparser");
 const fs = require("fs");
+const koajwt = require('koa-jwt');
 // const passport = require('passport')
 
 const app = new Koa();
@@ -21,6 +22,24 @@ app
   .use(router.allowedMethods());
 //   .use(passport.initialize())
 //   .use(passport.session());
+
+// 错误处理
+app.use((ctx, next) => {
+  return next().catch((err) => {
+      if(err.status === 401){
+          ctx.status = 401;
+        ctx.body = 'Protected resource, use Authorization header to get access\n';
+      }else{
+          throw err;
+      }
+  })
+})
+
+app.use(koajwt({
+secret: 'secret'
+}).unless({
+path: [/\/common\/login-auth/]
+}));
 
 // app.use(async ctx => {
 //   ctx.body = 'Hello World';

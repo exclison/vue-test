@@ -1,5 +1,9 @@
+import { $get, $post } from "./ajax";
+
 const Util = {
   install: function(Vue) {
+    Vue.prototype.$get = $get;
+    Vue.prototype.$post = $post;
     Vue.prototype.$alertSuccess = function(title) {
       this.$Message.config({
         top: 100,
@@ -35,7 +39,6 @@ const Util = {
       onOk,
       onCancel,
     }) {
-      
       this.$Modal.confirm({
         width: 400,
         closable: false,

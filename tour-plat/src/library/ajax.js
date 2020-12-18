@@ -1,6 +1,7 @@
 import Vue from "vue";
 import axios from "axios";
 import config from "../config/config";
+import apiList from '../config/api'
 
 class Ajax {
   constructor() {

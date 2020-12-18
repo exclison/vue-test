@@ -25,15 +25,21 @@ route.post("/login-auth", async (ctx) => {
     return;
   }
 
-  const result = await query("SELECT * FROM user")
-
-
+  const sql = `SELECT * FROM user WHERE phone='${phone}'`
+  const result = await query(sql)
+  const userInfo = result[0]
+  if(userInfo.password !== password || result.length === 0){
+    ctx.body = {
+        msg: "用户名或密码不正确",
+        code: 400,
+      };
+      return;
+  }
   //生成token
-  let token = jwt.sign({ phone, password }, "secret", { expiresIn: "1h" });
-  ctx.body = {
-    token: token,
-    code: 1,
-  };
+  let token = jwt.sign({ id:userInfo.id,phone:userInfo.phone, password:userInfo.password }, "secret", { expiresIn: "1h" });
+  const res = Object.assign({},result[0],{ticket:token})
+
+  ctx.body = res;
 });
 
 module.exports = route;

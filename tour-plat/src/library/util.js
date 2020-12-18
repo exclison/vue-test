@@ -1,5 +1,5 @@
 const Util = {
-  install: function(Vue, opt = {}) {
+  install: function(Vue) {
     Vue.prototype.$alertSuccess = function(title) {
       this.$Message.config({
         top: 100,

@@ -106,7 +106,7 @@ export default {
           title: "操作",
           key: "address",
           align: "center",
-          render: (h, params) => {
+          render: () => {
             return (
               <p class="action">
                 <span

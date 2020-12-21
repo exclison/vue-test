@@ -69,17 +69,17 @@ export default {
       },
       columns: [
         {
-          title: "酒店名称",
+          title: "姓名",
           key: "name",
           align: "center",
         },
         {
-          title: "联系电话",
+          title: "性别",
           key: "age",
           align: "center",
         },
         {
-          title: "房间数",
+          title: "联系电话",
           key: "address",
           align: "center",
         },
@@ -92,10 +92,9 @@ export default {
               <p class="action">
                 <span
                   onClick={() => {
-                    this.$router.push("/hotel-detail");
                   }}
                 >
-                  详情
+                  重置密码
                 </span>
                 <span
                   onClick={() => {

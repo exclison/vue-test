@@ -34,7 +34,7 @@ route.post("/login-auth", async (ctx) => {
   }
   //生成token
   let token = createToken(
-    { id: userInfo.id, phone: userInfo.phone, password: userInfo.password },
+    { id: userInfo.id, phone: userInfo.phone, password: userInfo.password,role:userInfo.role },
     "secret",
     "1h"
   );

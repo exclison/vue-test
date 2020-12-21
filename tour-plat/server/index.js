@@ -45,9 +45,7 @@ secret: 'secret'
 path: [/\/common\/login-auth/]
 }));
 
-// app.use(async ctx => {
-//   ctx.body = 'Hello World';
-// });
-console.log("yes");
+
+console.log("koa runing in 3000");
 
 app.listen(3000);

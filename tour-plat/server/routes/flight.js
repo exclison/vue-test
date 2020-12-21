@@ -91,11 +91,10 @@ route.post("/update-flight", async (ctx) => {
   return;
 });
 /*
- *@name:
- *@description:
+ *@name:/flight/get-flight-by-id
+ *@description:根据id获取航班详情
  *@date: 2020-12-21 17:31:39
- *@params {String} paramsName: 参数1
- *@params {Array} paramsName: 参数2
+ *@params {Number} id: 航班id
  */
 route.get("/get-flight-by-id", async (ctx) => {
   let { id } = ctx.query;

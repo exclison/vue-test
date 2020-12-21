@@ -7,8 +7,9 @@ class DBConnection {
     this.user = user;
     this.password = password;
     this.database = database;
-    //创建连接
-    this.connection = mysql.createConnection({
+
+    //创建连接池
+    this.pool = mysql.createPool({
       host: host,
       user: user,
       password: password,
@@ -17,18 +18,19 @@ class DBConnection {
   }
   //暴露query方法
   async query(sql, args) {
-    //建立连接
-    this.connection.connect();
-    //执行查询操作
     let result = await new Promise((resolve, reject) => {
-      this.connection.query(sql, ...args, function(err, rows, fields) {
+      //建立连接
+      this.pool.getConnection((err, connection) => {
         if (err) reject(err);
-        const reslut = JSON.parse(JSON.stringify(rows));
-        resolve(reslut);
+        //执行查询操作
+        connection.query(sql, ...args, function(err, rows, fields) {
+          if (err) reject(err);
+          const reslut = JSON.parse(JSON.stringify(rows));
+          connection.release();
+          resolve(reslut);
+        });
       });
     });
-    //关闭连接
-    this.connection.end();
     return result;
   }
 }

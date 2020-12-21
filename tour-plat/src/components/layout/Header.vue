@@ -22,8 +22,9 @@
           张三
           <Icon type="ios-arrow-down"></Icon>
         </span>
-        <DropdownMenu slot="list" >
-          <DropdownItem>个人中心</DropdownItem>
+        <DropdownMenu slot="list">
+          <DropdownItem name="person">个人中心</DropdownItem>
+          <DropdownItem name="logout">登出</DropdownItem>
         </DropdownMenu>
       </Dropdown>
     </div>
@@ -32,6 +33,7 @@
 
 <script>
 import menus from "../../config/menus";
+import { mapMutations } from "vuex";
 export default {
   name: "Header",
 
@@ -48,17 +50,24 @@ export default {
   },
 
   methods: {
-    onNavChange(menu){
-      this.$router.push(menu.path)
-      console.log(this.$route)
+    ...mapMutations(["logout"]),
+    onNavChange(menu) {
+      this.$router.push(menu.path);
+      console.log(this.$route);
     },
-    isActive(path){
-      return this.$route.path.indexOf(path) === 0
+    isActive(path) {
+      return this.$route.path.indexOf(path) === 0;
     },
-    onPerson(e){
-      console.log(e)
-      this.$router.push('/person')
-    }
+    onPerson(e) {
+      console.log(e);
+      if (e === "person") {
+        this.$router.push("/person");
+      }
+      if (e === "logout") {
+        this.logout();
+        this.$router.push("/login");
+      }
+    },
   },
 
   mounted() {},

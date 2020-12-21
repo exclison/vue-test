@@ -14,6 +14,7 @@ route.get("/get-user-info", async (ctx) => {
   const sql = `SELECT * FROM user WHERE id='${info.id}'`;
   const userList = await query(sql);
   const userInfo = userList[0];
+  Object.assign(userInfo,{ticket:ctx.header.ticket})
   ctx.body = userInfo;
   return;
 });

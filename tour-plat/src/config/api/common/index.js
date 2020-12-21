@@ -1,3 +1,3 @@
-export default {
+module.exports = {
     "login-auth":"/common/login-auth",
 }

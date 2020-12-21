@@ -3,10 +3,14 @@ const Router = require("koa-router");
 const bodyParser = require("koa-bodyparser");
 const fs = require("fs");
 const koajwt = require('koa-jwt');
+const cors = require('koa-cors'); 
 // const passport = require('passport')
 
 const app = new Koa();
 const router = new Router();
+
+// 处理跨域
+app.use(cors())
 
 let urls = fs.readdirSync(__dirname + "/routes");
 urls.forEach((element) => {

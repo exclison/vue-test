@@ -4,28 +4,28 @@
     <div class="login-main flex flex-hc flex-vc">
       <div class="login-main-form">
         <Form
-          ref="formHotel"
-          :model="formHotel"
-          :rules="ruleHotel"
+          ref="formLogin"
+          :model="formLogin"
+          :rules="ruleLogin"
           :label-width="80"
         >
-          <FormItem label="账号" prop="user">
+          <FormItem label="账号" prop="phone">
             <Input
               type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
+              v-model="formLogin.phone"
+              placeholder="请输入手机号"
             />
           </FormItem>
-          <FormItem label="密码" prop="user">
+          <FormItem label="密码" prop="password">
             <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
+              type="password"
+              v-model="formLogin.password"
+              placeholder="请输入密码"
             />
           </FormItem>
         </Form>
         <div class="flex flex-hc flex-vc">
-            <Button type="primary" @click="isAddHotel = true">登录</Button>
+            <Button type="primary" @click="onLogin">登录</Button>
         </div>
       </div>
     </div>
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
 export default {
   name: "login",
 
@@ -40,14 +41,28 @@ export default {
 
   data() {
     return {
-      formHotel: {
-        user: "",
+      formLogin: {
+        phone: "",
+        password: "",
       },
-      ruleHotel: {
-        user: [
+      ruleLogin: {
+        phone: [
           {
             required: true,
-            message: "Please fill in the user name",
+            message: "请输入手机号",
+            trigger: "blur",
+          },
+          // {
+          //   required: true,
+          //   message: "手机号格式不正确",
+          //   trigger: "blur",
+          //   validator: (rule, value) => /^1[3|4|5|6|7|8|9](\d){9}$/.test(value)
+          // },
+        ],
+        password: [
+          {
+            required: true,
+            message: "请输入密码",
             trigger: "blur",
           },
         ],
@@ -59,7 +74,16 @@ export default {
 
   props: {},
 
-  methods: {},
+  methods: {
+    ...mapMutations(['login']),
+    onLogin(){
+      this.$post('login-auth',this.formLogin).then(res=>{
+        this.login(res)
+        this.$router.push('/')
+        console.log(res,'gg')
+      })
+    },
+  },
 
   mounted() {},
 };

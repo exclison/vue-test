@@ -36,7 +36,7 @@ class DBConnection {
 }
 //创建实例
 const db = new DBConnection({
-  host: "localhost",
+  host: "47.99.87.185",
   user: "root",
   password: "123456",
   database: "Exclison",

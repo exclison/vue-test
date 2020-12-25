@@ -105,10 +105,7 @@ route.get("/get-flight-by-id", async (ctx) => {
 
   const result = resultList[0];
 
-  const userSql = `SELECT * FROM user WHERE id IN (${result.users.replace(
-    /\"/g,
-    ""
-  )})`;
+  const userSql = `SELECT user.id,user.name,user.phone,user.sex,seat.flight_id FROM user LEFT JOIN seat ON user.id=seat.user_id WHERE seat.flight_id=${result.id}`;
 
   const userList = await query(userSql);
 

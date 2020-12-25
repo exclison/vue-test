@@ -48,12 +48,11 @@ route.post("/delete-room", async (ctx) => {
 });
 
 /*
- *@name:
- *@description:
- *@author: hanyuchen
+ *@name:/room/reserve-room
+ *@description:预定房间
  *@date: 2020-12-25 15:00:02
- *@params {String} paramsName: 参数1
- *@params {Array} paramsName: 参数2
+ *@params {String} userId: 预定人id
+ *@params {String} roomId: 房间id
  */
 route.post("/reserve-room", async (ctx) => {
   const { userId, roomId } = ctx.request.body;

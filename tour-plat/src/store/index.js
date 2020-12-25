@@ -37,6 +37,7 @@ export default new Vuex.Store({
           ctx.commit("login", res);
         })
         .catch(() => {
+          console.log('eee')
           ctx.commit("logout");
         });
     },

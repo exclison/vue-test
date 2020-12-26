@@ -56,6 +56,7 @@ export default {
     search() {
       if(this.api){
         const param = Object.assign({},this.searchForm,this.params)
+        console.log(param,'ddddd')
         this.$get(this.api,param).then(res=>{
           this.onLoad(res,this.callBack)
         })

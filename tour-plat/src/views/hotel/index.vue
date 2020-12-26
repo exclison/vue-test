@@ -5,7 +5,12 @@
     </div>
     <div class="hotel-list">
       <p class="hotel-title">酒店列表</p>
-      <SectionList :columns="columns" :datas="dataList"></SectionList>
+      <SectionList
+        ref="hotelList"
+        :columns="columns"
+        :onLoad="onLoad"
+        api="get-hotel-list"
+      ></SectionList>
     </div>
     <AlertDrawer v-model="isAddHotel" title="添加酒店" @on-confirm="onConfirm">
       <div class="add-hotel">
@@ -15,18 +20,18 @@
           :rules="ruleHotel"
           :label-width="110"
         >
-          <FormItem label="酒店名称" prop="user">
+          <FormItem label="酒店名称" prop="name">
             <Input
               type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
+              v-model="formHotel.name"
+              placeholder="请输入酒店名称"
             />
           </FormItem>
-          <FormItem label="联系电话" prop="user">
+          <FormItem label="联系电话" prop="phone">
             <Input
               type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
+              v-model="formHotel.phone"
+              placeholder="请输入联系电话"
             />
           </FormItem>
         </Form>
@@ -45,93 +50,147 @@ export default {
     return {
       isAddHotel: false,
       formHotel: {
-        user: "",
+        hotelId: "",
+        name: "",
+        phone: "",
       },
       ruleHotel: {
-        user: [
+        name: [
           {
             required: true,
-            message: "Please fill in the user name",
+            message: "请输入酒店名称",
             trigger: "blur",
+          },
+        ],
+        phone: [
+          {
+            required: true,
+            message: "请输入联系电话",
+            trigger: "blur",
+          },
+          {
+            required: true,
+            message: "电话格式不正确",
+            trigger: "blur",
+            validator: (rule, value, callBack) => {
+              if (!/^1[3456789]\d{9}/.test(value)) {
+                callBack(new Error("手机号格式不正确"));
+              }
+              callBack();
+            },
           },
         ],
       },
       columns: [
         {
           title: "酒店名称",
-          key: "name",
+          key: "hotel_name",
           align: "center",
         },
         {
           title: "联系电话",
-          key: "age",
+          key: "hotel_phone",
           align: "center",
         },
         {
           title: "房间数",
-          key: "address",
+          key: "roomCount",
           align: "center",
         },
         {
           title: "操作",
-          key: "address",
+          key: "operation",
           align: "center",
-          render: () => {
+          render: (h, params) => {
             return (
               <p class="action">
                 <span
                   onClick={() => {
-                    this.$router.push("/hotel-detail");
+                    this.$router.push({path:"/hotel-detail",query:{id:params.row.hotel_id}});
                   }}
                 >
                   详情
                 </span>
                 <span
                   onClick={() => {
+                    const {
+                      hotel_id: hotelId,
+                      hotel_name: name,
+                      hotel_phone: phone,
+                    } = params.row;
+                    Object.assign(this.formHotel, { hotelId, name, phone });
                     this.isAddHotel = true;
                   }}
                 >
                   编辑
                 </span>
-                <span onClick={() => {}}>删除</span>
+                <span
+                  onClick={() => {
+                    this.deleteHotel(params.row.hotel_id);
+                  }}
+                >
+                  删除
+                </span>
               </p>
             );
           },
-        },
-      ],
-      dataList: [
-        {
-          name: "John Brown",
-          age: 18,
-          address: "New York No. 1 Lake Park",
-          date: "2016-10-03",
-        },
-        {
-          name: "Jim Green",
-          age: 24,
-          address: "London No. 1 Lake Park",
-          date: "2016-10-01",
-        },
-        {
-          name: "Joe Black",
-          age: 30,
-          address: "Sydney No. 1 Lake Park",
-          date: "2016-10-02",
-        },
-        {
-          name: "Jon Snow",
-          age: 26,
-          address: "Ottawa No. 2 Lake Park",
-          date: "2016-10-04",
         },
       ],
     };
   },
   methods: {
     onConfirm() {
-      this.$alertSuccess("操作成功");
-      this.$alertConfirm({ content: "阿卡脸上的肌肤轮廓的减肥了" });
+      this.$refs.formHotel.validate((value) => {
+        if (!value) {
+          this.$alertError("请按要求填写数据");
+          return;
+        }
+
+        const param = Object.assign({}, this.formHotel);
+        if (!param.hotelId) {
+          this.addHotel(param);
+        } else {
+          this.updateHotel(param);
+        }
+      });
     },
+    onLoad(res, callBack) {
+      callBack(res);
+    },
+    doQuery() {
+      this.$refs.hotelList.search();
+    },
+    // 添加酒店
+    addHotel(param) {
+      this.$post("add-hotel", param).then(() => {
+        this.$alertSuccess("操作成功");
+        this.doQuery();
+        this.isAddHotel = false;
+      });
+    },
+    //编辑酒店
+    updateHotel(param) {
+      this.$post("update-hotel", param).then(() => {
+        this.$alertSuccess("修改成功");
+        this.doQuery();
+        this.isAddHotel = false;
+      });
+    },
+    //删除酒店
+    deleteHotel(id) {
+      this.$alertConfirm({
+        content: "确定要删除吗",
+        onOk: () => {
+          this.$post("delete-hotel", { id: id }).then(() => {
+            this.$alertSuccess("删除成功");
+            this.doQuery();
+          });
+        },
+      });
+    },
+  },
+  mounted() {
+    this.doQuery();
   },
 };
 </script>

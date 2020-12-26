@@ -36,7 +36,6 @@ class Ajax {
   //暴露request方法用于发送请求
   request({ url, data, method, header, params }) {
     const apiUrl = apiList[url];
-    console.log(apiUrl, url, apiList, "dddsss");
     const userInfo = JSON.parse(
       window.localStorage.getItem(config.base_name + "userInfo")
     );
@@ -59,8 +58,8 @@ class Ajax {
           }
         })
         .catch((error) => {
-          if(error.response.data.code===400){
-            Vue.prototype.$alertError(error.response.data.msg)
+          if (error.response.data.code === 400) {
+            Vue.prototype.$alertError(error.response.data.msg);
           }
           reject(error);
         });
@@ -77,10 +76,13 @@ const instance = new Ajax();
  *@params {Object} data: 参数
  *@params {Object} Object: 其他自定义参数header等
  */
-const $get = async (url, data, { header = {}, params = {} } = {}) => {
+const $get = async (url, params, { header = {} } = {}) => {
   return await instance
-    .request({ url, data, method: "get", header, params })
-    .then((res) => res);
+    .request({ url, method: "get", header, params })
+    .then((res) => res)
+    .catch((error) => {
+      throw new Error(error);
+    });
 };
 /*
  *@name:$post
@@ -94,6 +96,9 @@ const $get = async (url, data, { header = {}, params = {} } = {}) => {
 const $post = async (url, data, { header = {} } = {}) => {
   return await instance
     .request({ url, data, method: "post", header })
-    .then((res) => res);
+    .then((res) => res)
+    .catch((error) => {
+      throw new Error(error);
+    });
 };
 export { $get, $post };

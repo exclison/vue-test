@@ -18,7 +18,6 @@ route.get("/get-hotel-list", async (ctx) => {
 //   if(role === 1){
       const hotel_sql = `SELECT hotel.hotel_id,hotel.hotel_name,hotel.hotel_phone, COUNT(room.hotel_id) AS roomCount FROM hotel LEFT JOIN room ON hotel.hotel_id=room.hotel_id GROUP BY hotel.hotel_id`
       hotelList = await query(hotel_sql)
-      console.log(hotelList)
 //   }
   //用户
 //   if(role === 2){}
@@ -78,9 +77,10 @@ route.post("/add-hotel", async (ctx) => {
 route.post("/delete-hotel", async (ctx) => {
   let { id } = ctx.request.body;
   if (!id) {
+    ctx.status = 400
     ctx.body = {
       msg: "酒店id不能为空",
-      code: 0,
+      code: 400,
     };
     return;
   }

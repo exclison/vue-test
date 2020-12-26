@@ -86,7 +86,6 @@ export default {
             message: "手机号格式不正确",
             trigger: "blur",
             validator: (rule, value, callBack) => {
-              console.log(value, rule, callBack, "kkkk");
               if (!/^1[3456789]\d{9}/.test(value)) {
                 callBack(new Error("手机号格式不正确"));
               }

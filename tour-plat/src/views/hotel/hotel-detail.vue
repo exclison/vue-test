@@ -3,32 +3,31 @@
 <template>
   <div class="hotel-detail">
     <div class="hotel-detail-search">
-      <Button type="primary" @click="isAddHotel = true">添加房间</Button>
+      <Button type="primary" @click="isAddRoom = true">添加房间</Button>
     </div>
     <div class="hotel-detail-list">
       <p class="room-title">房间列表</p>
-      <SectionList :columns="columns" :datas="dataList"></SectionList>
+      <SectionList
+        ref="roomList"
+        :columns="columns"
+        :params="searchParam"
+        :onLoad="onLoad"
+        api="get-room-list-by-id"
+      ></SectionList>
     </div>
-    <AlertDrawer v-model="isAddHotel" title="添加房间" @on-confirm="onConfirm">
+    <AlertDrawer v-model="isAddRoom" title="添加房间" @on-confirm="onConfirm">
       <div class="add-hotel">
         <Form
-          ref="formHotel"
-          :model="formHotel"
-          :rules="ruleHotel"
+          ref="formRoom"
+          :model="formRoom"
+          :rules="ruleRoom"
           :label-width="110"
         >
-          <FormItem label="房间号" prop="user">
+          <FormItem label="房间号" prop="roomNum">
             <Input
               type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
-          </FormItem>
-          <FormItem label="房间容量" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
+              v-model="formRoom.roomNum"
+              placeholder="请输入房间号"
             />
           </FormItem>
         </Form>
@@ -45,15 +44,19 @@ export default {
 
   data() {
     return {
-      isAddHotel: false,
-      formHotel: {
-        user: "",
+      isAddRoom: false,
+      searchParam: {
+        id: "",
       },
-      ruleHotel: {
-        user: [
+      formRoom: {
+        hotelId: "",
+        roomNum: "",
+      },
+      ruleRoom: {
+        roomNum: [
           {
             required: true,
-            message: "Please fill in the user name",
+            message: "请输入房间号",
             trigger: "blur",
           },
         ],
@@ -61,42 +64,46 @@ export default {
       columns: [
         {
           title: "房间号",
-          key: "name",
+          key: "room_num",
           align: "center",
         },
         {
           title: "状态",
-          key: "age",
+          key: "state",
           align: "center",
+          render: (h, params) => {
+            return <span>{params.row.user_name ? "已预定" : "空"}</span>;
+          },
         },
         {
           title: "预定人",
-          key: "age",
+          key: "user_name",
           align: "center",
         },
         {
           title: "操作",
           key: "address",
           align: "center",
-          render: () => {
+          render: (h, params) => {
             return (
               <p class="action">
                 <span
                   onClick={() => {
+                    const param = Object.assign(
+                      {},
+                      {
+                        userId: this.$store.state.userInfo.id,
+                        roomId: params.row.room_id,
+                      }
+                    );
+                    this.reserveRoom(param);
                   }}
                 >
                   预定
                 </span>
                 <span
                   onClick={() => {
-                    this.isAddHotel = true;
-                  }}
-                >
-                  编辑
-                </span>
-                <span
-                  onClick={() => {
-                    this.isAddHotel = true;
+                    this.deleteRoom(params.row.room_id);
                   }}
                 >
                   删除
@@ -104,32 +111,6 @@ export default {
               </p>
             );
           },
-        },
-      ],
-      dataList: [
-        {
-          name: "John Brown",
-          age: 18,
-          address: "New York No. 1 Lake Park",
-          date: "2016-10-03",
-        },
-        {
-          name: "Jim Green",
-          age: 24,
-          address: "London No. 1 Lake Park",
-          date: "2016-10-01",
-        },
-        {
-          name: "Joe Black",
-          age: 30,
-          address: "Sydney No. 1 Lake Park",
-          date: "2016-10-02",
-        },
-        {
-          name: "Jon Snow",
-          age: 26,
-          address: "Ottawa No. 2 Lake Park",
-          date: "2016-10-04",
         },
       ],
     };
@@ -141,12 +122,58 @@ export default {
 
   methods: {
     onConfirm() {
-      this.$alertSuccess("操作成功");
-      this.$alertConfirm({ content: "阿卡脸上的肌肤轮廓的减肥了" });
+      this.$refs.formRoom.validate((value) => {
+        if (!value) {
+          this.$alertError("请按要求填写数据");
+          return;
+        }
+        const param = Object.assign({}, this.formRoom);
+        this.addRoom(param);
+      });
+    },
+    onLoad(res, callBack) {
+      callBack(res);
+    },
+    doQuery() {
+      this.$refs.roomList.search();
+    },
+    // 添加房间
+    addRoom(param) {
+      this.$post("add-room", param).then(() => {
+        this.$alertSuccess("操作成功");
+        this.doQuery();
+        this.isAddRoom = false;
+      });
+    },
+    //删除房间
+    deleteRoom(id) {
+      this.$alertConfirm({
+        content: "确定要删除吗",
+        onOk: () => {
+          this.$post("delete-room", { roomId: id }).then(() => {
+            this.$alertSuccess("删除成功");
+            this.doQuery();
+          });
+        },
+      });
+    },
+    reserveRoom(param) {
+      this.$alertConfirm({
+        content: "确定要预定吗",
+        onOk: () => {
+          this.$post("reserve-room", param).then(() => {
+            this.$alertSuccess("预定成功");
+            this.doQuery()
+          });
+        },
+      });
     },
   },
 
-  mounted() {},
+  mounted() {
+    this.searchParam.id = this.formRoom.hotelId = this.$route.query.id;
+    this.doQuery();
+  },
 };
 </script>
 <style lang="less" scoped>

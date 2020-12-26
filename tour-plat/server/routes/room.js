@@ -56,15 +56,16 @@ route.post("/delete-room", async (ctx) => {
  */
 route.post("/reserve-room", async (ctx) => {
   const { userId, roomId } = ctx.request.body;
-  const roomSql = `SELECT user_id FROM room WHERE room_id=${roomId}`;
-  const roomUserList = await query(roomSql);
-  const roomUserInfo = roomUserList[0].user_id || "";
+  // const roomSql = `SELECT user_id FROM room WHERE room_id=${roomId}`;
+  // const roomUserList = await query(roomSql);
+  // console.log(roomUserList,'ddd')
+  // const roomUserInfo = roomUserList[0].user_id || "";
 
-  let userList = roomUserInfo.split(",");
-  !userList.includes(userId) && userList.push(userId);
-  const newRoomUser = userList.join(",");
+  // let userList = roomUserInfo.split(",");
+  // !userList.includes(userId) && userList.push(userId);
+  // const newRoomUser = userList.join(",");
 
-  const updateSql = `UPDATE room SET user_id='${newRoomUser}' WHERE room_id=${roomId}`;
+  const updateSql = `UPDATE room SET user_id='${userId}' WHERE room_id=${roomId}`;
   await query(updateSql);
   ctx.body = "success";
   return;

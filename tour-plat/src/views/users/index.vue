@@ -1,44 +1,44 @@
-/*
- *@description: users
- *@author: hanyuchen
- *@date: 2020-12-17 09:25:49
-*/
+/* *@description: users *@author: hanyuchen *@date: 2020-12-17 09:25:49 */
 <template>
   <div class="users">
-      <div class="users-search">
-      <Button type="primary" @click="isAddHotel = true">添加用户</Button>
+    <div class="users-search">
+      <Button type="primary" @click="isAddUser = true">添加用户</Button>
     </div>
     <div class="users-list">
       <p class="users-title">用户列表</p>
-      <SectionList :columns="columns" :datas="dataList"></SectionList>
+      <SectionList
+        ref="userTable"
+        :columns="columns"
+        :onLoad="onLoad"
+        api="get-user-list"
+      ></SectionList>
     </div>
-    <AlertDrawer v-model="isAddHotel" title="添加用户" @on-confirm="onConfirm">
+    <AlertDrawer v-model="isAddUser" title="添加用户" @on-confirm="onConfirm">
       <div class="add-users">
         <Form
-          ref="formHotel"
-          :model="formHotel"
-          :rules="ruleHotel"
+          ref="formUser"
+          :model="formUser"
+          :rules="ruleUser"
           :label-width="110"
         >
-          <FormItem label="姓名" prop="user">
+          <FormItem label="姓名" prop="name">
             <Input
               type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
+              v-model="formUser.name"
+              placeholder="请输入姓名"
             />
           </FormItem>
-          <FormItem label="性别" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
+          <FormItem label="性别" prop="sex">
+            <Select v-model="formUser.sex">
+              <Option value="1">男</Option>
+              <Option value="0">女</Option>
+            </Select>
           </FormItem>
-          <FormItem label="联系电话" prop="user">
+          <FormItem label="联系电话" prop="phone">
             <Input
               type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
+              v-model="formUser.phone"
+              placeholder="请输入手机号"
             />
           </FormItem>
         </Form>
@@ -49,21 +49,49 @@
 
 <script>
 export default {
-
   components: {},
 
-  data () {
+  data() {
     return {
-        isAddHotel: false,
-      formHotel: {
-        user: "",
+      isAddUser: false,
+      formUser: {
+        id: "",
+        name: "",
+        sex: "",
+        phone: "",
       },
-      ruleHotel: {
-        user: [
+      ruleUser: {
+        name: [
           {
             required: true,
-            message: "Please fill in the user name",
+            message: "请输入姓名",
             trigger: "blur",
+          },
+        ],
+        sex: [
+          {
+            required: true,
+            message: "请选择性别",
+            trigger: "change",
+          },
+        ],
+        phone: [
+          {
+            required: true,
+            message: "请输入手机号",
+            trigger: "blur",
+          },
+          {
+            required: true,
+            message: "手机号格式不正确",
+            trigger: "blur",
+            validator: (rule, value, callBack) => {
+              console.log(value, rule, callBack, "kkkk");
+              if (!/^1[3456789]\d{9}/.test(value)) {
+                callBack(new Error("手机号格式不正确"));
+              }
+              callBack();
+            },
           },
         ],
       },
@@ -75,64 +103,49 @@ export default {
         },
         {
           title: "性别",
-          key: "age",
+          key: "sex",
           align: "center",
+          render: (h, params) => {
+            let sex = "";
+            if (params.row.sex === "1") sex = "男";
+            if (params.row.sex === "0") sex = "女";
+            return h("span", {}, sex);
+          },
         },
         {
           title: "联系电话",
-          key: "address",
+          key: "phone",
           align: "center",
         },
         {
           title: "操作",
-          key: "address",
+          key: "operation",
           align: "center",
-          render: () => {
+          render: (h, params) => {
             return (
               <p class="action">
+                <span onClick={() => {
+                  this.resetPassword(params.row.id)
+                }}>重置密码</span>
                 <span
                   onClick={() => {
-                  }}
-                >
-                  重置密码
-                </span>
-                <span
-                  onClick={() => {
-                    this.isAddHotel = true;
+                    const { id, name, sex, phone } = params.row;
+                    Object.assign(this.formUser, { id, name, sex, phone });
+                    this.isAddUser = true;
                   }}
                 >
                   编辑
                 </span>
-                <span onClick={() => {}}>删除</span>
+                <span
+                  onClick={() => {
+                    this.deleteUser(params.row.id);
+                  }}
+                >
+                  删除
+                </span>
               </p>
             );
           },
-        },
-      ],
-      dataList: [
-        {
-          name: "John Brown",
-          age: 18,
-          address: "New York No. 1 Lake Park",
-          date: "2016-10-03",
-        },
-        {
-          name: "Jim Green",
-          age: 24,
-          address: "London No. 1 Lake Park",
-          date: "2016-10-01",
-        },
-        {
-          name: "Joe Black",
-          age: 30,
-          address: "Sydney No. 1 Lake Park",
-          date: "2016-10-02",
-        },
-        {
-          name: "Jon Snow",
-          age: 26,
-          address: "Ottawa No. 2 Lake Park",
-          date: "2016-10-04",
         },
       ],
     };
@@ -141,19 +154,78 @@ export default {
   computed: {},
 
   methods: {
-      onConfirm() {
-      this.$alertSuccess("操作成功");
-      this.$alertConfirm({ content: "阿卡脸上的肌肤轮廓的减肥了" });
+    onConfirm() {
+      this.$refs.formUser.validate((value) => {
+        if (!value) {
+          this.$alertError("请按要求填写信息");
+          return;
+        }
+
+        const param = Object.assign({}, this.formUser);
+        if (!param.id) {
+          this.addUser(param);
+        } else {
+          this.updateUser(param);
+        }
+      });
+      // this.$alertConfirm({ content: "阿卡脸上的肌肤轮廓的减肥了" });
+    },
+    //表格初始化
+    onLoad(res, callBack) {
+      callBack(res);
+    },
+    //表格刷新
+    doQuery() {
+      this.$refs.userTable.search();
+    },
+    // 添加用户
+    addUser(param) {
+      this.$post("add-user", param).then(() => {
+        this.$alertSuccess("操作成功");
+        this.doQuery();
+        this.isAddUser = false;
+      });
+    },
+    //编辑用户
+    updateUser(param) {
+      this.$post("update-user", param).then(() => {
+        this.$alertSuccess("修改成功");
+        this.doQuery();
+        this.isAddUser = false;
+      });
+    },
+    //删除用户
+    deleteUser(id) {
+      this.$alertConfirm({
+        content: "确定要删除吗",
+        onOk: () => {
+          this.$post("delete-user", { id: id }).then(() => {
+            this.$alertSuccess("删除成功");
+            this.doQuery();
+          });
+        },
+      });
+    },
+    resetPassword(id){
+      this.$alertConfirm({
+        content:'确定要重置密码吗',
+        onOk:()=>{
+          this.$post('reset-password',{id}).then(()=>{
+            this.$alertSuccess('重置密码成功')
+          })
+        }
+      })
     },
   },
 
-  mounted() {},
-}
-
+  mounted() {
+    this.doQuery();
+  },
+};
 </script>
-<style lang='less' scoped>
-.users{
-     padding: 50px;
+<style lang="less" scoped>
+.users {
+  padding: 50px;
   &-search {
     display: flex;
     align-items: center;

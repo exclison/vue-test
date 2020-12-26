@@ -61,7 +61,7 @@ export default {
 
   methods: {
     onConfirm() {
-      this.isShow = false;
+      // this.isShow = false;
       this.$emit("on-confirm");
     },
     onCancel() {

@@ -26,6 +26,7 @@ route.post("/login-auth", async (ctx) => {
   const result = await query(sql);
   const userInfo = result[0];
   if (userInfo.password !== password || result.length === 0) {
+    ctx.status = 400
     ctx.body = {
       msg: "用户名或密码不正确",
       code: 400,

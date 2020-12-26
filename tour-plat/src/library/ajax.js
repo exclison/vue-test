@@ -1,4 +1,4 @@
-// import Vue from "vue";
+import Vue from "vue";
 import axios from "axios";
 import config from "../config/config";
 import apiList from "../config/api";
@@ -58,8 +58,11 @@ class Ajax {
             resolve(res.data);
           }
         })
-        .catch((err) => {
-          reject(err);
+        .catch((error) => {
+          if(error.response.data.code===400){
+            Vue.prototype.$alertError(error.response.data.msg)
+          }
+          reject(error);
         });
     });
   }
@@ -73,8 +76,8 @@ const instance = new Ajax();
  *@params {String} url: 请求url
  *@params {Object} data: 参数
  *@params {Object} Object: 其他自定义参数header等
-*/
-const $get = async (url, data, { header, params }) => {
+ */
+const $get = async (url, data, { header = {}, params = {} } = {}) => {
   return await instance
     .request({ url, data, method: "get", header, params })
     .then((res) => res);
@@ -87,7 +90,7 @@ const $get = async (url, data, { header, params }) => {
  *@params {String} url: 请求url
  *@params {Object} data: 参数
  *@params {Object} Object: 其他自定义参数header等
-*/
+ */
 const $post = async (url, data, { header = {} } = {}) => {
   return await instance
     .request({ url, data, method: "post", header })

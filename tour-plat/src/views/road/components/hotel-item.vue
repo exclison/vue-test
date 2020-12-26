@@ -8,21 +8,21 @@
       <div class="flex flex-vc title-item">
           <div class="flex flex-vc con-item">
               <label>酒店:</label>
-              <span>速八酒店</span>
+              <span>{{dataOptions.hotel_name}}</span>
           </div>
           <div class="flex flex-vc con-item">
-              <label>联系电话:</label>
-              <span>1332334545</span>
+              <label>服务热线:</label>
+              <span>{{dataOptions.hotel_phone}}</span>
           </div>
       </div>
       <div class="flex flex-vc title-item">
           <div class="flex flex-vc con-item">
               <label>房间号:</label>
-              <span>B495</span>
+              <span>{{dataOptions.room_num}}</span>
           </div>
           <div class="flex flex-vc con-item">
-              <label>日期:</label>
-              <span>202012/17--2020/12/19</span>
+              <label>姓名:</label>
+              <span>{{dataOptions.user_name}}</span>
           </div>
       </div>
   </div>
@@ -42,7 +42,12 @@ export default {
 
   computed: {},
 
-  props: {},
+  props: {
+      dataOptions:{
+          type:Object,
+          default:()=>{}
+      },
+  },
 
   methods: {},
 
@@ -56,8 +61,8 @@ export default {
     height: 100px;
     background-color: #fff;
     border-radius: 23px;
-    margin: 20px;
     padding: 10px 20px;
+    margin: 10px 0;
 }
 .title-item{
     margin-bottom: 10px;

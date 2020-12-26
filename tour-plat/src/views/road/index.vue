@@ -3,42 +3,15 @@
   <div class="road">
     <div class="container">
       <div class="item-a">
-        <div class="title-item">计划路程</div>
-        <Timeline>
-          <TimelineItem>
-            <p class="time">1976年</p>
-            <p class="content">Apple I 问世</p>
-          </TimelineItem>
-          <TimelineItem>
-            <p class="time">1984年</p>
-            <p class="content">发布 Macintosh</p>
-          </TimelineItem>
-          <TimelineItem>
-            <p class="time">2007年</p>
-            <p class="content">发布 iPhone</p>
-          </TimelineItem>
-          <TimelineItem>
-            <p class="time">2010年</p>
-            <p class="content">发布 iPad</p>
-          </TimelineItem>
-          <TimelineItem>
-            <p class="time">2011年10月5日</p>
-            <p class="content">史蒂夫·乔布斯去世</p>
-          </TimelineItem>
-        </Timeline>
-      </div>
-
-      <div class="item-b">
         <div class="title-item">我的酒店</div>
         <div>
-            <HotelItem></HotelItem>
+            <HotelItem v-for="i in tripInfo.hotelList" :key="i.hotel_id" :dataOptions="i"></HotelItem>
         </div>
       </div>
-
-      <div class="item-c">
+      <div class="item-b">
         <div class="title-item">我的机票</div>
         <div>
-            <FilghtItem></FilghtItem>
+            <FilghtItem v-for="i in tripInfo.flightList" :key="i.hotel_id" :dataOptions="i"></FilghtItem>
         </div>
       </div>
     </div>
@@ -55,14 +28,24 @@ export default {
   },
 
   data() {
-    return {};
+    return {
+      tripInfo:{},
+    };
   },
 
   computed: {},
 
-  methods: {},
+  methods: {
+    getTripInfo(){
+      this.$get('get-trip-info').then(res=>{
+        this.tripInfo = res
+      })
+    },
+  },
 
-  mounted() {},
+  mounted() {
+    this.getTripInfo()
+  },
 };
 </script>
 <style lang="less" scoped>
@@ -78,16 +61,13 @@ export default {
   margin-bottom: 30px;
 }
 .item-a {
-  grid-area: road;
-  padding: 0 30px;
+  grid-area: hotel;
+  padding: 10px;
 }
 
 .item-b {
   grid-area: filght;
-}
-
-.item-c {
-  grid-area: hotel;
+  padding: 10px;
 }
 
 .container {
@@ -99,10 +79,9 @@ export default {
 
   grid-template-columns: 1fr 1fr;
 
-  grid-template-rows: 500px 500px;
+  grid-template-rows: 500px;
 
   grid-template-areas:
-    "road filght"
-    "road hotel";
+    "hotel filght";
 }
 </style>

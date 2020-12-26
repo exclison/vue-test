@@ -6,31 +6,32 @@
 <template>
   <div class="filght-item">
       <div class="flex flex-vc title-item">
-          <div class="flex flex-vc con-item">
+          <div class="flex flex-vc con-item" style="width:30%">
               <label>姓名:</label>
-              <span>张三</span>
+              <span>{{dataOptions.user_name}}</span>
           </div>
-          <div class="flex flex-vc con-item">
+          <div class="flex flex-vc con-item" style="width:45%">
               <label>出发时间:</label>
-              <span>202012/17 17:00:00</span>
+              <span>{{dataOptions.startTime}}</span>
           </div>
-          <div class="flex flex-vc con-item">
-              <label>到达时间:</label>
-              <span>202012/17 19:00:00</span>
+          <div class="flex flex-vc con-item" style="width:25%">
+              <label>出发地:</label>
+              <span>{{dataOptions.startPoint}}</span>
           </div>
       </div>
       <div class="flex flex-vc title-item">
-          <div class="flex flex-vc con-item">
-              <label>航班编号:</label>
-              <span>B495</span>
+          <div class="flex flex-vc con-item" style="width:30%">
+              <label>航班名称:</label>
+              <span>{{dataOptions.name}}</span>
           </div>
-          <div class="flex flex-vc con-item">
-              <label>出发地:</label>
-              <span>长春</span>
+          <div class="flex flex-vc con-item" style="width:45%">
+              <label>到达时间:</label>
+              <span>{{dataOptions.endTime}}</span>
           </div>
-          <div class="flex flex-vc con-item">
+          
+          <div class="flex flex-vc con-item" style="width:25%">
               <label>到达地:</label>
-              <span>天津</span>
+              <span>{{dataOptions.endPoint}}</span>
           </div>
       </div>
   </div>
@@ -50,7 +51,12 @@ export default {
 
   computed: {},
 
-  props: {},
+  props: {
+      dataOptions:{
+          type:Object,
+          default:()=>{}
+      },
+  },
 
   methods: {},
 
@@ -64,20 +70,20 @@ export default {
     height: 100px;
     background-color: #fff;
     border-radius: 23px;
-    margin: 20px;
     padding: 10px 20px;
+    margin: 10px 0;
 }
 .title-item{
     margin-bottom: 10px;
 }
 .con-item{
-    width: 30%;
+    width: auto;
     margin-left: 30px;
     label{
         line-height: 30px;
     }
     span{
-        margin-left: 20px;
+        // margin-left: 20px;
     }
 }
 </style>

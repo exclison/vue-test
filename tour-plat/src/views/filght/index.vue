@@ -151,6 +151,7 @@ export default {
           title: "操作",
           key: "operation",
           align: "center",
+          width:300,
           render: (h,params) => {
             return (
               <p class="action">
@@ -160,6 +161,17 @@ export default {
                   }}
                 >
                   详情
+                </span>
+                <span
+                  onClick={() => {
+                    const param = {
+                      userId:this.$store.state.userInfo.id,
+                      flightId:params.row.id
+                    }
+                    this.reserveFlight(param)
+                  }}
+                >
+                  预定
                 </span>
                 <span
                   onClick={() => {
@@ -247,6 +259,17 @@ export default {
           this.$post("delete-flight", { id: id }).then(() => {
             this.$alertSuccess("删除成功");
             this.doQuery();
+          });
+        },
+      });
+    },
+    //预定航班
+    reserveFlight(param) {
+      this.$alertConfirm({
+        content: "确定要预定航班吗",
+        onOk: () => {
+          this.$post("reserve-flight", param).then(() => {
+            this.$alertSuccess("预定成功");
           });
         },
       });

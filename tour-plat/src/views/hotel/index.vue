@@ -1,7 +1,7 @@
 <template>
   <div class="hotel">
     <div class="hotel-search">
-      <Button type="primary" @click="onAdd">添加酒店</Button>
+      <Button type="primary" v-if="isAdmin" @click="onAdd">添加酒店</Button>
     </div>
     <div class="hotel-list">
       <p class="hotel-title">酒店列表</p>
@@ -119,6 +119,7 @@ export default {
                   详情
                 </span>
                 <span
+                  v-show={this.isAdmin}
                   onClick={() => {
                     const {
                       hotel_id: hotelId,
@@ -132,6 +133,7 @@ export default {
                   编辑
                 </span>
                 <span
+                  v-show={this.isAdmin}
                   onClick={() => {
                     this.deleteHotel(params.row.hotel_id);
                   }}
@@ -146,9 +148,9 @@ export default {
     };
   },
   methods: {
-    onAdd(){
-      this.$refs.formHotel.resetFields()
-      this.isAddHotel = true
+    onAdd() {
+      this.$refs.formHotel.resetFields();
+      this.isAddHotel = true;
     },
     onConfirm() {
       this.$refs.formHotel.validate((value) => {

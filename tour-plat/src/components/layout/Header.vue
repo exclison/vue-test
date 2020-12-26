@@ -19,7 +19,7 @@
     <div>
       <Dropdown @on-click="onPerson">
         <span class="name-title">
-          张三
+          {{$store.state.userInfo.name}}
           <Icon type="ios-arrow-down"></Icon>
         </span>
         <DropdownMenu slot="list">
@@ -45,7 +45,8 @@ export default {
 
   computed: {
     menuList() {
-      return menus;
+      const menuList = menus.filter(i=>i.role.indexOf(this.$store.state.userInfo.role) >= 0)
+      return menuList;
     },
   },
 

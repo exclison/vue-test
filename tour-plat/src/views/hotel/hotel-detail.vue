@@ -3,7 +3,7 @@
 <template>
   <div class="hotel-detail">
     <div class="hotel-detail-search">
-      <Button type="primary" @click="onAdd">添加房间</Button>
+      <Button type="primary" v-if="isAdmin" @click="onAdd">添加房间</Button>
     </div>
     <div class="hotel-detail-list">
       <p class="room-title">房间列表</p>
@@ -72,7 +72,7 @@ export default {
           key: "state",
           align: "center",
           render: (h, params) => {
-            return <span>{params.row.user_name ? "已预定" : "空"}</span>;
+            return <span>{params.row.user_name ? "已满" : "空"}</span>;
           },
         },
         {
@@ -88,6 +88,7 @@ export default {
             return (
               <p class="action">
                 <span
+                  v-show={!params.row.user_name}
                   onClick={() => {
                     const param = Object.assign(
                       {},
@@ -101,7 +102,11 @@ export default {
                 >
                   预定
                 </span>
+                <span v-show={!!params.row.user_name} style={{ color: "#ccc" }}>
+                  预定
+                </span>
                 <span
+                  v-show={this.isAdmin}
                   onClick={() => {
                     this.deleteRoom(params.row.room_id);
                   }}
@@ -121,9 +126,9 @@ export default {
   props: {},
 
   methods: {
-     onAdd(){
-      this.$refs.formRoom.resetFields()
-      this.isAddRoom = true
+    onAdd() {
+      this.$refs.formRoom.resetFields();
+      this.isAddRoom = true;
     },
     onConfirm() {
       this.$refs.formRoom.validate((value) => {
@@ -167,7 +172,7 @@ export default {
         onOk: () => {
           this.$post("reserve-room", param).then(() => {
             this.$alertSuccess("预定成功");
-            this.doQuery()
+            this.doQuery();
           });
         },
       });

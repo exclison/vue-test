@@ -2,7 +2,7 @@
 <template>
   <div class="filght">
     <div class="filght-search">
-      <Button type="primary" @click="onAdd">添加航班</Button>
+      <Button type="primary" v-if="isAdmin" @click="onAdd">添加航班</Button>
     </div>
     <div class="filght-list">
       <p class="filght-title">航班列表</p>
@@ -65,13 +65,14 @@ export default {
   components: {},
 
   data() {
-    const validatePass = (rule,value,callBack)=>{
-      const isNull = (value)=>value==='' || value === undefined || value === null
-      if(isNull(value)){
-        callBack(new Error(rule.message))
+    const validatePass = (rule, value, callBack) => {
+      const isNull = (value) =>
+        value === "" || value === undefined || value === null;
+      if (isNull(value)) {
+        callBack(new Error(rule.message));
       }
-      callBack()
-    }
+      callBack();
+    };
     return {
       isAddFlight: false,
       formFlight: {
@@ -95,7 +96,7 @@ export default {
             required: true,
             message: "请选择出发时间",
             trigger: "change",
-            validator:validatePass
+            validator: validatePass,
           },
         ],
         endTime: [
@@ -103,7 +104,7 @@ export default {
             required: true,
             message: "请选择到达时间",
             trigger: "change",
-            validator:validatePass
+            validator: validatePass,
           },
         ],
         startPoint: [
@@ -151,13 +152,17 @@ export default {
           title: "操作",
           key: "operation",
           align: "center",
-          width:300,
-          render: (h,params) => {
+          width: 300,
+          render: (h, params) => {
             return (
               <p class="action">
                 <span
+                  v-show={this.isAdmin}
                   onClick={() => {
-                    this.$router.push({path:"/filght-detail",query:{id:params.row.id}});
+                    this.$router.push({
+                      path: "/filght-detail",
+                      query: { id: params.row.id },
+                    });
                   }}
                 >
                   详情
@@ -165,27 +170,47 @@ export default {
                 <span
                   onClick={() => {
                     const param = {
-                      userId:this.$store.state.userInfo.id,
-                      flightId:params.row.id
-                    }
-                    this.reserveFlight(param)
+                      userId: this.$store.state.userInfo.id,
+                      flightId: params.row.id,
+                    };
+                    this.reserveFlight(param);
                   }}
                 >
                   预定
                 </span>
                 <span
+                  v-show={this.isAdmin}
                   onClick={() => {
-                    const {id,name,startTime,endTime,startPoint,endPoint} = params.row
-                    const param = {id,name,startTime,endTime,startPoint,endPoint}
-                    Object.assign(this.formFlight,param)
+                    const {
+                      id,
+                      name,
+                      startTime,
+                      endTime,
+                      startPoint,
+                      endPoint,
+                    } = params.row;
+                    const param = {
+                      id,
+                      name,
+                      startTime,
+                      endTime,
+                      startPoint,
+                      endPoint,
+                    };
+                    Object.assign(this.formFlight, param);
                     this.isAddFlight = true;
                   }}
                 >
                   编辑
                 </span>
-                <span onClick={() => {
-                  this.deleteFlight(params.row.id)
-                }}>删除</span>
+                <span
+                  v-show={this.isAdmin}
+                  onClick={() => {
+                    this.deleteFlight(params.row.id);
+                  }}
+                >
+                  删除
+                </span>
               </p>
             );
           },
@@ -197,25 +222,24 @@ export default {
   computed: {},
 
   methods: {
-    onAdd(){
-      this.$refs.formFlight.resetFields()
-      this.isAddFlight = true
+    onAdd() {
+      this.$refs.formFlight.resetFields();
+      this.isAddFlight = true;
     },
     onConfirm() {
-      this.$refs.formFlight.validate(value=>{
-        if(!value){
-          this.$alertError('请按要求填写数据')
-          return
+      this.$refs.formFlight.validate((value) => {
+        if (!value) {
+          this.$alertError("请按要求填写数据");
+          return;
         }
-      })
-      const param = Object.assign({},this.formFlight)
+      });
+      const param = Object.assign({}, this.formFlight);
 
-      if(!param.id){
-        this.addFlight(param)
-      }else{
-        this.updateFlight(param)
+      if (!param.id) {
+        this.addFlight(param);
+      } else {
+        this.updateFlight(param);
       }
-
     },
     onLoad(res, callBack) {
       callBack(res);
@@ -223,11 +247,11 @@ export default {
     doQuery() {
       this.$refs.flightList.search();
     },
-    onStartTime(e){
-      this.formFlight.startTime = e
+    onStartTime(e) {
+      this.formFlight.startTime = e;
     },
-    onEndTime(e){
-      this.formFlight.endTime = e
+    onEndTime(e) {
+      this.formFlight.endTime = e;
     },
     onStartPoint(e) {
       this.formFlight.startPoint = e.length > 0 ? e[e.length - 1] : "";

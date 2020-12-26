@@ -10,14 +10,8 @@ const route = new Router();
  *@date: 2020-12-18 16:03:52
  */
 route.get("/get-flight-list", async (ctx) => {
-  const info = parseToken(ctx.header.ticket);
-  const role = info.role;
-  console.log(info);
 
-  const sql =
-    role === 1
-      ? `SELECT * FROM flight`
-      : `SELECT * FROM filght WHERE users LIKE '${info.id}%'`;
+  const sql =`SELECT * FROM flight`
   const result = await query(sql);
   ctx.body = result;
   return;

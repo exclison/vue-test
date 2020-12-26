@@ -2,7 +2,7 @@
 <template>
   <div class="users">
     <div class="users-search">
-      <Button type="primary" @click="isAddUser = true">添加用户</Button>
+      <Button type="primary" @click="onAdd">添加用户</Button>
     </div>
     <div class="users-list">
       <p class="users-title">用户列表</p>
@@ -13,7 +13,11 @@
         api="get-user-list"
       ></SectionList>
     </div>
-    <AlertDrawer v-model="isAddUser" title="添加用户" @on-confirm="onConfirm">
+    <AlertDrawer
+      v-model="isAddUser"
+      :title="formUser.id ? '编辑用户' : '添加用户'"
+      @on-confirm="onConfirm"
+    >
       <div class="add-users">
         <Form
           ref="formUser"
@@ -123,9 +127,13 @@ export default {
           render: (h, params) => {
             return (
               <p class="action">
-                <span onClick={() => {
-                  this.resetPassword(params.row.id)
-                }}>重置密码</span>
+                <span
+                  onClick={() => {
+                    this.resetPassword(params.row.id);
+                  }}
+                >
+                  重置密码
+                </span>
                 <span
                   onClick={() => {
                     const { id, name, sex, phone } = params.row;
@@ -153,10 +161,14 @@ export default {
   computed: {},
 
   methods: {
+    onAdd(){
+      this.$refs.formUser.resetFields()
+      this.isAddUser = true
+    },
     onConfirm() {
       this.$refs.formUser.validate((value) => {
         if (!value) {
-          this.$alertError("请按要求填写信息");
+          this.$alertError("请按要求填写数据");
           return;
         }
 
@@ -205,15 +217,15 @@ export default {
         },
       });
     },
-    resetPassword(id){
+    resetPassword(id) {
       this.$alertConfirm({
-        content:'确定要重置密码吗',
-        onOk:()=>{
-          this.$post('reset-password',{id}).then(()=>{
-            this.$alertSuccess('重置密码成功')
-          })
-        }
-      })
+        content: "确定要重置密码吗",
+        onOk: () => {
+          this.$post("reset-password", { id }).then(() => {
+            this.$alertSuccess("重置密码成功");
+          });
+        },
+      });
     },
   },
 

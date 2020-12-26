@@ -1,7 +1,7 @@
 <template>
   <div class="hotel">
     <div class="hotel-search">
-      <Button type="primary" @click="isAddHotel = true">添加酒店</Button>
+      <Button type="primary" @click="onAdd">添加酒店</Button>
     </div>
     <div class="hotel-list">
       <p class="hotel-title">酒店列表</p>
@@ -12,7 +12,11 @@
         api="get-hotel-list"
       ></SectionList>
     </div>
-    <AlertDrawer v-model="isAddHotel" title="添加酒店" @on-confirm="onConfirm">
+    <AlertDrawer
+      v-model="isAddHotel"
+      :title="formHotel.id ? '编辑酒店' : '添加酒店'"
+      @on-confirm="onConfirm"
+    >
       <div class="add-hotel">
         <Form
           ref="formHotel"
@@ -106,7 +110,10 @@ export default {
               <p class="action">
                 <span
                   onClick={() => {
-                    this.$router.push({path:"/hotel-detail",query:{id:params.row.hotel_id}});
+                    this.$router.push({
+                      path: "/hotel-detail",
+                      query: { id: params.row.hotel_id },
+                    });
                   }}
                 >
                   详情
@@ -139,6 +146,10 @@ export default {
     };
   },
   methods: {
+    onAdd(){
+      this.$refs.formHotel.resetFields()
+      this.isAddHotel = true
+    },
     onConfirm() {
       this.$refs.formHotel.validate((value) => {
         if (!value) {

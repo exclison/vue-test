@@ -2,54 +2,57 @@
 <template>
   <div class="filght">
     <div class="filght-search">
-      <Button type="primary" @click="isAddHotel = true">添加航班</Button>
+      <Button type="primary" @click="onAdd">添加航班</Button>
     </div>
     <div class="filght-list">
       <p class="filght-title">航班列表</p>
-      <SectionList :columns="columns" :datas="dataList"></SectionList>
+      <SectionList
+        ref="flightList"
+        :columns="columns"
+        :onLoad="onLoad"
+        api="get-flight-list"
+      ></SectionList>
     </div>
-    <AlertDrawer v-model="isAddHotel" title="添加航班" @on-confirm="onConfirm">
+    <AlertDrawer
+      v-model="isAddFlight"
+      :title="formFlight.id ? '编辑航班' : '添加航班'"
+      @on-confirm="onConfirm"
+    >
       <div class="add-filght">
         <Form
-          ref="formHotel"
-          :model="formHotel"
-          :rules="ruleHotel"
+          ref="formFlight"
+          :model="formFlight"
+          :rules="ruleFlight"
           :label-width="110"
         >
-          <FormItem label="航班名称" prop="user">
+          <FormItem label="航班名称" prop="name">
             <Input
               type="text"
-              v-model="formHotel.user"
+              v-model="formFlight.name"
               placeholder="Username"
             />
           </FormItem>
-          <FormItem label="出发时间" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
+          <FormItem label="出发时间" prop="startTime">
+            <DatePicker
+              type="datetime"
+              :value="formFlight.startTime"
+              placeholder="请选择出发时间"
+              @on-change="onStartTime"
+            ></DatePicker>
           </FormItem>
-          <FormItem label="到达时间" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
+          <FormItem label="到达时间" prop="endTime">
+            <DatePicker
+              type="datetime"
+              :value="formFlight.endTime"
+              placeholder="请选择到达时间"
+              @on-change="onEndTime"
+            ></DatePicker>
           </FormItem>
-          <FormItem label="出发地" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
+          <FormItem label="出发地" prop="startPoint">
+            <AreaCascader @on-change="onStartPoint"></AreaCascader>
           </FormItem>
-          <FormItem label="到达地" prop="user">
-            <Input
-              type="text"
-              v-model="formHotel.user"
-              placeholder="Username"
-            />
+          <FormItem label="到达地" prop="startPoint">
+            <AreaCascader @on-change="onEndPoint"></AreaCascader>
           </FormItem>
         </Form>
       </div>
@@ -62,17 +65,59 @@ export default {
   components: {},
 
   data() {
+    const validatePass = (rule,value,callBack)=>{
+      const isNull = (value)=>value==='' || value === undefined || value === null
+      if(isNull(value)){
+        callBack(new Error(rule.message))
+      }
+      callBack()
+    }
     return {
-      isAddHotel: false,
-      formHotel: {
-        user: "",
+      isAddFlight: false,
+      formFlight: {
+        id: "",
+        name: "",
+        startTime: "",
+        endTime: "",
+        startPoint: "",
+        endPoint: "",
       },
-      ruleHotel: {
-        user: [
+      ruleFlight: {
+        name: [
           {
             required: true,
-            message: "Please fill in the user name",
+            message: "请输入航班名称",
             trigger: "blur",
+          },
+        ],
+        startTime: [
+          {
+            required: true,
+            message: "请选择出发时间",
+            trigger: "change",
+            validator:validatePass
+          },
+        ],
+        endTime: [
+          {
+            required: true,
+            message: "请选择到达时间",
+            trigger: "change",
+            validator:validatePass
+          },
+        ],
+        startPoint: [
+          {
+            required: true,
+            message: "请选择出发地点",
+            trigger: "change",
+          },
+        ],
+        endPoint: [
+          {
+            required: true,
+            message: "请选择到达地点",
+            trigger: "change",
           },
         ],
       },
@@ -84,75 +129,54 @@ export default {
         },
         {
           title: "出发时间",
-          key: "age",
+          key: "startTime",
           align: "center",
         },
         {
           title: "到达时间",
-          key: "address",
+          key: "endTime",
           align: "center",
         },
         {
           title: "出发地",
-          key: "address",
+          key: "startPoint",
           align: "center",
         },
         {
           title: "到达地",
-          key: "address",
+          key: "endPoint",
           align: "center",
         },
         {
           title: "操作",
-          key: "address",
+          key: "operation",
           align: "center",
-          render: () => {
+          render: (h,params) => {
             return (
               <p class="action">
                 <span
                   onClick={() => {
-                    this.$router.push("/filght-detail");
+                    this.$router.push({path:"/filght-detail",query:{id:params.row.id}});
                   }}
                 >
                   详情
                 </span>
                 <span
                   onClick={() => {
-                    this.isAddHotel = true;
+                    const {id,name,startTime,endTime,startPoint,endPoint} = params.row
+                    const param = {id,name,startTime,endTime,startPoint,endPoint}
+                    Object.assign(this.formFlight,param)
+                    this.isAddFlight = true;
                   }}
                 >
                   编辑
                 </span>
-                <span onClick={() => {}}>删除</span>
+                <span onClick={() => {
+                  this.deleteFlight(params.row.id)
+                }}>删除</span>
               </p>
             );
           },
-        },
-      ],
-      dataList: [
-        {
-          name: "John Brown",
-          age: 18,
-          address: "New York No. 1 Lake Park",
-          date: "2016-10-03",
-        },
-        {
-          name: "Jim Green",
-          age: 24,
-          address: "London No. 1 Lake Park",
-          date: "2016-10-01",
-        },
-        {
-          name: "Joe Black",
-          age: 30,
-          address: "Sydney No. 1 Lake Park",
-          date: "2016-10-02",
-        },
-        {
-          name: "Jon Snow",
-          age: 26,
-          address: "Ottawa No. 2 Lake Park",
-          date: "2016-10-04",
         },
       ],
     };
@@ -161,13 +185,77 @@ export default {
   computed: {},
 
   methods: {
+    onAdd(){
+      this.$refs.formFlight.resetFields()
+      this.isAddFlight = true
+    },
     onConfirm() {
-      this.$alertSuccess("操作成功");
-      this.$alertConfirm({ content: "阿卡脸上的肌肤轮廓的减肥了" });
+      this.$refs.formFlight.validate(value=>{
+        if(!value){
+          this.$alertError('请按要求填写数据')
+          return
+        }
+      })
+      const param = Object.assign({},this.formFlight)
+
+      if(!param.id){
+        this.addFlight(param)
+      }else{
+        this.updateFlight(param)
+      }
+
+    },
+    onLoad(res, callBack) {
+      callBack(res);
+    },
+    doQuery() {
+      this.$refs.flightList.search();
+    },
+    onStartTime(e){
+      this.formFlight.startTime = e
+    },
+    onEndTime(e){
+      this.formFlight.endTime = e
+    },
+    onStartPoint(e) {
+      this.formFlight.startPoint = e.length > 0 ? e[e.length - 1] : "";
+    },
+    onEndPoint(e) {
+      this.formFlight.endPoint = e.length > 0 ? e[e.length - 1] : "";
+    },
+    // 添加航班
+    addFlight(param) {
+      this.$post("add-flight", param).then(() => {
+        this.$alertSuccess("操作成功");
+        this.doQuery();
+        this.isAddFlight = false;
+      });
+    },
+    //编辑航班
+    updateFlight(param) {
+      this.$post("update-flight", param).then(() => {
+        this.$alertSuccess("修改成功");
+        this.doQuery();
+        this.isAddFlight = false;
+      });
+    },
+    //删除航班
+    deleteFlight(id) {
+      this.$alertConfirm({
+        content: "确定要删除吗",
+        onOk: () => {
+          this.$post("delete-flight", { id: id }).then(() => {
+            this.$alertSuccess("删除成功");
+            this.doQuery();
+          });
+        },
+      });
     },
   },
 
-  mounted() {},
+  mounted() {
+    this.doQuery();
+  },
 };
 </script>
 <style lang="less" scoped>

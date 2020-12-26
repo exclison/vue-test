@@ -3,7 +3,7 @@
 <template>
   <div class="hotel-detail">
     <div class="hotel-detail-search">
-      <Button type="primary" @click="isAddRoom = true">添加房间</Button>
+      <Button type="primary" @click="onAdd">添加房间</Button>
     </div>
     <div class="hotel-detail-list">
       <p class="room-title">房间列表</p>
@@ -121,6 +121,10 @@ export default {
   props: {},
 
   methods: {
+     onAdd(){
+      this.$refs.formRoom.resetFields()
+      this.isAddRoom = true
+    },
     onConfirm() {
       this.$refs.formRoom.validate((value) => {
         if (!value) {

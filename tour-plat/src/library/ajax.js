@@ -58,7 +58,7 @@ class Ajax {
           }
         })
         .catch((error) => {
-          if (error.response.data.code === 400) {
+          if (error.response && error.response.data.code === 400) {
             Vue.prototype.$alertError(error.response.data.msg);
           }
           reject(error);

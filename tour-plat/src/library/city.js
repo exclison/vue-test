@@ -1,4 +1,4 @@
-{"provinces": [
+export const cityList = {"provinces": [
     {
         "citys": [
             {

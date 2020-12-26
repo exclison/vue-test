@@ -1,3 +1,32 @@
+
+/*
+ * @name:
+ * @description:
+ * @auth:hanyuchen
+ * @date: 2020-12-26 19:23
+ * @params: {String} paramsName: 参数
+*/
+const dateFormat = function(timestamp,format="yyyy-MM-DD HH:mm:ss"){
+  const date = new Date(Number(timestamp))
+  const year = date.getFullYear()
+  const month = date.getMonth().toString().padStart(2,'0')
+  const day = date.getDate().toString().padStart(2,'0')
+  const hour = date.getHours().toString().padStart(2,'0')
+  const minute = date.getMinutes().toString().padStart(2,'0')
+  const second = date.getSeconds().toString().padStart(2,'0')
+
+  let str = format
+  str = str.replace(/yyyy/,year)
+  str = str.replace(/MM/,month)
+  str = str.replace(/DD/,day)
+  str = str.replace(/HH/,hour)
+  str = str.replace(/mm/,minute)
+  str = str.replace(/ss/,second)
+
+  return str
+
+}
+
 /**
  * @time: 2020/8/8
  * @name: timeMillToFormat
@@ -154,4 +183,4 @@ const formatSeconds = function(value, format) {
   return str
 }
 
-export { timeFormatToNum, timeFormatToString, formatSeconds }
+export { timeFormatToNum, timeFormatToString, formatSeconds,dateFormat }

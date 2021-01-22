@@ -10,8 +10,8 @@
     <svg>
       <use xlink:href="#icon-test1"></use>
     </svg> -->
-
-    <vxe-table
+<HelloWorld></HelloWorld>
+    <!-- <vxe-table
       :data="tableData"
       :height="400"
       :scroll-x="{ gt: 10 }"
@@ -31,12 +31,13 @@
       <vxe-table-column field="role3" title="Role3" width="300"></vxe-table-column>
       <vxe-table-column field="sex" title="Sex" fixed="right" width="300"></vxe-table-column>
       <vxe-table-column field="address" title="Address" fixed="right" width="300"></vxe-table-column>
-    </vxe-table>
+    </vxe-table> -->
   </div>
 </template>
 
 <script>
 import "../../assets/icons/test.svg";
+import HelloWorld from '../../components/HelloWorld'
 export default {
   data() {
     return {
@@ -303,8 +304,7 @@ export default {
       ],
     };
   },
-
-  components: {},
+  components:{HelloWorld},
 
   computed: {},
 

@@ -5,10 +5,12 @@ const fs = require('fs')
 ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
 
-// const outStream = fs.createWriteStream('rtmp://localhost:1935/live/123');
+const outStream = fs.createReadStream('./123.mp4');
+// const outStream = fs.createWriteStream('./123');
 setTimeout(() => {
     const command = new ffmpeg()
-        .input('rtmp://58.200.131.2:1935/livetv/hunantv')
+        .input(outStream)
+        // .input('rtmp://58.200.131.2:1935/livetv/hunantv')
         // .inputOptions(['-i'])
         // .size('800x600')
         .on('start', function(commandLine) {

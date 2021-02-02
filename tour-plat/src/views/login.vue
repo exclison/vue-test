@@ -83,6 +83,74 @@ export default {
         console.log(res,'gg')
       })
     },
+    // // 音频初始化
+    // audioInit() {
+    //   const audio = document.getElementById('videoPlayer')
+    //   console.log(audio, 99999999)
+    //   audio.addEventListener('ended', () => {
+    //     this.audioCon.isPause = true
+    //   })
+    //   audio.addEventListener('play', () => {
+    //     this.audioCon.isPause = false
+    //   })
+    //   audio.addEventListener('pause', () => {
+    //     this.audioCon.isPause = true
+    //   })
+    //   audio.addEventListener('canplay', () => {
+    //     this.audioCon.audioAllTime = this.formatSeconds(
+    //       document.getElementById('audio').duration,
+    //       'mm:ss'
+    //     )
+    //   })
+    //   audio.currentTime = 0
+    //   const tim = this.formatSeconds(audio.currentTime, 'mm:ss')
+
+    //   this.audioCon.audioPlayTime = tim
+    //   const progress = (audio.currentTime / audio.duration) * 100
+    //   this.$set(this.audioCon, 'audioProgress', progress)
+    //   this.$forceUpdate()
+    // },
+    // // 音频快进
+    // audioTimeChange(e) {
+    //   const audio = document.getElementById('audio')
+
+    //   const playTime = audio.duration * (e / 100)
+    //   audio.currentTime = playTime
+
+    //   const tim = this.formatSeconds(playTime, 'mm:ss')
+
+    //   this.audioCon.audioPlayTime = tim
+    //   // this.audioPlayTime = tim;
+    // },
+    // // 音频控制播放
+    // audiocontrol() {
+    //   const audio = document.getElementById('audio')
+    //   console.log(audio, 9999999)
+    //   if (audio.paused) {
+    //     this.audioCon.isPause = false
+    //     audio.play()
+
+    //     this.audioPlay = setInterval(() => {
+    //       const tim = this.formatSeconds(audio.currentTime, 'mm:ss')
+
+    //       this.audioCon.audioPlayTime = tim
+
+    //       const progress = (audio.currentTime / audio.duration) * 100
+    //       this.$set(this.audioCon, 'audioProgress', progress)
+    //       this.$forceUpdate()
+
+    //       if (audio.ended) {
+    //         this.audioPlay = clearInterval(this.audioPlay)
+    //       }
+    //     }, 500)
+    //   } else {
+    //     this.audioCon.isPause = true
+    //     this.audioPlay = clearInterval(this.audioPlay)
+
+    //     audio.pause()
+    //   }
+    //   this.$forceUpdate()
+    // },
   },
 
   mounted() {},

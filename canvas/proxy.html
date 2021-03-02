@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //   var obj = new Proxy(
+      //     {},
+      //     {
+      //       get: function (target, key, receiver) {
+      //         console.log(`getting ${key}!`);
+      //         return Reflect.get(target, key, receiver);
+      //       },
+      //       set: function (target, key, value, receiver) {
+      //         console.log(`setting ${key}!`);
+      //         return Reflect.set(target, key, value, receiver);
+      //       },
+      //     }
+      //   );
+      //   obj.count =1
+      //   ++obj.count
+
+      //   const observerlist = new Set();
+      //   const observe = (fn) => observerlist.add(fn);
+      //   const observable = (obj) => new Proxy(obj, { set });
+      //   const set = function (target, key, value, receiver) {
+      //     const result = Reflect.set(target, key, value, receiver);
+      //     observerlist.forEach((observe) => observe());
+      //     return result;
+      //   };
+
+      //   const person = observable({name:'张三',age:14})
+      //   const point = ()=>{
+      //       console.log(`${person.name},${person.age}`)
+      //   }
+      //   observe(point)
+
+      //   person.name
+      //   person.name = '里斯'
+
+      const observerslist = new Set();
+      const observe = (fn) => observerslist.add(fn);
+      const observable = (obj) =>
+        new Proxy(obj, {
+          set: function (target, key, value, receiver) {
+            const result = Reflect.set(target, key, value, receiver);
+            observerslist.forEach((observe) => observe());
+            return result;
+          },
+        });
+
+      const person = observable({ name: "lll", age: 14 });
+      const point = function () {
+        console.log(person.name, person.age);
+      };
+      observe(point);
+
+      console.log(person.name, person.age);
+      person.name = "lssss";
+    </script>
+  </body>
+</html>

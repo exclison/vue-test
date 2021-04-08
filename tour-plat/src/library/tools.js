@@ -6,8 +6,8 @@
  * @params: array:需要交换的数组，index1,index2:需要交换的位置
  **/
 export function exChangeArray(array, index1, index2) {
-  array.splice(index2, 1, ...array.splice(index1, 1, array[index2]))
-  return array
+  array.splice(index2, 1, ...array.splice(index1, 1, array[index2]));
+  return array;
 }
 
 /**
@@ -24,22 +24,40 @@ export function getFileTimes(file) {
       file.type.search(/video\//) < 0 &&
       file.type.search(/audio\//) < 0
     ) {
-      throw new Error('文件格式不正确')
+      throw new Error("文件格式不正确");
     }
     try {
       // 获取录音时长
-      const url = URL.createObjectURL(file)
+      const url = URL.createObjectURL(file);
       // 经测试，发现audio也可获取视频的时长
-      const audioElement = new Audio(url)
+      const audioElement = new Audio(url);
 
-      let duration
-      audioElement.addEventListener('loadedmetadata', function(_event) {
-        duration = audioElement.duration
-        resolve(duration)
-        console.log(duration)
-      })
+      let duration;
+      audioElement.addEventListener("loadedmetadata", function(_event) {
+        duration = audioElement.duration;
+        resolve(duration);
+        console.log(duration);
+      });
     } catch (e) {
-      reject(e)
+      reject(e);
     }
-  })
+  });
+}
+/*
+ *@name:getParamsForUrl
+ *@description:从URL获取参数列表
+ *@author: hanyuchen
+ *@date: 2021-04-08 17:09:37
+ *@params {String} paramsName: url
+ */
+export function getParamsForUrl(url) {
+  const params = url.split("&").reduce((r, c) => {
+    const paramstr = c.replace(/\?/, "");
+    const param = paramstr.split("=");
+    if (param[0]) {
+      r[param[0]] = param[1];
+    }
+    return r;
+  }, {});
+  return params;
 }

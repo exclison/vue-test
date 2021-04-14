@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      /**
+       * Initialize your data structure here.
+       */
+      var Trie = function () {
+        this.instance = {};
+      };
+
+      /**
+       * Inserts a word into the trie.
+       * @param {string} word
+       * @return {void}
+       */
+      Trie.prototype.insert = function (word) {
+        let instance = this.instance;
+
+        const list = [...word];
+
+        for (let i = 0; i < list.length; i++) {
+          const node = list[i];
+          if (!instance[node]) {
+            instance[node] = {
+              value: node,
+            };
+          }
+          //   instance[node] = {
+          //       value: node,
+          //       isEnd: !list[i + 1],
+          //     };
+          instance = instance[node];
+        }
+        instance.isEnd = true;
+      };
+
+      /**
+       * Returns if the word is in the trie.
+       * @param {string} word
+       * @return {boolean}
+       */
+      Trie.prototype.search = function (word) {
+        let instance = this.instance;
+        const list = [...word];
+        for (let i = 0; i < list.length; i++) {
+          const node = list[i];
+          if (!instance[node]) {
+            return false;
+          }
+          instance = instance[node];
+        }
+        return !!instance.isEnd;
+      };
+
+      /**
+       * Returns if there is any word in the trie that starts with the given prefix.
+       * @param {string} prefix
+       * @return {boolean}
+       */
+      Trie.prototype.startsWith = function (prefix) {
+        let instance = this.instance;
+        const list = [...prefix];
+        for (let i = 0; i < list.length; i++) {
+          const node = list[i];
+          if (!instance[node]) {
+            return false;
+          }
+          instance = instance[node];
+        }
+        return true;
+        // for (const node of prefix) {
+        //   if (instance[node]) {
+        //     instance = instance[node];
+        //     continue;
+        //   } else {
+        //     return false;
+        //   }
+        // }
+        // return true;
+      };
+
+      /**
+       * Your Trie object will be instantiated and called as such:
+       * var obj = new Trie()
+       * obj.insert(word)
+       * var param_2 = obj.search(word)
+       * var param_3 = obj.startsWith(prefix)
+       */
+
+      const trie = new Trie();
+      console.log(trie.insert("apple"));
+      console.log(trie.search("apple")); // 返回 True
+      console.log(trie.search("app")); // 返回 False
+      console.log(trie.startsWith("app")); // 返回 True
+      console.log(trie.insert("app"));
+      console.log(trie.search("app")); // 返回 True
+      console.log(trie.search("apple")); // 返回 True
+      console.log(trie.search("appl")); // 返回 True
+    </script>
+  </body>
+</html>

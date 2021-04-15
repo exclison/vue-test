@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      /**
+       * 插入排序
+       * @param {number[]} nums
+       * @return {number[]}
+       */
+      //   var sortArray = function (nums) {
+
+      //     const len = nums.length;
+      //     for (let i = 1; i < len; i++) {
+      //       let j = i;
+      //       const temp = nums[i];
+
+      //       while (j > 0 && nums[j - 1] > temp) {
+      //         nums[j] = nums[j - 1];
+      //         nums[j - 1] = temp;
+
+      //         j--
+      //       }
+      //       // nums[j] = temp
+      //     }
+      //     return nums;
+      //   };
+      //   console.log(sortArray([5, 2, 3, 1, 6, 4]));
+
+      /*
+       *@name:归并排序
+       *@description:
+       *@author: hanyuchen
+       *@date: 2021-04-15 09:20:47
+       */
+
+      //     class Solution {
+      //       // 归并排序
+
+      //       /**
+      //        * 列表大小等于或小于该大小，将优先于 mergeSort 使用插入排序
+      //        */
+      //       constructor(){
+      //         this.INSERTION_SORT_THRESHOLD = 7;
+
+      //       }
+
+      //       sortArray(nums) {
+      //           const len = nums.length;
+      //           const temp = [].concat(nums)
+      //           this.mergeSort(nums, 0, len - 1, temp);
+      //           return nums;
+      //       }
+
+      //       /**
+      //        * 对数组 nums 的子区间 [left, right] 进行归并排序
+      //        *
+      //        * @param nums
+      //        * @param left
+      //        * @param right
+      //        * @param temp  用于合并两个有序数组的辅助数组，全局使用一份，避免多次创建和销毁
+      //        */
+      //       mergeSort(nums, left, right, temp) {
+
+      //           // 小区间使用插入排序
+      //           if (right - left <= this.INSERTION_SORT_THRESHOLD) {
+      //               this.insertionSort(nums, left, right);
+      //               return;
+      //           }
+
+      //           const mid = left + Math.floor((right - left ) / 2);
+      //           // Java 里有更优的写法，在 left 和 right 都是大整数时，即使溢出，结论依然正确
+      //           // int mid = (left + right) >>> 1;
+
+      //           this.mergeSort(nums, left, mid, temp);
+      //           this.mergeSort(nums, mid + 1, right, temp);
+      //           // 如果数组的这个子区间本身有序，无需合并
+      //           if (nums[mid] <= nums[mid + 1]) {
+      //               return;
+      //           }
+      //           this.mergeOfTwoSortedArray(nums, left, mid, right, temp);
+      //       }
+
+      //       /**
+      //        * 对数组 arr 的子区间 [left, right] 使用插入排序
+      //        *
+      //        * @param arr   给定数组
+      //        * @param left  左边界，能取到
+      //        * @param right 右边界，能取到
+      //        */
+      //       insertionSort(arr, left, right) {
+      //           for (let i = left + 1; i <= right; i++) {
+      //               const temp = arr[i];
+      //               let j = i;
+      //               while (j > left && arr[j - 1] > temp) {
+      //                   arr[j] = arr[j - 1];
+      //                   j--;
+      //               }
+      //               arr[j] = temp;
+      //           }
+      //       }
+
+      //       /**
+      //        * 合并两个有序数组：先把值复制到临时数组，再合并回去
+      //        *
+      //        * @param nums
+      //        * @param left
+      //        * @param mid   [left, mid] 有序，[mid + 1, right] 有序
+      //        * @param right
+      //        * @param temp  全局使用的临时数组
+      //        */
+      //       mergeOfTwoSortedArray(nums, left, mid, right, temp) {
+      //         //   System.arraycopy(nums, left, temp, left, right + 1 - left);
+      //         // temp = [].concat(nums)
+      //         const arr = nums.slice(left,right+1)
+      //         const tempcopy = [].concat(temp)
+      //         temp = tempcopy.slice(0,left).concat(arr).concat(tempcopy.slice(right +2),tempcopy.length)
+      //           let i = left;
+      //           let j = mid + 1;
+
+      //           for (let k = left; k <= right; k++) {
+      //               if (i == mid + 1) {
+      //                   nums[k] = temp[j];
+      //                   j++;
+      //               } else if (j == right + 1) {
+      //                   nums[k] = temp[i];
+      //                   i++;
+      //               } else if (temp[i] <= temp[j]) {
+      //                   // 注意写成 < 就丢失了稳定性（相同元素原来靠前的排序以后依然靠前）
+      //                   nums[k] = temp[i];
+      //                   i++;
+      //               } else {
+      //                   // temp[i] > temp[j]
+      //                   nums[k] = temp[j];
+      //                   j++;
+      //               }
+      //           }
+      //       }
+      //   }
+
+      //   const solution = new Solution()
+      //   console.log(solution.sortArray([14,13,20,18,22,15,17,4,2,7,3,9,1,5,7,8,10,12,11,16]))
+
+      /**
+       * 归并排序
+       * @param {number[]} nums
+       * @return {number[]}
+       */
+
+      const INSERT_SORT_THRESHOLD = 7;
+      const sortArray = function (nums) {
+        const left = 0;
+        const right = nums.length - 1;
+        const temp = [].concat(nums);
+        mergeSort(nums, left, right, temp);
+        return nums;
+      };
+
+      const mergeSort = function (nums, left, right, temp) {
+          //如果数组长度小于一定值,则采用插入排序
+        if (right - left <= INSERT_SORT_THRESHOLD) {
+          insertSort(nums, left, right);
+          return;
+        }
+        //取索引中间值
+        const mid = left + Math.floor((right - left) / 2);
+        //对两截数组递归调用知道数组长度小于定值
+        mergeSort(nums, left, mid, temp);
+        mergeSort(nums, mid + 1, right, temp);
+
+        //如果前半截有序数组的最大值小于后半截有序数组的最小值,则整个数组是有序的,无需再进行处理
+        if (nums[mid] <= nums[mid + 1]) {
+          return;
+        }
+        //合并两截有序数组
+        mergeSortArray(nums, left, mid, right, temp);
+      };
+
+      const insertSort = function (nums, left, right) {
+        //插入排序 注意这里从left开始,比较时也是从left开始
+        for (let i = left + 1; i <= right; i++) {
+          let j = i;
+          const temp = nums[i];
+
+          while (j > left && nums[j - 1] > temp) {
+            nums[j] = nums[j - 1];
+            j--;
+          }
+          nums[j] = temp;
+        }
+      };
+
+      const mergeSortArray = function (nums, left, mid, right, temp) {
+        const tempcopy = [].concat(temp);
+        const arr = nums.slice(left, right + 1);
+        temp = tempcopy //将nums中已经排序好的片段复制到temp中
+          .slice(0, left)
+          .concat(arr)
+          .concat(tempcopy.slice(right + 2, tempcopy.length));
+
+        let i = left; //前半截有序数组开始的索引
+        let j = mid + 1; //后半截有序数组开始的索引
+
+        for (let k = left; k <= right; k++) {
+          if (i == mid + 1) {
+            //判断前半截数组是否已经比较完,如果比较完,由于两截数组都是有序的,就直接将后半截数组接上就可以
+            nums[k] = temp[j];
+            j++;
+          } else if (j == right + 1) {
+            //判断后半截数组是否已经比较完,如果比较完,由于两截数组都是有序的,就直接将前半截数组接上就可以
+            nums[k] = temp[i];
+            i++;
+          } else if (temp[i] <= temp[j]) {
+            //如果前半截对应的值小于后半截对应的值,则取前半截,然后前半截索引后移
+            nums[k] = temp[i];
+            i++;
+          } else {
+            //如果前半截对应的值大于后半截对应的值,则取后半截,然后后半截索引后移
+            nums[k] = temp[j];
+            j++;
+          }
+        }
+      };
+
+      console.log(sortArray([-4, 0, 7, 4, 9, -5, -1, 0, -7, -1]));
+    </script>
+  </body>
+</html>

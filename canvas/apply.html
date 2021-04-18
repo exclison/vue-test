@@ -13,34 +13,54 @@
       
         
         <script >
-            Function.prototype.bind = function(){
-                console.log(arguments)
-                //保存原始函数引用
-                var self = this;
+            // Function.prototype.bind = function(){
+            //     console.log(arguments)
+            //     //保存原始函数引用
+            //     var self = this;
                 
-                //获取函数的第一个参数,也就是绑定的this对象
-                // var context = [].shift.call(arguments)
-                const context = arguments[0]
-                console.log(context)
-                //获取后边的初始参数,也就是bind函数调用时填写的参数
-                // var args = [].slice.call(arguments)
-                const args = [].slice.call(arguments).slice(1,arguments.length)
-                console.log(args)
-                return function(){
-                    console.log(arguments)
-                    //执行函数,并把bind参数与在函数调用时的参数拼接传入
-                    return self.apply(context,[].concat.call(args,[].slice.call(arguments)))
-                }
+            //     //获取函数的第一个参数,也就是绑定的this对象
+            //     // var context = [].shift.call(arguments)
+            //     const context = arguments[0]
+            //     console.log(context)
+            //     //获取后边的初始参数,也就是bind函数调用时填写的参数
+            //     // var args = [].slice.call(arguments)
+            //     const args = [].slice.call(arguments).slice(1,arguments.length)
+            //     console.log(args)
+            //     return function(){
+            //         console.log(arguments)
+            //         //执行函数,并把bind参数与在函数调用时的参数拼接传入
+            //         return self.apply(context,[].concat.call(args,[].slice.call(arguments)))
+            //     }
+            // }
+
+            // var obj = {
+            //     name:'sven'
+            // }
+            // var func = function(a,b,c,d){
+            //     alert(this.name)
+            //     alert([a,b,c,d])
+            // }.bind(obj,1,2)
+            // func(3,4)
+
+            const obj = {
+                a:function(){
+                    console.log(this,'a')
+                    const b = function(){
+                        console.log(this,'b')
+                    }
+                    b()
+                },
             }
 
-            var obj = {
-                name:'sven'
-            }
-            var func = function(a,b,c,d){
-                alert(this.name)
-                alert([a,b,c,d])
-            }.bind(obj,1,2)
-            func(3,4)
+            obj.a()
+
+            const b = obj.a
+            b()
+
+
+
+
+
         </script>
     </body>
 </html>

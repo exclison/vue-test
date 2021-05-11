@@ -22,7 +22,6 @@
 
       //       while (j > 0 && nums[j - 1] > temp) {
       //         nums[j] = nums[j - 1];
-      //         nums[j - 1] = temp;
 
       //         j--
       //       }
@@ -31,6 +30,30 @@
       //     return nums;
       //   };
       //   console.log(sortArray([5, 2, 3, 1, 6, 4]));
+
+      /**
+       * 选择排序
+       * @param {number[]} nums
+       * @return {number[]}
+       */
+      // var sortArray = function(nums) {
+      //     const len = nums.length
+      //     for(let i = 0; i < len - 1;i++){
+
+      //         let minIndex = i
+      //         for(let j=i+1;j<len;j++){
+      //             if(nums[minIndex] > nums[j]){
+      //                 minIndex = j
+      //             }
+      //         }
+
+      //         const num = nums[i]
+      //         nums[i] = nums[minIndex]
+      //         nums[minIndex] = num
+
+      //     }
+      //     return nums
+      // };
 
       /*
        *@name:归并排序
@@ -162,7 +185,7 @@
       };
 
       const mergeSort = function (nums, left, right, temp) {
-          //如果数组长度小于一定值,则采用插入排序
+        //如果数组长度小于一定值,则采用插入排序
         if (right - left <= INSERT_SORT_THRESHOLD) {
           insertSort(nums, left, right);
           return;

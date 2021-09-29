@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "outDir": "./built",//生成的文件输出目录
+        "allowJs": true,//接受js作为输入
+        "target": "es5",//将js代码降级到低版本
+        "noImplicitReturns": true,//函数末尾返回值
+        "noFallthroughCasesInSwitch": true,//switch语句两个case之间必须添加break
+        "noImplicitAny":true,//标出隐式any类型
+    },
+    "include": [//读取所有可以识别的src目录下的文件
+        "./src/**/*"
+    ]
+}

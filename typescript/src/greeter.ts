@@ -110,3 +110,22 @@ interface GenericIdentityFn2<T>{
     (arg:T):T
 }
 let myIdentity3:GenericIdentityFn2<string> = identity
+
+
+
+function getProperty<T,K extends keyof T>(obj: T, key: K) {
+    return obj[key];
+}
+
+const obj = {
+    param1:'12',
+    param2:'34',
+}
+
+getProperty(obj,'param1')
+
+enum Enum{
+    A=0,
+    B=0,
+}
+console.log(Enum[0])

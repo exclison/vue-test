@@ -175,82 +175,126 @@
        * @return {number[]}
        */
 
-      const INSERT_SORT_THRESHOLD = 7;
-      const sortArray = function (nums) {
-        const left = 0;
-        const right = nums.length - 1;
-        const temp = [].concat(nums);
-        mergeSort(nums, left, right, temp);
-        return nums;
-      };
+      // const INSERT_SORT_THRESHOLD = 7;
+      // const sortArray = function (nums) {
+      //   const left = 0;
+      //   const right = nums.length - 1;
+      //   const temp = [].concat(nums);
+      //   mergeSort(nums, left, right, temp);
+      //   return nums;
+      // };
 
-      const mergeSort = function (nums, left, right, temp) {
-        //如果数组长度小于一定值,则采用插入排序
-        if (right - left <= INSERT_SORT_THRESHOLD) {
-          insertSort(nums, left, right);
-          return;
-        }
-        //取索引中间值
-        const mid = left + Math.floor((right - left) / 2);
-        //对两截数组递归调用知道数组长度小于定值
-        mergeSort(nums, left, mid, temp);
-        mergeSort(nums, mid + 1, right, temp);
+      // const mergeSort = function (nums, left, right, temp) {
+      //   //如果数组长度小于一定值,则采用插入排序
+      //   if (right - left <= INSERT_SORT_THRESHOLD) {
+      //     insertSort(nums, left, right);
+      //     return;
+      //   }
+      //   //取索引中间值
+      //   const mid = left + Math.floor((right - left) / 2);
+      //   //对两截数组递归调用知道数组长度小于定值
+      //   mergeSort(nums, left, mid, temp);
+      //   mergeSort(nums, mid + 1, right, temp);
 
-        //如果前半截有序数组的最大值小于后半截有序数组的最小值,则整个数组是有序的,无需再进行处理
-        if (nums[mid] <= nums[mid + 1]) {
-          return;
-        }
-        //合并两截有序数组
-        mergeSortArray(nums, left, mid, right, temp);
-      };
+      //   //如果前半截有序数组的最大值小于后半截有序数组的最小值,则整个数组是有序的,无需再进行处理
+      //   if (nums[mid] <= nums[mid + 1]) {
+      //     return;
+      //   }
+      //   //合并两截有序数组
+      //   mergeSortArray(nums, left, mid, right, temp);
+      // };
 
-      const insertSort = function (nums, left, right) {
-        //插入排序 注意这里从left开始,比较时也是从left开始
-        for (let i = left + 1; i <= right; i++) {
-          let j = i;
-          const temp = nums[i];
+      // const insertSort = function (nums, left, right) {
+      //   //插入排序 注意这里从left开始,比较时也是从left开始
+      //   for (let i = left + 1; i <= right; i++) {
+      //     let j = i;
+      //     const temp = nums[i];
 
-          while (j > left && nums[j - 1] > temp) {
-            nums[j] = nums[j - 1];
-            j--;
+      //     while (j > left && nums[j - 1] > temp) {
+      //       nums[j] = nums[j - 1];
+      //       j--;
+      //     }
+      //     nums[j] = temp;
+      //   }
+      // };
+
+      // const mergeSortArray = function (nums, left, mid, right, temp) {
+      //   const tempcopy = [].concat(temp);
+      //   const arr = nums.slice(left, right + 1);
+      //   temp = tempcopy //将nums中已经排序好的片段复制到temp中
+      //     .slice(0, left)
+      //     .concat(arr)
+      //     .concat(tempcopy.slice(right + 2, tempcopy.length));
+
+      //   let i = left; //前半截有序数组开始的索引
+      //   let j = mid + 1; //后半截有序数组开始的索引
+
+      //   for (let k = left; k <= right; k++) {
+      //     if (i == mid + 1) {
+      //       //判断前半截数组是否已经比较完,如果比较完,由于两截数组都是有序的,就直接将后半截数组接上就可以
+      //       nums[k] = temp[j];
+      //       j++;
+      //     } else if (j == right + 1) {
+      //       //判断后半截数组是否已经比较完,如果比较完,由于两截数组都是有序的,就直接将前半截数组接上就可以
+      //       nums[k] = temp[i];
+      //       i++;
+      //     } else if (temp[i] <= temp[j]) {
+      //       //如果前半截对应的值小于后半截对应的值,则取前半截,然后前半截索引后移
+      //       nums[k] = temp[i];
+      //       i++;
+      //     } else {
+      //       //如果前半截对应的值大于后半截对应的值,则取后半截,然后后半截索引后移
+      //       nums[k] = temp[j];
+      //       j++;
+      //     }
+      //   }
+      // };
+
+      // console.log(sortArray([-4, 0, 7, 4, 9, -5, -1, 0, -7, -1]));
+
+      // 冒泡排序
+      function sort(list) {
+        for (let i = 0; i < list.length-1; i++) {
+          let hasSort = true
+          for(let j = 0; j< list.length-1; j++){
+            if(list[j] > list[j+1]){
+              hasSort = false
+              const temp = list[j]
+              list[j] = list[j+1]
+              list[j+1] = temp
+            }
           }
-          nums[j] = temp;
+          if(hasSort) break;
         }
-      };
+        return list
+      }
+      console.log(sort([9,0,1,8,10,-4,5,-6,22,11,59,34,12]))
 
-      const mergeSortArray = function (nums, left, mid, right, temp) {
-        const tempcopy = [].concat(temp);
-        const arr = nums.slice(left, right + 1);
-        temp = tempcopy //将nums中已经排序好的片段复制到temp中
-          .slice(0, left)
-          .concat(arr)
-          .concat(tempcopy.slice(right + 2, tempcopy.length));
+      //快速排序
+      function quickSort(list){
 
-        let i = left; //前半截有序数组开始的索引
-        let j = mid + 1; //后半截有序数组开始的索引
+        if(list.length <= 0) return []
 
-        for (let k = left; k <= right; k++) {
-          if (i == mid + 1) {
-            //判断前半截数组是否已经比较完,如果比较完,由于两截数组都是有序的,就直接将后半截数组接上就可以
-            nums[k] = temp[j];
-            j++;
-          } else if (j == right + 1) {
-            //判断后半截数组是否已经比较完,如果比较完,由于两截数组都是有序的,就直接将前半截数组接上就可以
-            nums[k] = temp[i];
-            i++;
-          } else if (temp[i] <= temp[j]) {
-            //如果前半截对应的值小于后半截对应的值,则取前半截,然后前半截索引后移
-            nums[k] = temp[i];
-            i++;
-          } else {
-            //如果前半截对应的值大于后半截对应的值,则取后半截,然后后半截索引后移
-            nums[k] = temp[j];
-            j++;
+        const cIndex = Math.floor(list.length/2)
+
+        const cnum = list.splice(cIndex,1)
+
+        const leftArr = []
+        const rightArr = []
+
+        for(let i = 0; i< list.length; i++){
+          if(list[i] < cnum){
+            leftArr.push(list[i])
+          }else {
+            rightArr.push(list[i])
           }
         }
-      };
 
-      console.log(sortArray([-4, 0, 7, 4, 9, -5, -1, 0, -7, -1]));
+        return quickSort(leftArr).concat(cnum,quickSort(rightArr))
+
+      }
+      console.log(quickSort([9,0,1,8,10,-4,5,-6,22,11,59,34,12]))
+
     </script>
   </body>
 </html>

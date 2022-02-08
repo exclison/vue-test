@@ -6,6 +6,7 @@
         "noImplicitReturns": true,//函数末尾返回值
         "noFallthroughCasesInSwitch": true,//switch语句两个case之间必须添加break
         "noImplicitAny":true,//标出隐式any类型
+        "experimentalDecorators":true,//启用装饰器
     },
     "include": [//读取所有可以识别的src目录下的文件
         "./src/**/*"

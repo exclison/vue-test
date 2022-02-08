@@ -129,3 +129,46 @@ enum Enum{
     B=0,
 }
 console.log(Enum[0])
+
+const t: (string|number) [] = ['111',123]
+
+
+// function classDecorator<T extends {new(...args:any[]):{}}>(constructor:T) {
+//     return class extends constructor {
+//         newProperty = "new property";
+//         hello = "override";
+//     }
+// }
+
+// @classDecorator
+// class Greeter {
+//     property = "property";
+//     hello: string;
+//     constructor(m: string) {
+//         this.hello = m;
+//     }
+// }
+
+// console.log(new Greeter("world"));
+
+
+
+function enumerable(value: boolean) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        descriptor.enumerable = value;
+        console.log(target,descriptor,propertyKey)
+    };
+}
+class Greeter {
+    greeting: string;
+    constructor(message: string) {
+        this.greeting = message;
+    }
+
+    @enumerable(false)
+    greet() {
+        return "Hello, " + this.greeting;
+    }
+}
+
+console.log(new Greeter("world").greet)

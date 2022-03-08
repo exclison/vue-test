@@ -35,14 +35,22 @@ class HttpRequest {
 }
 
 const options: AxiosRequestConfig = {
-  baseURL: "",
+  baseURL: import.meta.env.VITE_BASE_URL,
   timeout: 30000,
   headers: {},
 };
 
 const instance = new HttpRequest(options);
 
-
+/**
+ * @name:$get
+ * @description:get请求
+ * @author: hanyuchen
+ * @date 2022-03-08 14:02:15
+ * @params {String} paramsName: url
+ * @params { Object} paramsName: 参数
+ * @params {AxiosRequestConfig} paramsName: 其他axios参数
+ */
 const $get = async (
   url: string,
   params: Object,
@@ -56,7 +64,15 @@ const $get = async (
   };
   return await instance.request(options);
 };
-
+/**
+ * @name:$post
+ * @description:post请求
+ * @author: hanyuchen
+ * @date 2022-03-08 14:03:07
+ * @params {String} paramsName: url
+ * @params {Object} paramsName: 参数
+ * @params {AxiosRequestConfig} paramsName: 其他axios参数
+ */
 const $post = async (url: string, data: Object, others: AxiosRequestConfig) => {
   const options: requestOption = {
     url,
@@ -67,6 +83,5 @@ const $post = async (url: string, data: Object, others: AxiosRequestConfig) => {
 
   return await instance.request(options);
 };
-// const { $get, $post } = instance;
 
 export { $get, $post };

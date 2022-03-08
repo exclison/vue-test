@@ -49,7 +49,9 @@ export default defineComponent({
     const globalProperties = internalInstance?internalInstance.appContext.config.globalProperties:{}
 
     console.log(globalProperties ,'kkk')
-    globalProperties.$get('/uselogin',{id:111,name:'111'})
+    globalProperties.$get('common/user/get-user-info/',{id:111,name:'111'}).then((res:any)=>{
+      console.log(res,'res')
+    })
     const count = ref(0)
     return { count }
   }

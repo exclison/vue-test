@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import moduleList from './plugins/index'
+import './mock'
 
 const app = createApp(App)
 

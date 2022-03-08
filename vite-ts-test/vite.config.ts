@@ -1,7 +1,30 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [vue()]
+
+const baseConfig = {
+  plugins: [vue(),vueJsx()]
+}
+const devConfig = {
+  server:{
+    host:'127.0.0.1',
+    port:3000,
+    open:true
+  }
+}
+const prodConfig = {
+  build:{
+  }
+}
+
+
+export default defineConfig(({command,mode})=>{
+  if(command === 'serve'){
+    return Object.assign({},devConfig,baseConfig)
+  }
+  else {
+    // command === build
+    return Object.assign({},prodConfig,baseConfig)
+  }
 })

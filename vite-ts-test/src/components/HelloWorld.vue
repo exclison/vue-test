@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent } from 'vue'
+import { ref, defineComponent,getCurrentInstance } from 'vue'
 export default defineComponent({
   name: 'HelloWorld',
   props: {
@@ -44,7 +44,10 @@ export default defineComponent({
       required: true
     }
   },
-  setup: () => {
+  setup: (props,context) => {
+    const internalInstance = getCurrentInstance()
+
+    console.log(internalInstance ,'kkk')
     const count = ref(0)
     return { count }
   }

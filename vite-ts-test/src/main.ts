@@ -1,4 +1,11 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import moduleList from './plugins/index'
 
-createApp(App).mount('#app')
+const app = createApp(App)
+
+Object.keys(moduleList).forEach((key:any) => {
+    app.use(moduleList[key].default)
+});
+
+app.mount('#app')

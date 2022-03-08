@@ -8,7 +8,7 @@ interface requestOption {
   others: AxiosRequestConfig;
 }
 
-class HTTPREQUEST {
+class HttpRequest {
   private instance: Axios;
 
   constructor({ baseURL, timeout, headers, ...others }: AxiosRequestConfig) {
@@ -22,7 +22,7 @@ class HTTPREQUEST {
     this.instance = instance;
   }
 
-  private request({ url, method, params, data, others }: requestOption) {
+  request({ url, method, params, data, others }: requestOption) {
     return new Promise((resolve, reject) => {
       this.instance
         .request({ url, method, params, data, ...others })
@@ -32,29 +32,6 @@ class HTTPREQUEST {
         });
     });
   }
-
-  public async $get(url: string, params: Object, others: AxiosRequestConfig) {
-    const options: requestOption = {
-      url,
-      method: "get",
-      params,
-      others,
-    };
-
-    return await this.request(options);
-  }
-  
-
-  public async $post(url: string, data: Object, others: AxiosRequestConfig) {
-    const options: requestOption = {
-      url,
-      method: "post",
-      data,
-      others,
-    };
-
-    return await this.request(options);
-  }
 }
 
 const options: AxiosRequestConfig = {
@@ -63,8 +40,33 @@ const options: AxiosRequestConfig = {
   headers: {},
 };
 
-const instance = new HTTPREQUEST(options);
+const instance = new HttpRequest(options);
 
-const {$get,$post} = instance
 
-export {$get,$post}
+const $get = async (
+  url: string,
+  params: Object,
+  others: AxiosRequestConfig
+) => {
+  const options: requestOption = {
+    url,
+    method: "get",
+    params,
+    others,
+  };
+  return await instance.request(options);
+};
+
+const $post = async (url: string, data: Object, others: AxiosRequestConfig) => {
+  const options: requestOption = {
+    url,
+    method: "post",
+    data,
+    others,
+  };
+
+  return await instance.request(options);
+};
+// const { $get, $post } = instance;
+
+export { $get, $post };

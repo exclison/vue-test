@@ -1,36 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
-        .test{
-            color: #00ff00;
-        }
+      .test {
+        color: #00ff00;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div></div>
     <table border="1">
-        <thead>
-            <tr>
-                <th colspan="2" class="test">123</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>123445</td>
-                <td>123445</td>
-                <td>123445</td>
-                <td rowspan="2">123445</td>
-
-            </tr>
-            <tr>
-                <td>123445</td>
-
-            </tr>
-        </tbody>
+      <thead>
+        <tr>
+          <th colspan="2" class="test">123</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>123445</td>
+          <td>123445</td>
+          <td>123445</td>
+          <td rowspan="2">123445</td>
+        </tr>
+        <tr>
+          <td>123445</td>
+        </tr>
+      </tbody>
     </table>
-</body>
+  </body>
+  <script>
+    // for(let i=0;i<5;i++){
+    //     (function(){
+    //         setTimeout(()=>{
+    //         console.log(i)
+    //     },1000)
+    //     })(i)
+    // }
+    const timeout = function (fn, time = 1000) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          fn();
+          resolve();
+        }, time);
+      });
+    };
+    let timeoutPromise = null;
+    function timeoutfn() {
+      for (let i = 0; i < 5; i++) {
+        const fn = () => {
+          console.log(i);
+        };
+        if (i === 0) {
+          timeoutPromise = timeout(fn, 1000);
+        } else {
+          timeoutPromise = timeoutPromise.then(() => {
+            return timeout(fn, 1000);
+          });
+        }
+      }
+    }
+    // async function timeoutfn(){
+    //     for(let i=0;i<5;i++){
+    //         await timeout(()=>{console.log(i)},1000)
+    //     }
+    // }
+    timeoutfn();
+  </script>
 </html>

@@ -63,7 +63,7 @@
     "highlight.js": "^10.2.0",
     "jsbarcode": "^3.11.0",
     "jspdf": "^2.1.1",
-    "node-sass": "^4.14.0",
+    "node-sass": "^7.0.1",
     "qrcode": "^1.4.4",
     "sass-loader": "^8.0.2",
     "typescript": "~3.9.3",
@@ -78,7 +78,7 @@
     "xe-ajax-mock": "^1.12.0",
     "xe-clipboard": "^1.10.0",
     "xe-utils": "^3.0.3",
-    "xlsx": "^0.16.8"
+    "xlsx": "^0.17.0"
   },
   "peerDependencies": {
     "vue": ">= 3",

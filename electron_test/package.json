@@ -1,0 +1,19 @@
+{
+  "name": "@exclison/electron_test",
+  "version": "1.0.0",
+  "description": "electron_test",
+  "main": "main.js",
+  "scripts": {
+    "dev": "nodemon --exec electron .",
+    "build": "node ./build/build",
+    "rebuild": "electron-rebuild"
+  },
+  "author": "exclison",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^18.0.3",
+    "electron-builder": "^23.0.3",
+    "electron-rebuild": "^3.2.7",
+    "nodemon": "^2.0.15"
+  }
+}

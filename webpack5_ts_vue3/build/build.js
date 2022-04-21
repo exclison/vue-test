@@ -1,10 +1,12 @@
 
 
-const productionConfig = require('./webpack.config.prod')
+const {getProdOptions} = require('./options')
+
+const prodOptions = getProdOptions()
 
 const webpack = require('webpack');
 
-const compiler = webpack(productionConfig);
+const compiler = webpack(prodOptions);
 
 console.log('build start!')
 

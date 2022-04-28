@@ -1,0 +1,41 @@
+{
+    "data": [
+        {
+            "北山羊": {
+                "点位4": {
+                    "shootId": "d1f377d69e6a4b96a5bfe7a91a0dfdb8",
+                    "sceneryName": "北山羊",
+                    "sceneryId": "2",
+                    "shootCount": "2",
+                    "shootName": "点位4"
+                },
+                "点位2": {
+                    "shootId": "d1f377d69e6a4b96a5bfe7a91a0dfdb6",
+                    "sceneryName": "北山羊",
+                    "sceneryId": "2",
+                    "shootCount": "2",
+                    "shootName": "点位2"
+                }
+            },
+            "人体草原": {
+                "点位1": {
+                    "shootId": "4b3500c2e4e44c779ead4381faa30ab8",
+                    "sceneryName": "人体草原",
+                    "sceneryId": "1",
+                    "shootCount": "2",
+                    "shootName": "点位1"
+                },
+                "点位3": {
+                    "shootId": "d1f377d69e6a4b96a5bfe7a91a0dfdb7",
+                    "sceneryName": "人体草原",
+                    "sceneryId": "1",
+                    "shootCount": "2",
+                    "shootName": "点位3"
+                }
+            }
+        }
+    ],
+    "resultType": "success",
+    "message": "成功",
+    "total": 0
+}

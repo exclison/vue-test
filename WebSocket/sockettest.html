@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+		<!-- <script>
+		  var socket = io('http://localhost');
+		  socket.on('news', function (data) {
+		    console.log(data);
+		    socket.emit('my other event', { my: 'data' });
+		  });
+		</script> -->
+		<script src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript">
+			// let io = require('socket.io')
+			let sock = io.connect('ws://127.0.0.1:8080/');
+			document.onclick=function(){
+				sock.emit('a',12,5);
+			}
+			sock.on('b',function(n){
+				console.log(n)
+			})
+		</script>
+	</body>
+</html>

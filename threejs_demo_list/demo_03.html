@@ -81,10 +81,13 @@
       const scene = new THREE.Scene();
 
       {
+        // 平行光
         const light = new THREE.DirectionalLight(0xffffff, 1);
         light.position.set(0, 20, 0);
         scene.add(light);
+        // 动态阴影
         light.castShadow = true;
+        // 设置灯光阴影属性
         light.shadow.mapSize.width = 2048;
         light.shadow.mapSize.height = 2048;
 
@@ -104,20 +107,25 @@
         scene.add(light);
       }
 
+      // 平面缓冲几何体(平面几何体)
       const groundGeometry = new THREE.PlaneGeometry(50, 50);
+      // 网格材质(具有镜面高光的光泽表面材质)
       const groundMaterial = new THREE.MeshPhongMaterial({ color: 0xcc8866 });
+      // 网格
       const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
       groundMesh.rotation.x = Math.PI * -0.5;
-      groundMesh.receiveShadow = true;
+      groundMesh.receiveShadow = true;//材质是否接受阴影
       scene.add(groundMesh);
 
       const carWidth = 4;
       const carHeight = 1;
       const carLength = 8;
 
+      // 新建tank实例 object3D:三维物体 是大部分three中对象的基类
       const tank = new THREE.Object3D();
       scene.add(tank);
 
+      // tank主体
       const bodyGeometry = new THREE.BoxGeometry(
         carWidth,
         carHeight,
@@ -129,6 +137,7 @@
       bodyMesh.castShadow = true;
       tank.add(bodyMesh);
 
+      // tank主体摄像机
       const tankCameraFov = 75;
       const tankCamera = makeCamera(tankCameraFov);
       tankCamera.position.y = 3;
@@ -136,16 +145,20 @@
       tankCamera.rotation.y = Math.PI;
       bodyMesh.add(tankCamera);
 
-      const wheelRadius = 1;
-      const wheelThickness = 0.5;
-      const wheelSegments = 6;
+      // 轮子
+      const wheelRadius = 1;//半径
+      const wheelThickness = 0.5;//厚度
+      const wheelSegments = 6;//轮子分几段
+      // 圆柱缓冲几何体
       const wheelGeometry = new THREE.CylinderGeometry(
-        wheelRadius, // top radius
-        wheelRadius, // bottom radius
-        wheelThickness, // height of cylinder
-        wheelSegments
+        wheelRadius, // 圆柱顶部半径
+        wheelRadius, // 圆柱底部半径
+        wheelThickness, // 圆柱高度
+        wheelSegments, //圆柱侧面分段数
       );
+      //镜面光泽材质
       const wheelMaterial = new THREE.MeshPhongMaterial({ color: 0x888888 });
+      // 轮子位置坐标
       const wheelPositions = [
         [-carWidth / 2 - wheelThickness / 2, -carHeight / 2, carLength / 3],
         [carWidth / 2 + wheelThickness / 2, -carHeight / 2, carLength / 3],
@@ -154,6 +167,7 @@
         [-carWidth / 2 - wheelThickness / 2, -carHeight / 2, -carLength / 3],
         [carWidth / 2 + wheelThickness / 2, -carHeight / 2, -carLength / 3],
       ];
+      // 轮子网格 将其作为tank的子类 加入到tank网格
       const wheelMeshes = wheelPositions.map((position) => {
         const mesh = new THREE.Mesh(wheelGeometry, wheelMaterial);
         mesh.position.set(...position);
@@ -163,13 +177,15 @@
         return mesh;
       });
 
-      const domeRadius = 2;
-      const domeWidthSubdivisions = 12;
-      const domeHeightSubdivisions = 12;
-      const domePhiStart = 0;
-      const domePhiEnd = Math.PI * 2;
-      const domeThetaStart = 0;
-      const domeThetaEnd = Math.PI * 0.5;
+      // tank圆顶
+      const domeRadius = 2; //球体半径
+      const domeWidthSubdivisions = 12; //水平分段数
+      const domeHeightSubdivisions = 12; //垂直分段数
+      const domePhiStart = 0; //水平起始角度
+      const domePhiEnd = Math.PI * 2; // 水平扫描角度大小
+      const domeThetaStart = 0; //垂直起始角度
+      const domeThetaEnd = Math.PI * 0.5; //垂直扫描角度大小
+      // 球缓冲几何体(生成球体的类)
       const domeGeometry = new THREE.SphereGeometry(
         domeRadius,
         domeWidthSubdivisions,
@@ -184,6 +200,7 @@
       bodyMesh.add(domeMesh);
       domeMesh.position.y = 0.5;
 
+      // 炮塔
       const turretWidth = 0.1;
       const turretHeight = 0.1;
       const turretLength = carLength * 0.75 * 0.2;
@@ -193,6 +210,7 @@
         turretLength
       );
       const turretMesh = new THREE.Mesh(turretGeometry, bodyMaterial);
+      // 炮塔支点
       const turretPivot = new THREE.Object3D();
       turretMesh.castShadow = true;
       turretPivot.scale.set(5, 5, 5);
@@ -201,19 +219,22 @@
       turretPivot.add(turretMesh);
       bodyMesh.add(turretPivot);
 
+      // 炮塔摄像机
       const turretCamera = makeCamera();
       turretCamera.position.y = 0.75 * 0.2;
       turretMesh.add(turretCamera);
 
+      // 目标
+      // 球缓冲几何体
       const targetGeometry = new THREE.SphereGeometry(0.5, 6, 3);
       const targetMaterial = new THREE.MeshPhongMaterial({
         color: 0x00ff00,
-        flatShading: true,
+        flatShading: true,//是否使用平面着色进行渲染
       });
       const targetMesh = new THREE.Mesh(targetGeometry, targetMaterial);
-      const targetOrbit = new THREE.Object3D();
-      const targetElevation = new THREE.Object3D();
-      const targetBob = new THREE.Object3D();
+      const targetOrbit = new THREE.Object3D();//目标轨迹(移动轨迹?)
+      const targetElevation = new THREE.Object3D();//目标海拔 (位置?)
+      const targetBob = new THREE.Object3D();//相机容器?(容纳相机+目标主体)
       targetMesh.castShadow = true;
       scene.add(targetOrbit);
       targetOrbit.add(targetElevation);
@@ -222,6 +243,7 @@
       targetElevation.add(targetBob);
       targetBob.add(targetMesh);
 
+      // 目标内相机
       const targetCamera = makeCamera();
       const targetCameraPivot = new THREE.Object3D();
       targetCamera.position.y = 1;
@@ -230,7 +252,8 @@
       targetBob.add(targetCameraPivot);
       targetCameraPivot.add(targetCamera);
 
-      // Create a sine-like wave
+      // 创建一个类似正弦的曲线
+      //splinecurve:创建平滑的二维样条曲线 vector2 二维向量
       const curve = new THREE.SplineCurve([
         new THREE.Vector2(-10, 0),
         new THREE.Vector2(-5, 5),
@@ -244,14 +267,18 @@
         new THREE.Vector2(-10, 0),
       ]);
 
+      // 获取曲线上的点 50:将曲线分为50段
       const points = curve.getPoints(50);
+      // BufferGeometry:面,线,点,的有效表述
       const geometry = new THREE.BufferGeometry().setFromPoints(points);
       const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+      // 创建线
       const splineObject = new THREE.Line(geometry, material);
       splineObject.rotation.x = Math.PI * 0.5;
       splineObject.position.y = 0.05;
       scene.add(splineObject);
 
+      // 更新画布尺寸
       function resizeRendererToDisplaySize(renderer) {
         const canvas = renderer.domElement;
         const width = canvas.clientWidth;
@@ -263,10 +290,11 @@
         return needResize;
       }
 
-      const targetPosition = new THREE.Vector3();
-      const tankPosition = new THREE.Vector2();
-      const tankTarget = new THREE.Vector2();
+      const targetPosition = new THREE.Vector3();//目标位置
+      const tankPosition = new THREE.Vector2();//tank位置
+      const tankTarget = new THREE.Vector2();//tank朝向
 
+      // 相机
       const cameras = [
         { cam: camera, desc: "detached camera" },
         { cam: turretCamera, desc: "on turret looking at target" },
@@ -280,6 +308,7 @@
         time *= 0.001;
 
         if (resizeRendererToDisplaySize(renderer)) {
+          // 如果窗口尺寸更新 则更新相机宽高比
           const canvas = renderer.domElement;
           cameras.forEach((cameraInfo) => {
             const camera = cameraInfo.cam;
@@ -288,36 +317,40 @@
           });
         }
 
-        // move target
-        targetOrbit.rotation.y = time * 0.27;
-        targetBob.position.y = Math.sin(time * 2) * 4;
-        targetMesh.rotation.x = time * 7;
-        targetMesh.rotation.y = time * 13;
-        targetMaterial.emissive.setHSL((time * 10) % 1, 1, 0.25);
-        targetMaterial.color.setHSL((time * 10) % 1, 1, 0.25);
+        // 移动目标
+        targetOrbit.rotation.y = time * 0.27; //目标轨迹
+        targetBob.position.y = Math.sin(time * 2) * 4; //目标上下移动
+        targetMesh.rotation.x = time * 7; //目标自转
+        targetMesh.rotation.y = time * 13; //目标自转
+        targetMaterial.emissive.setHSL((time * 10) % 1, 1, 0.25); //材质放射颜色
+        targetMaterial.color.setHSL((time * 10) % 1, 1, 0.25); //材质颜色
 
-        // move tank
+        // 移动tank
         const tankTime = time * 0.05;
+        //获取位置并将其复制到tankposition中
         curve.getPointAt(tankTime % 1, tankPosition);
-        curve.getPointAt((tankTime + 0.01) % 1, tankTarget);
-        tank.position.set(tankPosition.x, 0, tankPosition.y);
-        tank.lookAt(tankTarget.x, 0, tankTarget.y);
+        curve.getPointAt((tankTime + 0.01) % 1, tankTarget);//获取朝向位置
+        tank.position.set(tankPosition.x, 0, tankPosition.y);//更新tank位置
+        tank.lookAt(tankTarget.x, 0, tankTarget.y);//更新tank朝向
 
-        // face turret at target
+        // 炮塔指向目标位置
+        // getWorldPositon:返回一个表示该物体在世界空间中位置的矢量
         targetMesh.getWorldPosition(targetPosition);
         turretPivot.lookAt(targetPosition);
 
-        // make the turretCamera look at target
+        // 炮塔相机指向目标位置
         turretCamera.lookAt(targetPosition);
 
-        // make the targetCameraPivot look at the at the tank
+        // 目标内置摄像机指向tank
         tank.getWorldPosition(targetPosition);
         targetCameraPivot.lookAt(targetPosition);
 
+        // tank轮子滚动
         wheelMeshes.forEach((obj) => {
           obj.rotation.x = time * 3;
         });
 
+        // 镜头切换
         const camera = cameras[(time * 0.25) % cameras.length | 0];
         infoElem.textContent = camera.desc;
 

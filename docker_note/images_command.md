@@ -26,7 +26,7 @@ docker run -it ubuntu /bin/bash
 # 2)然后更新 完成后exit退出
 apt-get update
 # 3)提交镜像
-# -m 提交信息 -a 作者 e21 ID exclison 镜像名
+# -m 提交信息 -a 作者 e21 ID exclison/ubuntu:v2 镜像名
 docker commit -m="has update" -a="exclison" e213wde3 exclison/ubuntu:v2
 
 # 2. 构建镜像

@@ -53,7 +53,6 @@ export default defineComponent({
     })
 
     const store = useStore()
-    console.log(store,'store')
 
     store.commit('updateCount')
 

@@ -7,11 +7,11 @@ const baseConfig = {
   resolve:{
     alias:{
       '@':'src',
+      'public':'public',
+      'views':'src/views',
       'assets':'src/assets',
       'components':'src/components',
-      'public':'public',
       'map_api':'src/library/map_api.ts',
-      'views':'src/views'
     }
   }
 };

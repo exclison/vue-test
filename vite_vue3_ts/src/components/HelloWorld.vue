@@ -30,6 +30,7 @@
 
 <script lang="ts">
 import { ref, defineComponent,getCurrentInstance } from 'vue'
+import {useStore} from 'vuex'
 import mapApi from '../library/map_api'
 export default defineComponent({
   name: 'HelloWorld',
@@ -45,11 +46,18 @@ export default defineComponent({
 
 
     const methodList = mapApi('common',['getUserInfo','getUserList'])
-    console.log(methodList,'methodlist')
+    // console.log(methodList,'methodlist')
 
     methodList.getUserInfo().then((res:any)=>{
-      console.log(res,'res')
+      // console.log(res,'res')
     })
+
+    const store = useStore()
+    console.log(store,'store')
+
+    store.commit('updateCount')
+
+    console.log(store.state.count)
 
     // console.log(globalProperties ,'kkk')
     // globalProperties.$get('common/user/get-user-info/',{id:111,name:'111'}).then((res:any)=>{

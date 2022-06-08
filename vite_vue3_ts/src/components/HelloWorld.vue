@@ -2,6 +2,7 @@
 
 <template>
   <h1>{{ msg }}</h1>
+  <h1 @click="genUserInfoCon">点击发送请求</h1>
 
   <p>
     Recommended IDE setup:
@@ -45,12 +46,18 @@ export default defineComponent({
     // const globalProperties = internalInstance?internalInstance.appContext.config.globalProperties:{}
 
 
-    const methodList = mapApi('common',['getUserInfo','getUserList'])
+    const methodList = mapApi('common',['getUserInfo','getUserList','getUserInfoCon'])
     // console.log(methodList,'methodlist')
 
     methodList.getUserInfo().then((res:any)=>{
       // console.log(res,'res')
     })
+
+    const genUserInfoCon = ()=>{
+      methodList.getUserInfoCon().then(res=>{
+        console.log('res')
+      })
+    }
 
     const store = useStore()
 
@@ -63,7 +70,7 @@ export default defineComponent({
     //   console.log(res,'res')
     // })
     const count = ref(0)
-    return { count }
+    return { count,genUserInfoCon }
   }
 })
 </script>

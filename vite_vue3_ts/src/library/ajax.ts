@@ -8,7 +8,14 @@ interface requestOption {
   others: AxiosRequestConfig;
 }
 
+interface RequestConcel {
+  url: string | undefined;
+  controller: AbortController;
+}
+
 class HttpRequest {
+  // 请求控制列表
+  private requestList: Array<RequestConcel> = [];
   private instance: Axios;
 
   constructor({ baseURL, timeout, headers, ...others }: AxiosRequestConfig) {
@@ -22,15 +29,74 @@ class HttpRequest {
     this.instance = instance;
   }
 
-  request<T>({ url, method, params, data, others }: requestOption):Promise<T> {
+  request<T>({ url, method, params, data, others }: requestOption): Promise<T> {
     return new Promise((resolve, reject) => {
       this.instance
         .request({ url, method, params, data, ...others })
         .then((res) => resolve(res.data))
         .catch((err) => {
-          reject(err);
+          console.log(err);
+          if (err.config) {
+            this.removeController(err.config.url);
+          }
+          if (err.message !== "canceled") {
+            reject(err);
+          } else {
+            reject("请求取消");
+          }
         });
     });
+  }
+  // 添加请求拦截
+  addRequestInterceptors() {
+    this.instance.interceptors.request.use((config) => {
+      this.cancelRequest(config.url);
+
+      const controller = this.createController(config.url);
+
+      config.signal = controller.signal;
+
+      return config;
+    });
+  }
+  // 添加响应拦截
+  addResponseInterceptors() {
+    this.instance.interceptors.response.use((config) => {
+      this.removeController(config.config.url);
+      return config;
+    });
+  }
+  // 判断是否在请求中
+  hasRequested(url: string | undefined) {
+    return this.requestList.find((item) => item.url === url);
+  }
+  // 取消请求
+  cancelRequest(url: string | undefined) {
+    const controllerInstance = this.hasRequested(url);
+    if (controllerInstance) {
+      controllerInstance.controller.abort();
+      this.requestList = this.requestList.filter((item) => item.url !== url);
+      console.warn("请求重复,已取消");
+    }
+  }
+  // 添加请求控制器
+  createController(url: string | undefined) {
+    const controller = new AbortController();
+
+    const requestCancel: RequestConcel = {
+      url: url,
+      controller,
+    };
+
+    this.requestList.push(requestCancel);
+
+    return controller;
+  }
+  // 移除请求控制器
+  removeController(url: string | undefined) {
+    setTimeout(() => {
+      this.requestList = this.requestList.filter((item) => item.url !== url);
+    }, 1000);
   }
 }
 
@@ -41,6 +107,9 @@ const options: AxiosRequestConfig = {
 };
 
 const instance = new HttpRequest(options);
+
+instance.addRequestInterceptors();
+instance.addResponseInterceptors();
 
 /**
  * @name:$get
@@ -60,7 +129,7 @@ const $get = async (
     url,
     method: "get",
     params,
-    others:others?others:{},
+    others: others ? others : {},
   };
   return await instance.request(options);
 };
@@ -73,12 +142,16 @@ const $get = async (
  * @params {Object} paramsName: 参数
  * @params {AxiosRequestConfig} paramsName: 其他axios参数
  */
-const $post = async (url: string, data: Object, others?: AxiosRequestConfig) => {
+const $post = async (
+  url: string,
+  data: Object,
+  others?: AxiosRequestConfig
+) => {
   const options: requestOption = {
     url,
     method: "post",
     data,
-    others:others?others:{},
+    others: others ? others : {},
   };
 
   return await instance.request(options);

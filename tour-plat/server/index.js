@@ -42,7 +42,7 @@ app.use((ctx, next) => {
 app.use(koajwt({
 secret: 'secret'
 }).unless({
-path: [/\/common\/login-auth/]
+  path: [/\/common\/login-auth/,/\/get-user-info-con/]
 }));
 
 

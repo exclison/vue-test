@@ -44,4 +44,18 @@ route.post("/login-auth", async (ctx) => {
   ctx.body = res;
 });
 
+route.get("/get-user-info-con", async (ctx) => {
+
+  ctx.body = 'hotelList';
+  async function delay(time) {
+    return new Promise(function (resolve, reject) {
+      setTimeout(function () {
+        resolve();
+      }, time);
+    });
+  }
+  // await delay(3000)
+  return;
+});
+
 module.exports = route;

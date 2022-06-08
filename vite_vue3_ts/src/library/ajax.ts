@@ -53,11 +53,8 @@ class HttpRequest {
     this.instance.interceptors.request.use((config) => {
       const url: string = config.url ? config.url : "";
       this.cancelRequest(url);
-
       const controller = this.createController(url);
-
       config.signal = controller.signal;
-
       return config;
     });
   }
@@ -65,7 +62,6 @@ class HttpRequest {
   addResponseInterceptors() {
     this.instance.interceptors.response.use((config) => {
       const url: string = config.config.url ? config.config.url : "";
-
       this.removeController(url);
       return config;
     });
@@ -82,9 +78,7 @@ class HttpRequest {
   // 添加请求控制器
   createController(url: string) {
     const controller = new AbortController();
-
     this.requestMap[url] = controller;
-
     return controller;
   }
   // 移除请求控制器

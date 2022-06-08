@@ -8,14 +8,15 @@ interface requestOption {
   others: AxiosRequestConfig;
 }
 
+// 控制请求,相同url每次请求前先取消上次请求(只有响应时长较长是起作用,原因是响应快来不及拦截)
+// 用于解决因每次请求响应时间不同导致的前端竞态问题
 interface RequestConcel {
-  url: string | undefined;
-  controller: AbortController;
+  [key: string]: AbortController;
 }
 
 class HttpRequest {
   // 请求控制列表
-  private requestList: Array<RequestConcel> = [];
+  private requestMap: RequestConcel = {};
   private instance: Axios;
 
   constructor({ baseURL, timeout, headers, ...others }: AxiosRequestConfig) {
@@ -50,9 +51,10 @@ class HttpRequest {
   // 添加请求拦截
   addRequestInterceptors() {
     this.instance.interceptors.request.use((config) => {
-      this.cancelRequest(config.url);
+      const url: string = config.url ? config.url : "";
+      this.cancelRequest(url);
 
-      const controller = this.createController(config.url);
+      const controller = this.createController(url);
 
       config.signal = controller.signal;
 
@@ -62,41 +64,32 @@ class HttpRequest {
   // 添加响应拦截
   addResponseInterceptors() {
     this.instance.interceptors.response.use((config) => {
-      this.removeController(config.config.url);
+      const url: string = config.config.url ? config.config.url : "";
+
+      this.removeController(url);
       return config;
     });
   }
   // 判断是否在请求中
-  hasRequested(url: string | undefined) {
-    return this.requestList.find((item) => item.url === url);
+  hasRequested(url: string) {
+    return this.requestMap[url];
   }
   // 取消请求
-  cancelRequest(url: string | undefined) {
-    const controllerInstance = this.hasRequested(url);
-    if (controllerInstance) {
-      controllerInstance.controller.abort();
-      this.requestList = this.requestList.filter((item) => item.url !== url);
-      console.warn("请求重复,已取消");
-    }
+  cancelRequest(url: string) {
+    this.requestMap[url] && this.requestMap[url].abort();
+    this.removeController(url);
   }
   // 添加请求控制器
-  createController(url: string | undefined) {
+  createController(url: string) {
     const controller = new AbortController();
 
-    const requestCancel: RequestConcel = {
-      url: url,
-      controller,
-    };
-
-    this.requestList.push(requestCancel);
+    this.requestMap[url] = controller;
 
     return controller;
   }
   // 移除请求控制器
-  removeController(url: string | undefined) {
-    setTimeout(() => {
-      this.requestList = this.requestList.filter((item) => item.url !== url);
-    }, 1000);
+  removeController(url: string) {
+    delete this.requestMap[url];
   }
 }
 

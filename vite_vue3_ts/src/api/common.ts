@@ -14,10 +14,10 @@ namespace common {
         { id: "111", name: "name" },
         { baseURL: "http://127.0.0.1:8990" }
       ),
-      getUserInfoCon: () =>
+      getUserInfoCon: (params:{}) =>
       $get(
         apiList["/get-user-info-con"],
-        {},
+        {...params},
         { baseURL: "http://127.0.0.1:3000" }
       ),
     getUserList: () =>

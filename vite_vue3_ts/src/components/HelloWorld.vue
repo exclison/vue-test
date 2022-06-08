@@ -53,9 +53,11 @@ export default defineComponent({
       // console.log(res,'res')
     })
 
+    let count = ref<number>(0)
     const genUserInfoCon = ()=>{
-      methodList.getUserInfoCon().then(res=>{
-        console.log('res')
+      count.value++
+      methodList.getUserInfoCon({index:count.value}).then((res:any)=>{
+        console.log(res,'res')
       })
     }
 
@@ -63,13 +65,13 @@ export default defineComponent({
 
     store.commit('updateCount')
 
-    console.log(store.state.count)
+    // console.log(store.state.count)
 
     // console.log(globalProperties ,'kkk')
     // globalProperties.$get('common/user/get-user-info/',{id:111,name:'111'}).then((res:any)=>{
     //   console.log(res,'res')
     // })
-    const count = ref(0)
+    // const count = ref(0)
     return { count,genUserInfoCon }
   }
 })

@@ -45,16 +45,20 @@ route.post("/login-auth", async (ctx) => {
 });
 
 route.get("/get-user-info-con", async (ctx) => {
+  const { index } = ctx.request.query;
 
-  ctx.body = 'hotelList';
+  ctx.body = index;
   async function delay(time) {
     return new Promise(function (resolve, reject) {
       setTimeout(function () {
+        console.log(`响应第${index}个请求`)
         resolve();
       }, time);
     });
   }
-  // await delay(3000)
+  const time = Math.random() * 200
+  console.log(`接受第${index}个请求,将于${time}ms后响应`)
+  await delay(time)
   return;
 });
 

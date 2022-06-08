@@ -66,10 +66,6 @@ class HttpRequest {
       return config;
     });
   }
-  // 判断是否在请求中
-  hasRequested(url: string) {
-    return this.requestMap[url];
-  }
   // 取消请求
   cancelRequest(url: string) {
     this.requestMap[url] && this.requestMap[url].abort();

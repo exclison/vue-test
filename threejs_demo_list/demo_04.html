@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+        body{
+            margin: 0;
+        }
+    </style>
+  </head>
+  <body>
+    <script src="./js/three.js"></script>
+    <script>
+      // 纹理练习
+      // 安装servez 使用servez启动http服务器 threejs无法直接访问本地文件,需启动http服务器
+      // 场景
+      const scene = new THREE.Scene();
+      // 相机 透视摄像机 Param(视野角度FOV,长宽比,近截面,远截面)
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      // 渲染器
+      const renderer = new THREE.WebGLRenderer();
+
+      // 可以传入低宽高 并将第三个参数设为false,可实现容器宽高不变,以低分辨率渲染
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      // 立方体
+      const geometry = new THREE.BoxGeometry(2,2,2);
+
+      const loader = new THREE.TextureLoader()
+
+      //   材质
+      const material = new THREE.MeshBasicMaterial({ 
+        map:loader.load('images/3243.png')
+       });
+
+      //   网格
+      const cube = new THREE.Mesh(geometry, material);
+      scene.add(cube);
+
+      camera.position.z = 2.1;
+
+      function animate(){
+          requestAnimationFrame(animate)
+          cube.rotation.x += 0.01
+          cube.rotation.y += 0.01
+          renderer.render(scene,camera)
+      }
+
+      animate()
+
+
+
+    </script>
+  </body>
+</html>

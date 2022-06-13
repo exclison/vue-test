@@ -1,0 +1,15 @@
+{
+  "name": "threejs_demo_list",
+  "version": "1.0.0",
+  "description": "threejs_test",
+  "main": "index.js",
+  "dependencies": {
+    "three": "^0.141.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "exclison",
+  "license": "ISC"
+}

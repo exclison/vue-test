@@ -7,7 +7,7 @@
     <title>Document</title>
   </head>
   <body>
-    <video autoplay></video>
+    <video id="video" autoplay></video>
     <div><button id="btnGetAudioTracks">getAudioTracks()</button></div>
     <div><button id="btnGetTrackById">getTrackById()</button></div>
     <div><button id="btnGetTracks">getTracks()</button></div>
@@ -37,7 +37,7 @@
           { video: true, audio: true },
           function (s) {
             stream = s;
-            var video = document.querySelector("video");
+            var video = document.querySelector("#video");
 
             //inserting our stream to the video tag
             video.src = window.URL.createObjectURL(stream);

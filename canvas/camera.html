@@ -5,40 +5,76 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      video{
+        width: 800px;
+        height: 600px;
+      }
+    </style>
   </head>
   <body>
-    <video autoplay></video> 
+    <video id="video_content" autoplay></video>
     <script>
-      function hasUserMedia() {
-        navigator.getUserMedia =
-          navigator.getUserMedia ||
-          navigator.webkitGetUserMedia ||
-          navigator.mozGetUserMedia ||
-          navigator.msGetUserMedia;
-        return !!navigator.getUserMedia;
-      }
+      console.log(navigator.mediaDevices.getUserMedia,'kkk')
+      navigator.mediaDevices
+        .getUserMedia({ audio: true, video: true })
+        .then(function (stream) {
+          console.log(stream,'stream')
+          /* 使用这个 stream stream */
+          const video = document.querySelector("#video_content");
+          video.srcObject = stream
 
-      if (hasUserMedia()) {
-        navigator.getUserMedia =
-          navigator.getUserMedia ||
-          navigator.webkitGetUserMedia ||
-          navigator.mozGetUserMedia ||
-          navigator.msGetUserMedia;
+          console.log(video,'video')
 
-        //get both video and audio streams from user"s camera
-        navigator.getUserMedia(
-          { video: true, audio: true },
-          function (stream) {
-            var video = document.querySelector("video");
+          //insert stream into the video tag
+          // video.src = window.URL.createObjectURL(stream);
+          console.log(video,'video')
+        })
+        .catch(function (err) {
+          /* 处理 error */
+        });
+      // navigator.getUserMedia(
+      //   { video: true, audio: true },
+      //   function (stream) {
+      //     console.log(222);
+      //     var video = document.querySelector("video_content");
 
-            //insert stream into the video tag
-            video.src = window.URL.createObjectURL(stream);
-          },
-          function (err) {}
-        );
-      } else {
-        alert("Error. WebRTC is not supported!");
-      }
+      //     //insert stream into the video tag
+      //     video.src = window.URL.createObjectURL(stream);
+      //   },
+      //   function (err) {}
+      // );
+      // function hasUserMedia() {
+      //   navigator.getUserMedia =
+      //     navigator.getUserMedia ||
+      //     navigator.webkitGetUserMedia ||
+      //     navigator.mozGetUserMedia ||
+      //     navigator.msGetUserMedia;
+      //   return !!navigator.getUserMedia;
+      // }
+
+      // if (hasUserMedia()) {
+      //   navigator.getUserMedia =
+      //     navigator.getUserMedia ||
+      //     navigator.webkitGetUserMedia ||
+      //     navigator.mozGetUserMedia ||
+      //     navigator.msGetUserMedia;
+
+      //   //get both video and audio streams from user"s camera
+      //   navigator.getUserMedia(
+      //     { video: true, audio: true },
+      //     function (stream) {
+      //       console.log(222)
+      //       var video = document.querySelector("video_content");
+
+      //       //insert stream into the video tag
+      //       video.src = window.URL.createObjectURL(stream);
+      //     },
+      //     function (err) {}
+      //   );
+      // } else {
+      //   alert("Error. WebRTC is not supported!");
+      // }
     </script>
   </body>
 </html>

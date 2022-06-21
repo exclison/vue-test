@@ -6,75 +6,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
+
   <body>
+    <video id="video_content" autoplay></video>
+
+    <script src="./js//ws_connection.js"></script>
+    <script src="./js//rtc_connection.js"></script>
     <script>
+      const openHandler = () => {
+        console.log("连接服务器成功");
+        const params = JSON.stringify({
+          name: "excliosn1",
+          type: "ws_register",
+        });
+        connection.sendMessage(params);
+        sendOffer();
+        // initRTC();
+
+        // getMedia().then((res) => {
+        //   console.log(res, "res");
+        //   initRTC();
+        // });
+      };
+
+      const closeHandler = () => console.log("服务器关闭");
+
+      const errorHandler = () => console.log("连接出错");
+
+      const messageHandler = (e) => {
+        let message = JSON.parse(e.data);
+        const { sdp: answer } = message;
+        // setRemoteDescription(answer);
+        rtcconnection.instance.setRemoteDescription(answer);
+        console.log(message, "message");
+      };
+
+      const connection = new Connection({
+        url: "ws://127.0.0.1:8000",
+        messageHandler,
+        openHandler,
+        closeHandler,
+        errorHandler,
+      });
+
+      const getMedia = async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: true,
+        });
+        const video = document.querySelector("#video_content");
+        console.log(stream, "stream");
+
+        video.srcObject = stream;
+        console.log(video, "video");
+        return stream;
+      };
+
       // 发起端
-      const peerConnection = new RTCPeerConnection();
-      peerConnection.onicecandidate = (event) => {
+      const config = {
+        iceServers: [
+          {
+            urls: "stun:stun.l.google.com:19302",
+            username: "excliosn1",
+            // credential: "webrtcdemo",//尽在tun服务器时使用
+          },
+        ],
+      };
+
+      const onicecandidate = () => {
         console.log(event, "event");
         if (event.candidate) {
           //   sendCandidateToRemotePeer(event.candidate);
         }
       };
 
-      const ws = new WebSocket("ws://127.0.0.1:8000");
-      ws.onopen = function (e) {
-        console.log("连接服务器成功");
-        initRTC();
+      const rtcconnection = new RTCConnection({ options: config, onicecandidate });
 
-        // 向服务器发送消息
-        // ws.send("what`s your name?");
-      };
-      ws.onclose = function (e) {
-        console.log("服务器关闭");
-      };
-      ws.onerror = function () {
-        console.log("连接出错");
-      };
-      // 接收服务器的消息
-      ws.onmessage = function (e) {
-        let message = JSON.parse(e.data);
-        const { sdp: answer } = message;
-        setRemoteDescription(answer);
-        console.log(message);
-      };
-
-      function initRTC() {
-        console.log(333);
-        console.log(peerConnection, "kkk");
-
-        peerConnection
-          .createOffer()
-          .then(function (offer) {
-            return peerConnection.setLocalDescription(offer);
-          })
-          .then(function () {
-            const params = JSON.stringify({
-              name: "excliosn1",
-              type: "video-offer",
-              target: "excliosn2",
-              sdp: peerConnection.localDescription,
-            });
-            // console.log(params, "params");
-            ws.send(params);
-          })
-          .catch(function (reason) {
-            // An error occurred, so handle the failure to connect
-          });
-      }
-
-      function setRemoteDescription(answer) {
-        peerConnection
-          .setRemoteDescription(new RTCSessionDescription(answer))
-          .then(function () {
-            console.log("remote");
-            createChannel();
-            // return createMyStream();
-          });
-      }
-
-      peerConnection.onaddstream = function (obj) {
-        console.log(obj, "obj");
+      const sendOffer = async () => {
+        const offer = await rtcconnection.createOffer();
+        await rtcconnection.setLocalDescription(offer);
+        const params = JSON.stringify({
+          name: "excliosn1",
+          type: "video-offer",
+          target: "excliosn2",
+          sdp: rtcconnection.instance.localDescription,
+        });
+        console.log(params, "params");
+        // ws.send(params);
+        connection.sendMessage(params);
       };
 
       function createChannel() {

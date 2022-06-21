@@ -1,4 +1,4 @@
-// const { WebSocketServer } = require('ws');
+// websocket信令服务器
 const WebSocket = require('ws')
 
 const wss = new WebSocket.Server({
@@ -6,16 +6,23 @@ const wss = new WebSocket.Server({
 })
 const wsList = {}
 wss.on('connection', function connection(ws) {
-    console.log(111)
+    console.log(new Date().getTime())
     ws.on('message', function message(data) {
+        console.log(new Date().getTime())
         const message = JSON.parse(data)
-        // console.log(message,'message')
-        if(message.name && !wsList[message.name]){
-            wsList[message.name] = ws
+        if (message.type === 'ws_register'){
+            if (message.name) {
+                wsList[message.name] = ws
+            }
+            // if (message.name && !wsList[message.name]) {
+            //     wsList[message.name] = ws
+            // }
         }
+        // console.log(message,'message')
+        
 
 
-        if(message.target&&wsList[message.target]){
+        if (message.target && wsList[message.target]) {
             const messageTarget = JSON.stringify(message)
             // console.log(messageTarget,'messageTarget')
             // console.log(wsList[message.target],'target')

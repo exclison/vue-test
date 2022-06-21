@@ -7,78 +7,99 @@
     <title>Document</title>
   </head>
   <body>
-    <script>
-      // 接收端
-      const pc = new RTCPeerConnection();
+    <video id="video_content" autoplay></video>
 
-      const ws = new WebSocket("ws://127.0.0.1:8000");
-      ws.onopen = function (e) {
+    <script src="./js//ws_connection.js"></script>
+    <script src="./js//rtc_connection.js"></script>
+    <script>
+      const openHandler = () => {
         console.log("连接服务器成功");
-        // 向服务器发送消息
         const params = JSON.stringify({
           name: "excliosn2",
-          type: "video-answer",
-          target: "excliosn1",
+          type: "ws_register",
         });
-        console.log(params, "params");
-        ws.send(params);
+        connection.sendMessage(params);
+
+        // getMedia().then((res) => {
+        //   console.log(res, "res");
+        //   initRTC();
+        // });
       };
-      ws.onclose = function (e) {
-        console.log("服务器关闭");
-      };
-      ws.onerror = function () {
-        console.log("连接出错");
-      };
-      // 接收服务器的消息
-      ws.onmessage = function (e) {
-        // console.log(e, "e");
+
+      const closeHandler = () => console.log("服务器关闭");
+
+      const errorHandler = () => console.log("连接出错");
+
+      const messageHandler = (e) => {
         let message = JSON.parse(e.data);
         const { sdp: offer } = message;
-        initRTC(offer);
-        console.log(message);
+        sendAnswer(offer);
       };
 
-      function initRTC(offer) {
-        pc.setRemoteDescription(new RTCSessionDescription(offer), function () {
-          console.log("session");
-          pc.createAnswer()
-            .then(function (answer) {
-              console.log("anser");
-              return pc.setLocalDescription(answer);
-            })
-            .then(function () {
-              console.log("ansert");
-              sendAnswer(pc);
-              // Send the answer to the remote peer through the signaling server.
-            });
-        });
-      }
+      const connection = new Connection({
+        url: "ws://127.0.0.1:8000",
+        messageHandler,
+        openHandler,
+        closeHandler,
+        errorHandler,
+      });
 
-      function sendAnswer(pc) {
+      const getMedia = async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: true,
+        });
+        const video = document.querySelector("#video_content");
+        console.log(stream, "stream");
+
+        video.srcObject = stream;
+        console.log(video, "video");
+        return stream;
+      };
+
+      // 接收端
+      const config = {
+        iceServers: [
+          {
+            urls: "stun:stun.l.google.com:19302",
+            username: "excliosn2",
+            // credential: "webrtcdemo",//尽在tun服务器时使用
+          },
+        ],
+      };
+      const onicecandidate = () => {
+        console.log(event, "event");
+        if (event.candidate) {
+          //   sendCandidateToRemotePeer(event.candidate);
+        }
+      };
+
+      const rtcconnection = new RTCConnection({ options: config, onicecandidate });
+
+      const sendAnswer = async (offer) => {
+        await rtcconnection.setRemoteDescription(offer);
+        const answer = await rtcconnection.createAnswer();
+        await rtcconnection.setLocalDescription(answer);
         const params = JSON.stringify({
           name: "excliosn2",
           type: "video-answer",
           target: "excliosn1",
-          sdp: pc.localDescription,
+          sdp: rtcconnection.instance.localDescription,
         });
+        connection.sendMessage(params);
+      };
 
-        ws.send(params);
+      function channelevent() {
+        connection.instance.ondatachannel = function (event) {
+          const channel = event.channel;
+          channel.onopen = function (event) {
+            channel.send("Hi back!");
+          };
+          channel.onmessage = function (event) {
+            console.log(event.data);
+          };
+        };
       }
-      pc.ondatachannel = function (event) {
-        const channel = event.channel;
-        channel.onopen = function (event) {
-          channel.send("Hi back!");
-        };
-        channel.onmessage = function (event) {
-          console.log(event.data);
-        };
-      };
-      pc.onicecandidate = (event) => {
-        console.log(event,'event')
-        if (event.candidate) {
-        //   sendCandidateToRemotePeer(event.candidate);
-        }
-      };
     </script>
   </body>
 </html>

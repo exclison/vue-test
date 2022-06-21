@@ -20,13 +20,16 @@
           type: "ws_register",
         });
         connection.sendMessage(params);
-        sendOffer();
+        // sendOffer();
         // initRTC();
 
-        // getMedia().then((res) => {
-        //   console.log(res, "res");
-        //   initRTC();
-        // });
+        getMedia().then((res) => {
+          console.log(res, "res");
+          rtcconnection.instance.addStream(res)
+          // initRTC();
+        sendOffer();
+
+        });
       };
 
       const closeHandler = () => console.log("服务器关闭");

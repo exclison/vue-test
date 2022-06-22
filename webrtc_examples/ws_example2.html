@@ -8,6 +8,7 @@
   </head>
   <body>
     <video id="video_content" autoplay></video>
+    <video id="video_content_romote" autoplay></video>
 
     <script src="./js//ws_connection.js"></script>
     <script src="./js//rtc_connection.js"></script>
@@ -19,23 +20,31 @@
           type: "ws_register",
         });
         connection.sendMessage(params);
-
-        // getMedia().then((res) => {
-        //   console.log(res, "res");
-        //   initRTC();
-        // });
       };
 
       const closeHandler = () => console.log("服务器关闭");
 
       const errorHandler = () => console.log("连接出错");
 
+      // 消息事件
       const messageHandler = (e) => {
         let message = JSON.parse(e.data);
-        const { sdp: offer } = message;
-        sendAnswer(offer);
+        // console.log(message, "message,;;;;;;");
+        const { type } = message;
+
+        switch (type) {
+          case "video-offer":
+            const { sdp: offer } = message;
+            sendAnswer(offer);
+            break;
+          case "new-candidate":
+            const { ice: candidate } = message;
+            rtcconnection.addIceCandidate(candidate);
+            break;
+        }
       };
 
+      // 建立websocket连接
       const connection = new Connection({
         url: "ws://127.0.0.1:8000",
         messageHandler,
@@ -44,16 +53,14 @@
         errorHandler,
       });
 
+      // 获取媒体流
       const getMedia = async () => {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
           video: true,
         });
         const video = document.querySelector("#video_content");
-        console.log(stream, "stream");
-
         video.srcObject = stream;
-        console.log(video, "video");
         return stream;
       };
 
@@ -67,17 +74,50 @@
           },
         ],
       };
-      const onicecandidate = () => {
-        console.log(event, "event");
-        if (event.candidate) {
-          //   sendCandidateToRemotePeer(event.candidate);
+      let inboundStream = null;
+
+      // 轨道添加事件
+      const ontrack = (event) => {
+        console.log(event, "trackevent");
+        const videoElem = document.querySelector("#video_content_romote");
+        console.log(videoElem, "videoElem");
+        if (event.streams && event.streams[0]) {
+          videoElem.srcObject = event.streams[0];
+        } else {
+          if (!inboundStream) {
+            inboundStream = new MediaStream();
+            console.log(inboundStream, "inboundStream");
+            console.log(videoElem, "videoElem");
+
+            videoElem.srcObject = inboundStream;
+          }
+          inboundStream.addTrack(event.track);
         }
       };
 
-      const rtcconnection = new RTCConnection({ options: config, onicecandidate });
+      // 信令事件
+      const onicecandidate = () => {
+        // console.log(event, "event");
+        if (event.candidate) {
+          const params = JSON.stringify({
+            name: "excliosn2",
+            type: "new-candidate",
+            target: "excliosn1",
+            ice: event.candidate,
+          });
+          connection.sendMessage(params);
+        }
+      };
 
+      const rtcconnection = new RTCConnection({ options: config, ontrack, onicecandidate });
+
+      // 发送响应
       const sendAnswer = async (offer) => {
         await rtcconnection.setRemoteDescription(offer);
+        const stream = await getMedia();
+        for (const track of stream.getTracks()) {
+          rtcconnection.instance.addTrack(track);
+        }
         const answer = await rtcconnection.createAnswer();
         await rtcconnection.setLocalDescription(answer);
         const params = JSON.stringify({
@@ -89,17 +129,19 @@
         connection.sendMessage(params);
       };
 
+      // channel通信
       function channelevent() {
-        connection.instance.ondatachannel = function (event) {
+        rtcconnection.instance.ondatachannel = function (event) {
           const channel = event.channel;
           channel.onopen = function (event) {
             channel.send("Hi back!");
           };
           channel.onmessage = function (event) {
-            console.log(event.data);
+            // console.log(event.data);
           };
         };
       }
+      channelevent();
     </script>
   </body>
 </html>

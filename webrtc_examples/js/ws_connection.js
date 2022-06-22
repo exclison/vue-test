@@ -18,7 +18,7 @@ class Connection {
     sendMessage(params) {
         const hasString = Object.prototype.toString.call(params) === "[object String]";
         const param = hasString ? params : JSON.stringify(params);
-        console.log(param,'param')
+        // console.log(param,'param')
         this.instance.send(param);
     }
 }

@@ -9,6 +9,7 @@
 
   <body>
     <video id="video_content" autoplay></video>
+    <video id="video_content_romote" autoplay></video>
 
     <script src="./js//ws_connection.js"></script>
     <script src="./js//rtc_connection.js"></script>
@@ -21,14 +22,12 @@
         });
         connection.sendMessage(params);
         // sendOffer();
-        // initRTC();
 
         getMedia().then((res) => {
-          console.log(res, "res");
-          rtcconnection.instance.addStream(res)
-          // initRTC();
-        sendOffer();
-
+          for (const track of res.getTracks()) {
+            rtcconnection.instance.addTrack(track);
+          }
+          sendOffer();
         });
       };
 
@@ -36,14 +35,24 @@
 
       const errorHandler = () => console.log("连接出错");
 
+      // 消息事件
       const messageHandler = (e) => {
         let message = JSON.parse(e.data);
-        const { sdp: answer } = message;
-        // setRemoteDescription(answer);
-        rtcconnection.instance.setRemoteDescription(answer);
-        console.log(message, "message");
+        const { type } = message;
+
+        switch (type) {
+          case "video-answer":
+            const { sdp: answer } = message;
+            rtcconnection.instance.setRemoteDescription(answer);
+            break;
+          case "new-candidate":
+            const { ice: candidate } = message;
+            rtcconnection.addIceCandidate(candidate);
+            break;
+        }
       };
 
+      // 建立websocket连接
       const connection = new Connection({
         url: "ws://127.0.0.1:8000",
         messageHandler,
@@ -52,16 +61,14 @@
         errorHandler,
       });
 
+      // 获取媒体流
       const getMedia = async () => {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true,
           video: true,
         });
         const video = document.querySelector("#video_content");
-        console.log(stream, "stream");
-
         video.srcObject = stream;
-        console.log(video, "video");
         return stream;
       };
 
@@ -75,16 +82,45 @@
           },
         ],
       };
+      let inboundStream = null;
 
-      const onicecandidate = () => {
-        console.log(event, "event");
-        if (event.candidate) {
-          //   sendCandidateToRemotePeer(event.candidate);
+      // 轨道添加事件
+      const ontrack = (event) => {
+        console.log(event, "trackevent");
+        const videoElem = document.querySelector("#video_content_romote");
+        console.log(videoElem, "videoElem");
+        if (event.streams && event.streams[0]) {
+          videoElem.srcObject = event.streams[0];
+        } else {
+          if (!inboundStream) {
+            inboundStream = new MediaStream();
+            console.log(inboundStream, "inboundStream");
+            console.log(videoElem, "videoElem");
+
+            videoElem.srcObject = inboundStream;
+          }
+          inboundStream.addTrack(event.track);
         }
       };
 
-      const rtcconnection = new RTCConnection({ options: config, onicecandidate });
+      // 信令事件
+      const onicecandidate = (event) => {
+        // console.log(event, "event");
+        // console.log(event.candidate, "candidate");
+        if (event.candidate) {
+          const params = JSON.stringify({
+            name: "excliosn1",
+            type: "new-candidate",
+            target: "excliosn2",
+            ice: event.candidate,
+          });
+          connection.sendMessage(params);
+        }
+      };
 
+      const rtcconnection = new RTCConnection({ options: config, ontrack, onicecandidate });
+
+      // 发送请求
       const sendOffer = async () => {
         const offer = await rtcconnection.createOffer();
         await rtcconnection.setLocalDescription(offer);
@@ -94,20 +130,20 @@
           target: "excliosn2",
           sdp: rtcconnection.instance.localDescription,
         });
-        console.log(params, "params");
-        // ws.send(params);
         connection.sendMessage(params);
       };
 
+      // channel通信
       function createChannel() {
-        const channel = peerConnection.createDataChannel("chat");
+        const channel = rtcconnection.instance.createDataChannel("chat");
         channel.onopen = function (event) {
           channel.send("hi");
         };
         channel.onmessage = function (event) {
-          console.log(event.data);
+          // console.log(event.data);
         };
       }
+      createChannel();
     </script>
   </body>
 </html>

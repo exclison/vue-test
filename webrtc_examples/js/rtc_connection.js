@@ -58,4 +58,9 @@ class RTCConnection {
         console.log(offer, "answer");
         handler && handler();
     }
+    async addIceCandidate(candidate, handler) {
+        const icecandidate = new RTCIceCandidate(candidate)
+        await this.instance.addIceCandidate(icecandidate)
+        handler && handler();
+    }
 }

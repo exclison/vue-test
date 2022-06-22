@@ -8,75 +8,51 @@
   </head>
   <body>
     <video id="video" autoplay></video>
-    <div><button id="btnGetAudioTracks">getAudioTracks()</button></div>
-    <div><button id="btnGetTrackById">getTrackById()</button></div>
-    <div><button id="btnGetTracks">getTracks()</button></div>
-    <div><button id="btnGetVideoTracks">getVideoTracks()</button></div>
-    <div><button id="btnRemoveAudioTrack">removeTrack() - audio</button></div>
-    <div><button id="btnRemoveVideoTrack">removeTrack() - video</button></div>
     <script>
-      var stream;
-
-      function hasUserMedia() {
-        //check if the browser supports the WebRTC
-        return !!(
-          navigator.getUserMedia ||
-          navigator.webkitGetUserMedia ||
-          navigator.mozGetUserMedia
-        );
+      // Older browsers might not implement mediaDevices at all, so we set an empty object first
+      if (navigator.mediaDevices === undefined) {
+        navigator.mediaDevices = {};
       }
 
-      if (hasUserMedia()) {
-        navigator.getUserMedia =
-          navigator.getUserMedia ||
-          navigator.webkitGetUserMedia ||
-          navigator.mozGetUserMedia;
+      // Some browsers partially implement mediaDevices. We can't just assign an object
+      // with getUserMedia as it would overwrite existing properties.
+      // Here, we will just add the getUserMedia property if it's missing.
+      if (navigator.mediaDevices.getUserMedia === undefined) {
+        navigator.mediaDevices.getUserMedia = function (constraints) {
+          // First get ahold of the legacy getUserMedia, if present
+          var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-        //enabling video and audio channels
-        navigator.getUserMedia(
-          { video: true, audio: true },
-          function (s) {
-            stream = s;
-            var video = document.querySelector("#video");
+          // Some browsers just don't implement it - return a rejected promise with an error
+          // to keep a consistent interface
+          if (!getUserMedia) {
+            return Promise.reject(new Error("getUserMedia is not implemented in this browser"));
+          }
 
-            //inserting our stream to the video tag
+          // Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
+          return new Promise(function (resolve, reject) {
+            getUserMedia.call(navigator, constraints, resolve, reject);
+          });
+        };
+      }
+
+      navigator.mediaDevices
+        .getUserMedia({ audio: true, video: true })
+        .then(function (stream) {
+          var video = document.querySelector("#video");
+          // Older browsers may not have srcObject
+          if ("srcObject" in video) {
+            video.srcObject = stream;
+          } else {
+            // Avoid using this in new browsers, as it is going away.
             video.src = window.URL.createObjectURL(stream);
-          },
-          function (err) {}
-        );
-      } else {
-        alert("WebRTC is not supported");
-      }
-
-      btnGetAudioTracks.addEventListener("click", function () {
-        console.log("getAudioTracks");
-        console.log(stream.getAudioTracks());
-      });
-
-      btnGetTrackById.addEventListener("click", function () {
-        console.log("getTrackById");
-        console.log(stream.getTrackById(stream.getAudioTracks()[0].id));
-      });
-
-      btnGetTracks.addEventListener("click", function () {
-        console.log("getTracks()");
-        console.log(stream.getTracks());
-      });
-
-      btnGetVideoTracks.addEventListener("click", function () {
-        console.log("getVideoTracks()");
-        console.log(stream.getVideoTracks());
-      });
-
-      btnRemoveAudioTrack.addEventListener("click", function () {
-        console.log("removeAudioTrack()");
-        stream.removeTrack(stream.getAudioTracks()[0]);
-      });
-
-      btnRemoveVideoTrack.addEventListener("click", function () {
-        console.log("removeVideoTrack()");
-        stream.removeTrack(stream.getVideoTracks()[0]);
-      });
+          }
+          video.onloadedmetadata = function (e) {
+            video.play();
+          };
+        })
+        .catch(function (err) {
+          console.log(err.name + ": " + err.message);
+        });
     </script>
   </body>
 </html>

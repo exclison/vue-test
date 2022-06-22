@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./css//index.css" />
+  </head>
+  <body>
+    <div>
+      <video id="video" autoplay></video>
+    </div>
+    <div class="tab_bar">
+      <label>用户名</label>
+      <input type="text" placeholder="请输入用户名" />
+      <button onclick="onSubmit">加入</button>
+      <button onclick="onClose">关闭</button>
+    </div>
+
+    <script src="./js//ws_connection.js"></script>
+    <script src="./js//rtc_connection.js"></script>
+    <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>
+
+    <script>
+      const uuid = uuidv4()
+      console.log(uuid,'uuid')
+      const onSubmit = () => {};
+      const onClose = () => {};
+      window.onbeforeunload = ()=>{}
+    </script>
+  </body>
+</html>

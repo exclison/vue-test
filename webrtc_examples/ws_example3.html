@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <video id="video_content" autoplay></video>
+    <video id="video_content_romote" autoplay></video>
+
+    <script src="./js//ws_connection.js"></script>
+    <script src="./js//rtc_connection.js"></script>
+    <script>
+      const openHandler = () => {
+        console.log("连接服务器成功");
+        const params1 = JSON.stringify({
+          name: "excliosn2",
+          type: "ws_register",
+        });
+        connection.sendMessage(params1);
+        const params = JSON.stringify({
+          name: "excliosn1",
+          type: "ws_register",
+        });
+        connection.sendMessage(params);
+        // sendOffer();
+
+        getMedia().then((res) => {
+          //   const video = document.querySelector("#video_content");
+          //   video.srcObject = res;
+          for (const track of res.getTracks()) {
+            rtcconnection.instance.addTrack(track);
+          }
+          sendOffer();
+        });
+      };
+
+      const closeHandler = () => console.log("服务器关闭");
+
+      const errorHandler = () => console.log("连接出错");
+
+      // 消息事件
+      const messageHandler = (e) => {
+        let message = JSON.parse(e.data);
+        console.log(message, "message");
+        const { type } = message;
+
+        switch (type) {
+          case "video-answer":
+            const { sdp: answer } = message;
+            rtcconnection.setRemoteDescription(answer);
+            break;
+          case "new-candidate":
+            const { target, ice: candidate } = message;
+            if (target === "excliosn1") {
+              rtcconnection.addIceCandidate(candidate);
+            } else {
+              rtcconnection1.addIceCandidate(candidate);
+            }
+            break;
+          case "video-offer":
+            const { sdp: offer } = message;
+            sendAnswer(offer);
+            break;
+          //   case "new-candidate":
+          //     const { ice: candidate } = message;
+          //     rtcconnection.addIceCandidate(candidate);
+          //     break;
+        }
+      };
+
+      // 建立websocket连接
+      const connection = new Connection({
+        url: "ws://127.0.0.1:8000",
+        messageHandler,
+        openHandler,
+        closeHandler,
+        errorHandler,
+      });
+
+      // 获取媒体流
+      const getMedia = async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: true,
+        });
+
+        return stream;
+      };
+
+      // 发起端
+      const config = {
+        iceServers: [
+          {
+            urls: "stun:stun.l.google.com:19302",
+            username: "excliosn1",
+            // credential: "webrtcdemo",//尽在tun服务器时使用
+          },
+        ],
+      };
+
+      // -----控制端连接-----------------------------------------------------------
+      let inboundStream = null;
+
+      // 轨道添加事件
+      const ontrack = (event) => {
+        console.log(event, "trackevent");
+        const videoElem = document.querySelector("#video_content");
+        console.log(videoElem, "videoElem");
+        if (event.streams && event.streams[0]) {
+          videoElem.srcObject = event.streams[0];
+        } else {
+          if (!inboundStream) {
+            inboundStream = new MediaStream();
+            console.log(inboundStream, "inboundStream");
+            console.log(videoElem, "videoElem");
+
+            videoElem.srcObject = inboundStream;
+          }
+          inboundStream.addTrack(event.track);
+        }
+      };
+
+      // 信令事件
+      const onicecandidate = (event) => {
+        // console.log(event, "event");
+        // console.log(event.candidate, "candidate");
+        if (event.candidate) {
+          const params = JSON.stringify({
+            name: "excliosn1",
+            type: "new-candidate",
+            target: "excliosn2",
+            ice: event.candidate,
+          });
+          connection.sendMessage(params);
+        }
+      };
+
+      const rtcconnection = new RTCConnection({ options: config, ontrack, onicecandidate });
+
+      // 发送请求
+      const sendOffer = async () => {
+        const offer = await rtcconnection.createOffer();
+        await rtcconnection.setLocalDescription(offer);
+        const params = JSON.stringify({
+          name: "excliosn1",
+          type: "video-offer",
+          target: "excliosn2",
+          sdp: rtcconnection.instance.localDescription,
+        });
+        connection.sendMessage(params);
+      };
+
+      // ----傀儡端连接-----------------------------------------------------------------------------------------
+      let inboundStream1 = null;
+
+      // 轨道添加事件
+      const ontrack1 = (event) => {
+        console.log(event, "trackevent");
+        const videoElem = document.querySelector("#video_content_romote");
+        console.log(videoElem, "videoElem");
+        if (event.streams && event.streams[0]) {
+          videoElem.srcObject = event.streams[0];
+        } else {
+          if (!inboundStream1) {
+            inboundStream1 = new MediaStream();
+            console.log(inboundStream1, "inboundStream1");
+            console.log(videoElem, "videoElem");
+
+            videoElem.srcObject = inboundStream1;
+          }
+          inboundStream1.addTrack(event.track);
+        }
+      };
+
+      // 信令事件
+      const onicecandidate1 = () => {
+        // console.log(event, "event");
+        if (event.candidate) {
+          const params = JSON.stringify({
+            name: "excliosn2",
+            type: "new-candidate",
+            target: "excliosn1",
+            ice: event.candidate,
+          });
+          connection.sendMessage(params);
+        }
+      };
+
+      const rtcconnection1 = new RTCConnection({
+        options: config,
+        ontrack: ontrack1,
+        onicecandidate: onicecandidate1,
+      });
+
+      // 发送响应
+      const sendAnswer = async (offer) => {
+        await rtcconnection1.setRemoteDescription(offer);
+        const stream = await getMedia();
+        // const video = document.querySelector("#video_content_romote");
+        // video.srcObject = stream;
+        for (const track of stream.getTracks()) {
+          rtcconnection1.instance.addTrack(track);
+        }
+        const answer = await rtcconnection1.createAnswer();
+        await rtcconnection1.setLocalDescription(answer);
+        const params = JSON.stringify({
+          name: "excliosn2",
+          type: "video-answer",
+          target: "excliosn1",
+          sdp: rtcconnection1.instance.localDescription,
+        });
+        connection.sendMessage(params);
+      };
+
+      // ---channel通信连接---------------------------------------------------------------
+      // channel通信
+      function channelevent() {
+        rtcconnection1.instance.ondatachannel = function (event) {
+          const channel = event.channel;
+          channel.onopen = function (event) {
+            channel.send("Hi back!");
+          };
+          channel.onmessage = function (event) {
+            // console.log(event.data);
+          };
+        };
+      }
+      channelevent();
+
+      // channel通信
+      function createChannel() {
+        const channel = rtcconnection.instance.createDataChannel("chat");
+        channel.onopen = function (event) {
+          channel.send("hi");
+        };
+        channel.onmessage = function (event) {
+          // console.log(event.data);
+        };
+      }
+      createChannel();
+    </script>
+  </body>
+</html>

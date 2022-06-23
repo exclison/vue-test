@@ -13,9 +13,14 @@
     </style>
   </head>
   <body>
-    <video id="video_content" autoplay></video>
+    <!-- <video id="video_content" autoplay></video> -->
     <script>
       console.log(navigator.mediaDevices.getUserMedia,'kkk')
+      const video = document.createElement('video')
+      video.autoplay = true
+      video.controls = true
+      video.id = 'video_content'
+      document.body.appendChild(video)
       navigator.mediaDevices
         .getUserMedia({ audio: true, video: true })
         .then(function (stream) {

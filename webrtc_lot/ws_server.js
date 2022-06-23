@@ -1,34 +1,41 @@
 // websocket信令服务器
-const WebSocket = require('ws')
+const NEWUSER = 'new_user';
+// const NEWCAND = 'new_candidate';
+// const SENDOFFER = 'send_offer';
+// const SENDASWER = 'send_aswer';
+// const CONNECTLIST = 'connection_list';
 
-const wss = new WebSocket.Server({
-    port: 8000
-})
-const wsList = {}
+import WebSocket, { WebSocketServer } from 'ws';
+
+const connectionList = {}
+const connectionWS = {}
+const wss = new WebSocketServer({ port: 8000 });
+
 wss.on('connection', function connection(ws) {
-    console.log(new Date().getTime())
-    ws.on('message', function message(data) {
-        console.log(new Date().getTime())
+    ws.on('message', function message(data, isBinary) {
         const message = JSON.parse(data)
-        if (message.type === 'ws_register'){
-            if (message.name) {
-                wsList[message.name] = ws
-            }
-            // if (message.name && !wsList[message.name]) {
-            //     wsList[message.name] = ws
-            // }
-        }
-        // console.log(message,'message')
+        const { id, username, type } = message
         
-
-
-        if (message.target && wsList[message.target]) {
-            const messageTarget = JSON.stringify(message)
-            // console.log(messageTarget,'messageTarget')
-            // console.log(wsList[message.target],'target')
-            wsList[message.target].send(messageTarget)
+        if (type === NEWUSER) {
+            connectionList[id] = { id, username }
+            connectionWS[id] = ws
+            const params = JSON.stringify({
+                type: 'connection_list',
+                list: connectionList
+            })
+            console.log(Object.keys(connectionList).length)
+            ws.send(params)
         }
-    });
 
-    // ws.send('something');
+        Object.keys(connectionWS).forEach(key=>{
+            console.log(type,key,id,'kkkkk')
+            if(key!==id){
+                const message = JSON.parse(data)
+                const messageTarget = JSON.stringify(message)
+                connectionWS[key].send(messageTarget)
+            }
+        })
+    });
 });
+
+const closeConnection = (id) => delete connectionList[id]

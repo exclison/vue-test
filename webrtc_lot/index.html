@@ -13,21 +13,106 @@
     </div>
     <div class="tab_bar">
       <label>用户名</label>
-      <input type="text" placeholder="请输入用户名" />
-      <button onclick="onSubmit">加入</button>
+      <input id="user" type="text" placeholder="请输入用户名" />
+      <button onclick="onSubmit()">加入</button>
       <button onclick="onClose">关闭</button>
     </div>
 
+    <script src="./js//type_enum.js"></script>
     <script src="./js//ws_connection.js"></script>
     <script src="./js//rtc_connection.js"></script>
     <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>
 
     <script>
-      const uuid = uuidv4()
-      console.log(uuid,'uuid')
-      const onSubmit = () => {};
-      const onClose = () => {};
-      window.onbeforeunload = ()=>{}
+      // const uuid = uuidv4()
+      // console.log(uuid,'uuid')
+      let ownconnectionid = null; //记录自己id
+      const connectionList = {};
+      const onSubmit = () => {
+        const username = document.querySelector("#user").value;
+        console.log(username, "user");
+        if (!username) {
+          alert("请输入用户名");
+          return;
+        }
+        console.log(username, "username");
+        useradd(username);
+      };
+
+      const messageHandler = function (event) {
+        if (!ownconnectionid) return;
+        const message = JSON.parse(event.data);
+        const { id, username, type } = message;
+        console.log(id, username, type, "message");
+
+        // TODO:这里connection_list事件也有问题
+        switch (type) {
+          case CONNECTLIST:
+            const { list } = message;
+            initConnection(list);
+            break;
+          case NEWUSER:
+            console.log(ownconnectionid,id,'kkllll')
+            ownconnectionid !== id && createConnection({ id, username });
+            break;
+          case SENDOFFER:
+            const { sdp: offer } = message;
+            connectionList[id].createAnswerAndSendMessage(offer);
+            break;
+          case SENDASWER:
+            const { sdp: answer } = message;
+            connectionList[id].setRemoteDescription(answer);
+            break;
+          case NEWCAND:
+            const { ice: candidate } = message;
+            connectionList[id].addIceCandidate(candidate);
+            break;
+        }
+      };
+
+      const socketconnection = new Connection({
+        url: "ws://127.0.0.1:8000",
+        messageHandler,
+      });
+
+      const useradd = function (username) {
+        const id = uuidv4();
+        const params = JSON.stringify({
+          id,
+          username,
+          type: NEWUSER,
+        });
+        console.log(params, "params");
+        ownconnectionid = id;
+        socketconnection.sendMessage(params);
+        // createConnection({ id, username });
+        // connectionList[id].createOfferAndSendMessage();
+      };
+      //TODO:这里还有问题,等拓扑结构理清楚再写
+      /**
+       现在是一共有几人进入房间就创建几个connection
+       这会导致互相连接紊乱
+       */
+      const initConnection = function (list) {
+        Object.keys(list).forEach((key) => {
+          const { id, username } = list[key];
+          createConnection({ id, username });
+        });
+        connectionList[ownconnectionid].createOfferAndSendMessage();
+      };
+
+      const createConnection = function ({ id, username }) {
+        console.log("create");
+        const connection = new RTCConnection({
+          id,
+          username,
+          connection: socketconnection,
+        });
+        connectionList[id] = connection;
+        console.log(connectionList, "list");
+      };
+
+      window.onbeforeunload = () => {};
     </script>
   </body>
 </html>

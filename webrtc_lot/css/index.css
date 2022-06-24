@@ -17,3 +17,6 @@ body{
     align-items: center;
     justify-content: center;
 }
+#close_btn{
+    /* display: none; */
+}

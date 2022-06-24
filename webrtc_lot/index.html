@@ -12,10 +12,13 @@
       <video id="video" autoplay></video>
     </div>
     <div class="tab_bar">
-      <label>用户名</label>
-      <input id="user" type="text" placeholder="请输入用户名" />
-      <button onclick="onSubmit()">加入</button>
-      <button onclick="onClose">关闭</button>
+      <div id="user_add">
+        <label>用户名</label>
+        <input id="user" type="text" placeholder="请输入用户名" />
+        <button id="submit" onclick="onSubmit()">加入</button>
+      </div>
+
+      <button id="close_btn" disabled onclick="onClose()">关闭</button>
     </div>
 
     <script src="./js//type_enum.js"></script>
@@ -24,7 +27,6 @@
     <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>
 
     <script>
-      
       let localStream = null; //mediaStream
       let ownconnectionid = null; //记录自己id
       const connectionList = {}; //所有用户的RTCPeerConnection缓存
@@ -38,7 +40,7 @@
       };
       const localMediaInit = async function () {
         const stream = await getMedia();
-        localStream = stream
+        localStream = stream;
         const videoDom = document.querySelector("#video");
         videoDom.srcObject = localStream;
       };
@@ -51,6 +53,10 @@
         }
         console.log(username, "username");
         useradd(username);
+      };
+
+      const onClose = function () {
+        closeSocketConnection();
       };
 
       const messageHandler = function (event) {
@@ -68,7 +74,8 @@
             break;
           case SENDOFFER:
             const { sdp: offer } = message;
-            targetId === ownconnectionid && connectionList[id].createAnswerAndSendMessage(offer,localStream);
+            targetId === ownconnectionid &&
+              connectionList[id].createAnswerAndSendMessage(offer, localStream);
             break;
           case SENDASWER:
             const { sdp: answer } = message;
@@ -77,6 +84,10 @@
           case NEWCAND:
             const { ice: candidate } = message;
             targetId === ownconnectionid && connectionList[id].addIceCandidate(candidate);
+            break;
+          case RESTCONNECTIONLIST:
+            const { list: res_list } = message;
+            restConnection(res_list);
             break;
         }
       };
@@ -89,7 +100,7 @@
 
       // 新增用户,并获取摄像头权限,将摄像头流缓存,之后的所有offer,answer共用一个流
       // 向信令服务器发送新增用户请求,等服务器返回所有用户后,执行initConnection
-      const useradd =async function (username) {
+      const useradd = async function (username) {
         const id = uuidv4();
         const params = JSON.stringify({
           id,
@@ -97,10 +108,12 @@
           type: NEWUSER,
         });
         ownconnectionid = id;
-        await localMediaInit()
+        await localMediaInit();
         socketconnection.sendMessage(params);
+        userAddDisabled(true);
+        closeDisabled(false);
       };
-     
+
       // 初始化connection , 将所有用户拿过来,给本地没有的用户建立RTCPeerconnection
       // 如果本地为新增用户本户,在向其他所有用户发送offer
       const initConnection = function (newUserId, list) {
@@ -119,6 +132,39 @@
         }
       };
 
+      const closeSocketConnection = function () {
+        Object.keys(connectionList).forEach((key) => {
+          const id = `${key}_remote`;
+          const dom = document.getElementById(id);
+          document.body.removeChild(dom);
+          delete connectionList[key];
+        });
+        const videoDom = document.querySelector("#video");
+        videoDom.srcObject = null;
+        const params = JSON.stringify({
+          id: ownconnectionid,
+          type: CLOSECONNECTION,
+        });
+        socketconnection.sendMessage(params);
+        setTimeout(() => {
+          userAddDisabled(false);
+          closeDisabled(true);
+          alert("退出成功");
+        }, 500);
+      };
+      // 有用户退出时执行
+      const restConnection = function (list) {
+        Object.keys(connectionList).forEach((key) => {
+          if (!list[key]) {
+            delete connectionList[key];
+            const id = `${key}_remote`;
+            const dom = document.getElementById(id);
+            document.body.removeChild(dom);
+          }
+        });
+      };
+
+      // 创建RTCPeerConnection节点
       const createConnection = function ({ id, localId, username }) {
         console.log("create", id);
         // id为远端id,所有节点直接记录远端id,使用远端id创建连接节点
@@ -132,7 +178,18 @@
         connectionList[id] = connection;
       };
 
-      window.onbeforeunload = () => {};
+      const closeDisabled = function (show) {
+        const btn = document.querySelector("#close_btn");
+        btn.disabled = show;
+      };
+      const userAddDisabled = function (show) {
+        const useradd = document.getElementById("submit");
+        useradd.disabled = show ;
+      };
+
+      window.onbeforeunload = () => {
+        closeSocketConnection();
+      };
     </script>
   </body>
 </html>

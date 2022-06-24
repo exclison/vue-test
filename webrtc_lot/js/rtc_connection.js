@@ -2,6 +2,7 @@
 class RTCConnection {
     constructor({
         id,
+        localId,
         username,
         options,
         connection,
@@ -16,6 +17,7 @@ class RTCConnection {
         // oniceconnectionstatechange,
     }) {
         this.id = id;
+        this.localId = localId;
         this.username = username;
         this.connection = connection
         this.inboundStream = null
@@ -49,9 +51,6 @@ class RTCConnection {
         } else {
             if (!this.inboundStream) {
                 this.inboundStream = new MediaStream();
-                console.log(this.inboundStream, "inboundStream");
-                console.log(videoDom, "videoDom");
-
                 videoDom.srcObject = this.inboundStream;
             }
             this.inboundStream.addTrack(event.track);
@@ -61,7 +60,8 @@ class RTCConnection {
     onicecandidate(event) {
         if (event.candidate) {
             const params = JSON.stringify({
-                id: this.id,
+                id: this.localId,
+                targetId: this.id,
                 username: this.username,
                 type: "new_candidate",
                 ice: event.candidate,
@@ -99,15 +99,12 @@ class RTCConnection {
         const hasString = Object.prototype.toString.call(message) === "[object String]";
         const messageParse = hasString ? JSON.parse(message) : message
         const { id, ice } = messageParse
-        this.id !== id && this.addIceCandidate(ice)
+        // this.id为远端id ,id为远端来源id
+        this.id === id && this.addIceCandidate(ice)
     }
 
-    async createOfferAndSendMessage(options = {}) {
+    async createOfferAndSendMessage(stream,options = {}) {
         console.log('create_offer')
-        const stream = await this.getMedia();
-        const videoDom = this.getVideoDom('local')
-        console.log(stream,videoDom, 'video')
-        videoDom.srcObject = stream
         for (const track of stream.getTracks()) {
             this.instance.addTrack(track);
         }
@@ -115,8 +112,10 @@ class RTCConnection {
         const option = Object.assign({ OfferToReceiveAudio: true }, options);
         const offer = await this.instance.createOffer(option);
         await this.setLocalDescription(offer)
+        // 所有消息发送使用本地id以确定信息来源
         const params = JSON.stringify({
-            id: this.id,
+            id: this.localId,
+            targetId:this.id,
             username: this.username,
             type: "send_offer",
             sdp: this.instance.localDescription,
@@ -124,17 +123,18 @@ class RTCConnection {
         this.sendMessage(params);
     }
 
-    async createAnswerAndSendMessage(offer) {
+    async createAnswerAndSendMessage(offer, stream) {
         console.log('create_answer')
         await this.setRemoteDescription(offer);
-        const stream = await this.getMedia();
         for (const track of stream.getTracks()) {
             this.instance.addTrack(track);
         }
         const answer = await this.createAnswer();
         await this.setLocalDescription(answer);
+        // 所有消息发送使用本地id以确定信息来源
         const params = JSON.stringify({
-            id: this.id,
+            id: this.localId,
+            targetId: this.id,
             username: this.username,
             type: "send_aswer",
             sdp: this.instance.localDescription,

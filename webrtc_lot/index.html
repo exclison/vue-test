@@ -24,10 +24,24 @@
     <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>
 
     <script>
-      // const uuid = uuidv4()
-      // console.log(uuid,'uuid')
+      
+      let localStream = null; //mediaStream
       let ownconnectionid = null; //记录自己id
-      const connectionList = {};
+      const connectionList = {}; //所有用户的RTCPeerConnection缓存
+
+      const getMedia = async () => {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+          video: true,
+        });
+        return stream;
+      };
+      const localMediaInit = async function () {
+        const stream = await getMedia();
+        localStream = stream
+        const videoDom = document.querySelector("#video");
+        videoDom.srcObject = localStream;
+      };
       const onSubmit = () => {
         const username = document.querySelector("#user").value;
         console.log(username, "user");
@@ -40,76 +54,82 @@
       };
 
       const messageHandler = function (event) {
+        // 如果用户没有加入,则不响应消息
         if (!ownconnectionid) return;
         const message = JSON.parse(event.data);
-        const { id, username, type } = message;
-        console.log(id, username, type, "message");
+        const { id, targetId, username, type } = message;
+        console.log(id, targetId, username, type, "message");
 
-        // TODO:这里connection_list事件也有问题
+        // 根据消息类型执行相应的方法
         switch (type) {
           case CONNECTLIST:
-            const { list } = message;
-            initConnection(list);
-            break;
-          case NEWUSER:
-            console.log(ownconnectionid,id,'kkllll')
-            ownconnectionid !== id && createConnection({ id, username });
+            const { list, newUserId } = message;
+            initConnection(newUserId, list);
             break;
           case SENDOFFER:
             const { sdp: offer } = message;
-            connectionList[id].createAnswerAndSendMessage(offer);
+            targetId === ownconnectionid && connectionList[id].createAnswerAndSendMessage(offer,localStream);
             break;
           case SENDASWER:
             const { sdp: answer } = message;
-            connectionList[id].setRemoteDescription(answer);
+            targetId === ownconnectionid && connectionList[id].setRemoteDescription(answer);
             break;
           case NEWCAND:
             const { ice: candidate } = message;
-            connectionList[id].addIceCandidate(candidate);
+            targetId === ownconnectionid && connectionList[id].addIceCandidate(candidate);
             break;
         }
       };
 
+      // 建立websocket连接
       const socketconnection = new Connection({
         url: "ws://127.0.0.1:8000",
         messageHandler,
       });
 
-      const useradd = function (username) {
+      // 新增用户,并获取摄像头权限,将摄像头流缓存,之后的所有offer,answer共用一个流
+      // 向信令服务器发送新增用户请求,等服务器返回所有用户后,执行initConnection
+      const useradd =async function (username) {
         const id = uuidv4();
         const params = JSON.stringify({
           id,
           username,
           type: NEWUSER,
         });
-        console.log(params, "params");
         ownconnectionid = id;
+        await localMediaInit()
         socketconnection.sendMessage(params);
-        // createConnection({ id, username });
-        // connectionList[id].createOfferAndSendMessage();
       };
-      //TODO:这里还有问题,等拓扑结构理清楚再写
-      /**
-       现在是一共有几人进入房间就创建几个connection
-       这会导致互相连接紊乱
-       */
-      const initConnection = function (list) {
+     
+      // 初始化connection , 将所有用户拿过来,给本地没有的用户建立RTCPeerconnection
+      // 如果本地为新增用户本户,在向其他所有用户发送offer
+      const initConnection = function (newUserId, list) {
         Object.keys(list).forEach((key) => {
-          const { id, username } = list[key];
-          createConnection({ id, username });
+          if (key !== ownconnectionid && !connectionList[key]) {
+            const { id, username } = list[key];
+            createConnection({ id, localId: ownconnectionid, username });
+          }
         });
-        connectionList[ownconnectionid].createOfferAndSendMessage();
+        // 如果本地是新增用户,则向其他各端发送offer
+        if (newUserId === ownconnectionid) {
+          Object.keys(connectionList).forEach((key) => {
+            console.log(key, connectionList[key], "kkllll");
+            connectionList[key].createOfferAndSendMessage(localStream);
+          });
+        }
       };
 
-      const createConnection = function ({ id, username }) {
-        console.log("create");
+      const createConnection = function ({ id, localId, username }) {
+        console.log("create", id);
+        // id为远端id,所有节点直接记录远端id,使用远端id创建连接节点
+        // 当远端使用他自己的本地id发送信息时,本地可以通过发送过来的远端id找到对应的处理节点
         const connection = new RTCConnection({
           id,
+          localId,
           username,
           connection: socketconnection,
         });
         connectionList[id] = connection;
-        console.log(connectionList, "list");
       };
 
       window.onbeforeunload = () => {};

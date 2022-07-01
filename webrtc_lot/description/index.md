@@ -77,3 +77,25 @@ const CONNECTLIST = "connection_list"; //连接用户列表
 const CLOSECONNECTION = "close_connection"; //关闭连接
 const RESTCONNECTIONLIST = "rest_connection_list"; //剩余连接用户列表
 ```
+
+## 原理图
+
+1. offer-answer流程原理
+
+![webrtc视频通话原理](https://cdn.jsdelivr.net/gh/exclison/image_itclan@master/20220627/webrtc视频通话原理.drawio.5uj5xgqkij4.png)
+
+2. stun服务器流程
+
+![stun流程](https://cdn.jsdelivr.net/gh/exclison/image_itclan@master/20220627/stun流程.drawio.1n8nc1fxpmww.png)
+
+3. datachannel流程
+
+![RTCDataChannel流程](https://cdn.jsdelivr.net/gh/exclison/image_itclan@master/20220627/RTCDataChannel流程.drawio.7901ix4ypls0.png)
+
+4. 一对一流程综合
+
+![webrtc一对一原理](https://cdn.jsdelivr.net/gh/exclison/image_itclan@master/20220627/webrtc一对一原理.drawio.v0w5zom08ow.png)
+
+5. 多对多流程综合
+
+![webrtc多对多原理](https://cdn.jsdelivr.net/gh/exclison/image_itclan@master/20220627/webrtc多对多原理.drawio.3t8g48ygpc40.png)

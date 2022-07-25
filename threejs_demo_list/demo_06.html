@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <script type="module">
+      import * as THREE from "./node_modules/three/build/three.module.js";
+      // import { OrbitControls } from "./node_modules/three/examples/jsm/controls/OrbitControls.js";
+      // 纹理练习
+      // 安装servez 使用servez启动http服务器 threejs无法直接访问本地文件,需启动http服务器
+      // 场景
+      const scene = new THREE.Scene();
+
+      const fov = 45;
+      const aspect = 2; // canvas 的默认宽高 300:150
+      const near = 0.1;
+      const far = 1500;
+      // 相机 透视摄像机 Param(视野角度FOV,长宽比,近截面,远截面)
+      const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+      camera.position.set(0, 0, 400);
+
+      // 渲染器
+      const renderer = new THREE.WebGLRenderer({antialias: true, alpha: true});
+
+      // 可以传入低宽高 并将第三个参数设为false,可实现容器宽高不变,以低分辨率渲染
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      let ambientLight = new THREE.AmbientLight(0xffffff, 1);
+      ambientLight.name = "环境光";
+      scene.add(ambientLight);
+
+      // const controls = new OrbitControls(camera, renderer.domElement);
+      // controls.target.set(0, 5, 0);
+      // controls.update();
+      // const geometry = new THREE.BufferGeometry(); //创建一个Buffer类型几何体对象
+      // //类型数组创建顶点数据
+      // const vertices = new Float32Array([
+      //   0,
+      //   0,
+      //   0, //顶点1坐标
+      //   50,
+      //   0,
+      //   0, //顶点2坐标
+      //   0,
+      //   100,
+      //   0, //顶点3坐标
+      //   0,
+      //   0,
+      //   10, //顶点4坐标
+      //   0,
+      //   0,
+      //   100, //顶点5坐标
+      //   50,
+      //   0,
+      //   10, //顶点6坐标
+      // ]);
+      // // 创建属性缓冲区对象
+      // const attribue = new THREE.BufferAttribute(vertices, 3); //3个为一组，表示一个顶点的xyz坐标
+      // // 设置几何体attributes属性的位置属性
+      // geometry.attributes.position = attribue;
+
+      // // 三角面(网格)渲染模式
+      // const material = new THREE.PointsMaterial({
+      //   color: 0x0000ff, //三角面颜色
+      // }); //材质对象
+      // // // 三角面(网格)渲染模式
+      // // const material = new THREE.MeshBasicMaterial({
+      // //   color: 0x0000ff, //三角面颜色
+      // //   side: THREE.DoubleSide, //两面可见
+      // // }); //材质对象
+      // const mesh = new THREE.Points(geometry, material); //网格模型对象Mesh
+      // // const mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+
+      // mesh.rotation.x = 0.5
+
+      // var geometry = new THREE.BufferGeometry(); //声明一个缓冲几何体对象
+
+      // //类型数组创建顶点位置position数据
+      // var vertices = new Float32Array([
+      //   0,
+      //   0,
+      //   0, //顶点1坐标
+      //   50,
+      //   0,
+      //   0, //顶点2坐标
+      //   0,
+      //   100,
+      //   0, //顶点3坐标
+
+      //   0,
+      //   0,
+      //   10, //顶点4坐标
+      //   0,
+      //   0,
+      //   100, //顶点5坐标
+      //   50,
+      //   0,
+      //   10, //顶点6坐标
+      // ]);
+      // // 创建属性缓冲区对象
+      // var attribue = new THREE.BufferAttribute(vertices, 3); //3个为一组，作为一个顶点的xyz坐标
+      // // 设置几何体attributes属性的位置position属性
+      // geometry.attributes.position = attribue;
+      // //类型数组创建顶点颜色color数据
+      // var colors = new Float32Array([
+      //   1,
+      //   0,
+      //   0, //顶点1颜色
+      //   0,
+      //   1,
+      //   0, //顶点2颜色
+      //   0,
+      //   0,
+      //   1, //顶点3颜色
+
+      //   1,
+      //   1,
+      //   0, //顶点4颜色
+      //   0,
+      //   1,
+      //   1, //顶点5颜色
+      //   1,
+      //   0,
+      //   1, //顶点6颜色
+      // ]);
+      // // 设置几何体attributes属性的颜色color属性
+      // geometry.attributes.color = new THREE.BufferAttribute(colors, 3); //3个为一组,表示一个顶点的颜色数据RGB
+      // //材质对象
+      // var material = new THREE.PointsMaterial({
+      //   // 使用顶点颜色数据渲染模型，不需要再定义color属性
+      //   // color: 0xff0000,
+      //   vertexColors: true, //以顶点颜色为准
+      //   size: 10.0, //点对象像素尺寸
+      // });
+      // // 点渲染模式  点模型对象Points
+      // // var points = new THREE.Points(geometry, material); //点模型对象
+
+      // // points.rotation.x = 0.5;
+      // // points.rotation.y = -0.5;
+
+      // const mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+      // mesh.rotation.x = 0.5;
+      // mesh.rotation.y = -0.5;
+
+      // // scene.add(points); //点对象添加到场景
+
+      // scene.add(mesh);
+
+      // var geometry = new THREE.SphereGeometry(100, 25, 25); //球体
+      // // 直线基础材质对象
+      // var material = new THREE.LineBasicMaterial({
+      //   color: 0x0000ff,
+      // });
+      // var line = new THREE.Line(geometry, material); //线模型对象
+      // scene.add(line); //点模型添加到场景中
+
+      // var geometry = new THREE.BoxGeometry(40, 100, 40);
+      // var material = new THREE.MeshLambertMaterial({
+      //   color: 0x0000ff,
+      // });
+      // var mesh = new THREE.Mesh(geometry, material);
+      // // mesh.position.set(0,0,0)
+      // scene.add(mesh);
+
+      // // 设置产生投影的网格模型
+      // mesh.castShadow = true;
+
+      // //创建一个平面几何体作为投影面
+      // var planeGeometry = new THREE.PlaneGeometry(300, 200);
+      // var planeMaterial = new THREE.MeshLambertMaterial({
+      //   color: 0x999999,
+      // });
+      // // 平面网格模型作为投影面
+      // var planeMesh = new THREE.Mesh(planeGeometry, planeMaterial);
+      // scene.add(planeMesh); //网格模型添加到场景中
+      // planeMesh.rotateX(-Math.PI / 2); //旋转网格模型
+      // planeMesh.position.y = -50; //设置网格模型y坐标
+      // // 设置接收阴影的投影面
+      // planeMesh.receiveShadow = true;
+
+      // // 聚光光源
+      // var spotLight = new THREE.SpotLight(0xffffff);
+      // // 设置聚光光源位置
+      // spotLight.position.set(50, 90, 50);
+      // // 设置聚光光源发散角度
+      // spotLight.angle = Math.PI / 6;
+      // scene.add(spotLight); //光对象添加到scene场景中
+      // // 设置用于计算阴影的光源对象
+      // spotLight.castShadow = true;
+      // // 设置计算阴影的区域，注意包裹对象的周围
+      // spotLight.shadow.camera.near = 1;
+      // spotLight.shadow.camera.far = 300;
+      // spotLight.shadow.camera.fov = 20;
+
+      // // 方向光
+      // var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      // // 设置光源位置
+      // directionalLight.position.set(60, 100, 40);
+      // scene.add(directionalLight);
+      // // 设置用于计算阴影的光源对象
+      // directionalLight.castShadow = true;
+      // // 设置计算阴影的区域，最好刚好紧密包围在对象周围
+      // // 计算阴影的区域过大：模糊  过小：看不到或显示不完整
+      // directionalLight.shadow.camera.near = 0.5;
+      // directionalLight.shadow.camera.far = 300;
+      // directionalLight.shadow.camera.left = -50;
+      // directionalLight.shadow.camera.right = 50;
+      // directionalLight.shadow.camera.top = 200;
+      // directionalLight.shadow.camera.bottom = -100;
+      // // 设置mapSize属性可以使阴影更清晰，不那么模糊
+      // // directionalLight.shadow.mapSize.set(1024,1024)
+      // console.log(directionalLight.shadow.camera);
+
+      // 头部网格模型和组
+      // var headMesh = sphereMesh(10, 0, 0, 0);
+      // headMesh.name = "脑壳";
+      // var leftEyeMesh = sphereMesh(1, 8, 5, 4);
+      // leftEyeMesh.name = "左眼";
+      // var rightEyeMesh = sphereMesh(1, 8, 5, -4);
+      // rightEyeMesh.name = "右眼";
+      // var headGroup = new THREE.Group();
+      // headGroup.name = "头部";
+      // headGroup.add(headMesh, leftEyeMesh, rightEyeMesh);
+      // // 身体网格模型和组
+      // var neckMesh = cylinderMesh(3, 10, 0, -15, 0);
+      // neckMesh.name = "脖子";
+      // var bodyMesh = cylinderMesh(14, 30, 0, -35, 0);
+      // bodyMesh.name = "腹部";
+      // var leftLegMesh = cylinderMesh(4, 60, 0, -80, -7);
+      // leftLegMesh.name = "左腿";
+      // var rightLegMesh = cylinderMesh(4, 60, 0, -80, 7);
+      // rightLegMesh.name = "右腿";
+      // var legGroup = new THREE.Group();
+      // legGroup.name = "腿";
+      // legGroup.add(leftLegMesh, rightLegMesh);
+      // var bodyGroup = new THREE.Group();
+      // bodyGroup.name = "身体";
+      // bodyGroup.add(neckMesh, bodyMesh, legGroup);
+      // // 人Group
+      // var personGroup = new THREE.Group();
+      // personGroup.name = "人";
+      // personGroup.add(headGroup, bodyGroup);
+      // personGroup.translateY(50);
+      // scene.add(personGroup);
+
+      // // 球体网格模型创建函数
+      // function sphereMesh(R, x, y, z) {
+      //   var geometry = new THREE.SphereGeometry(R, 25, 25); //球体几何体
+      //   var material = new THREE.MeshPhongMaterial({
+      //     color: 0x0000ff,
+      //   }); //材质对象Material
+      //   var mesh = new THREE.Mesh(geometry, material); // 创建网格模型对象
+      //   mesh.position.set(x, y, z);
+      //   return mesh;
+      // }
+      // // 圆柱体网格模型创建函数
+      // function cylinderMesh(R, h, x, y, z) {
+      //   var geometry = new THREE.CylinderGeometry(R, R, h, 25, 25); //球体几何体
+      //   var material = new THREE.MeshPhongMaterial({
+      //     color: 0x0000ff,
+      //   }); //材质对象Material
+      //   var mesh = new THREE.Mesh(geometry, material); // 创建网格模型对象
+      //   mesh.position.set(x, y, z);
+      //   return mesh;
+      // }
+
+      // /**
+      //  * 创建旋转网格模型
+      //  */
+      // var points = [
+      //   new THREE.Vector2(50, 60),
+      //   new THREE.Vector2(25, 0),
+      //   new THREE.Vector2(50, -60),
+      // ];
+      // var geometry = new THREE.LatheGeometry(points, 30);
+      // var material = new THREE.MeshPhongMaterial({
+      //   color: 0x0000ff, //三角面颜色
+      //   side: THREE.DoubleSide, //两面可见
+      // }); //材质对象
+      // // material.wireframe = true; //线条模式渲染(查看细分数)
+      // var mesh = new THREE.Mesh(geometry, material); //旋转网格模型对象
+      // scene.add(mesh); //旋转网格模型添加到场景中
+
+      // var shape = new THREE.Shape(); //创建Shape对象
+      // var points = [
+      //   //定位定点
+      //   new THREE.Vector2(50, 60),
+      //   new THREE.Vector2(25, 0),
+      //   new THREE.Vector2(50, -60),
+      // ];
+      // shape.splineThru(points); //顶点带入样条插值计算函数
+      // var splinePoints = shape.getPoints(20); //插值计算细分数20
+      // var geometry = new THREE.LatheGeometry(splinePoints, 30); //旋转造型
+      // var material = new THREE.MeshPhongMaterial({
+      //   color: 0x0000ff, //三角面颜色
+      //   side: THREE.DoubleSide, //两面可见
+      // }); //材质对象
+
+      /**
+       * 创建扫描网格模型
+       */
+      var shape = new THREE.Shape();
+      /**四条直线绘制一个矩形轮廓*/
+      shape.moveTo(0, 0); //起点
+      shape.lineTo(0, 10); //第2点
+      shape.lineTo(10, 10); //第3点
+      shape.lineTo(10, 0); //第4点
+      shape.lineTo(0, 0); //第5点
+      /**创建轮廓的扫描轨迹(3D样条曲线)*/
+      var curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-10, -50, -50),
+        new THREE.Vector3(10, 0, 0),
+        new THREE.Vector3(8, 50, 50),
+        new THREE.Vector3(-5, 0, 100),
+      ]);
+      var geometry = new THREE.ExtrudeGeometry( //拉伸造型
+        shape, //二维轮廓
+        //拉伸参数
+        {
+          bevelEnabled: false, //无倒角
+          extrudePath: curve, //选择扫描轨迹
+          steps: 50, //扫描方向细分数
+        }
+      );
+      var material = new THREE.MeshPhongMaterial({
+        color: 0x0000ff,
+        // size: 5.0, //点对象像素尺寸
+      }); //材质对象
+      var mesh = new THREE.Mesh(geometry, material); //点模型对象
+      scene.add(mesh); //点模型添加到场景中
+
+      function animate() {
+        mesh.rotation.x += 0.01;
+        mesh.rotation.y += 0.01;
+        renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>

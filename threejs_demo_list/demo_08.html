@@ -48,7 +48,7 @@
       controls.update();
 
       // 可以传入低宽高 并将第三个参数设为false,可实现容器宽高不变,以低分辨率渲染
-      console.log(window.innerWidth, window.innerHeight);
+      // console.log(window.innerWidth, window.innerHeight);
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
 
@@ -68,7 +68,7 @@
       // 创建一个圆柱几何体，高度120，顶点坐标y分量范围[-60,60]
       var geometry = new THREE.CylinderGeometry(5, 10, 120, 50, 300);
       geometry.translate(0, 60, 0); //平移后，y分量范围[0,120]
-      console.log("name", geometry.attributes.position.array); //控制台查看顶点坐标
+      // console.log("name", geometry.attributes.position.array); //控制台查看顶点坐标
       //
       /**
        * 设置几何体对象Geometry的蒙皮索引skinIndices、权重skinWeights属性
@@ -77,7 +77,7 @@
       //遍历几何体顶点，为每一个顶点设置蒙皮索引、权重属性
       //根据y来分段，0~60一段、60~100一段、100~120一段
       const position = geometry.attributes.position;
-      console.log(position.count,'potion')
+      // console.log(position.count,'potion')
 
       const vertex = new THREE.Vector3();
 
@@ -86,7 +86,7 @@
 
       for (let i = 0; i < position.count; i++) {
         vertex.fromBufferAttribute(position, i);
-        console.log(vertex.y, "vertex");
+        // console.log(vertex.y, "vertex");
 
         // compute skinIndex and skinWeight based on some configuration data
         // const sizing = {
@@ -176,7 +176,7 @@
       //骨骼关联网格模型
       SkinnedMesh.add(Bone1); //根骨头关节添加到网格模型
       SkinnedMesh.bind(skeleton); //网格模型绑定到骨骼系统
-      console.log(SkinnedMesh);
+      // console.log(SkinnedMesh);
       /**
        * 骨骼辅助显示
        */
@@ -187,7 +187,7 @@
       skeleton.bones[1].rotation.x = 0.5;
       skeleton.bones[2].rotation.x = 0.5;
 
-      console.log(skeleton, "skel");
+      // console.log(skeleton, "skel");
 
       var n = 0;
       var T = 50;

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./node_modules/three/build/three.module.js",
+          "OrbitControls": "./node_modules/three/examples/jsm/controls/OrbitControls.js"
+        }
+      }
+    </script>
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "OrbitControls";
+      // 纹理练习
+      // 安装servez 使用servez启动http服务器 threejs无法直接访问本地文件,需启动http服务器
+      // 场景
+      const scene = new THREE.Scene();
+
+      const fov = 45;
+      const aspect = 2; // canvas 的默认宽高 300:150
+      const near = 0.1;
+      const far = 1500;
+      // 相机 透视摄像机 Param(视野角度FOV,长宽比,近截面,远截面)
+      const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+      camera.position.set(0, 0, 400);
+
+      // 渲染器
+      const renderer = new THREE.WebGLRenderer();
+      // { antialias: true, alpha: true }
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+
+      //controls.update() must be called after any manual changes to the camera's transform
+      controls.update();
+
+      // 可以传入低宽高 并将第三个参数设为false,可实现容器宽高不变,以低分辨率渲染
+      console.log(window.innerWidth, window.innerHeight);
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      let ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+      ambientLight.name = "环境光";
+      scene.add(ambientLight);
+      const light = new THREE.PointLight(0xffffff, 1, 0);
+      light.position.set(100, 100, 600);
+      scene.add(light);
+
+      const axesHelper = new THREE.AxesHelper(500);
+      scene.add(axesHelper);
+
+      /**
+       * 创建网格模型，并给模型的几何体设置多个变形目标
+       */
+      // 创建一个几何体具有8个顶点
+      const geometry = new THREE.BoxGeometry(50, 50, 50); //立方体几何对象
+      console.log(geometry.attributes.position);
+      // 为geometry提供变形目标的数据
+      const box1 = new THREE.BoxGeometry(100, 5, 100); //为变形目标1提供数据
+      const box2 = new THREE.BoxGeometry(5, 200, 5); //为变形目标2提供数据
+      // 设置变形目标的数据
+
+      // geometry.morphAttributes[0] = { name: "target1", array: box1.attributes.position };
+      // geometry.morphAttributes[1] = { name: "target2", array: box2.attributes.position };
+
+      // geometry.morphAttributes["position"] = box1.attributes.position;
+      geometry.morphAttributes["position"] = [box1.attributes.position, box2.attributes.position];
+
+      const material = new THREE.MeshLambertMaterial({
+        // morphTargets: true, //允许变形
+        color: 0x0000ff,
+      }); //材质对象
+      const mesh = new THREE.Mesh(geometry, material); //网格模型对象
+
+      //启用变形目标并设置变形目标影响权重，范围一般0~1
+      // 设置第一组顶点对几何体形状影响的变形系数
+      mesh.morphTargetInfluences[0] = 0.5;
+      // 设置第二组顶点对几何体形状影响的变形系数
+      mesh.morphTargetInfluences[1] = 0.5;
+
+      scene.add(mesh); //网格模型添加到场景中
+
+      /**
+       * 设置关键帧数据
+       */
+      // 设置变形目标1对应权重随着时间的变化
+      const Track1 = new THREE.KeyframeTrack(".morphTargetInfluences[0]", [0, 10, 20], [0, 1, 0]);
+      // 设置变形目标2对应权重随着时间的变化
+      const Track2 = new THREE.KeyframeTrack(".morphTargetInfluences[1]", [20, 30, 40], [0, 1, 0]);
+      // 创建一个剪辑clip对象，命名"default"，持续时间40
+      const clip = new THREE.AnimationClip("default", 40, [Track1, Track2]);
+
+      /**
+       * 播放编辑好的关键帧数据
+       */
+      const mixer = new THREE.AnimationMixer(mesh); //创建混合器
+      const AnimationAction = mixer.clipAction(clip); //返回动画操作对象
+      AnimationAction.timeScale = 5; //默认1，可以调节播放速度
+      // AnimationAction.loop = THREE.LoopOnce; //不循环播放
+      // AnimationAction.clampWhenFinished=true;//暂停在最后一帧播放的状态
+      AnimationAction.play(); //开始播放
+      // 创建一个时钟对象Clock
+      const clock = new THREE.Clock();
+      // 渲染函数
+      function render() {
+        renderer.render(scene, camera); //执行渲染操作
+        requestAnimationFrame(render); //请求再次执行渲染函数render，渲染下一帧
+
+        //clock.getDelta()方法获得两帧的时间间隔
+        // 更新混合器相关的时间
+        mixer.update(clock.getDelta());
+      }
+      render();
+    </script>
+  </body>
+</html>

@@ -32,7 +32,8 @@
       const connectionList = {}; //所有用户的RTCPeerConnection缓存
 
       const getMedia = async () => {
-        const stream = await navigator.mediaDevices.getUserMedia({
+        // navigator.mediaDevices.getUserMedia
+        const stream = await navigator.mediaDevices.getDisplayMedia({
           audio: true,
           video: true,
         });

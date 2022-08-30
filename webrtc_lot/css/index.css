@@ -20,3 +20,8 @@ body{
 #close_btn{
     /* display: none; */
 }
+
+video{
+    width: 800px;
+    height: 450px;
+}

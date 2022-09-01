@@ -1,3 +1,10 @@
+/**
+ * @name:HttpRequest
+ * @description:使用axios发送请求的公共方法封装
+ * @author: hanyuchen
+ * @date 2022-09-01 10:58:34
+ * @注意事项 如果项目中有mockjs,使用接口前一定全部关掉,否则timeout属性不会生效
+ */
 import axios, { Axios, AxiosRequestConfig, Method, AxiosResponse } from "axios";
 
 interface requestOption {
@@ -103,11 +110,7 @@ instance.addResponseInterceptors();
  * @params { Object} paramsName: 参数
  * @params {AxiosRequestConfig} paramsName: 其他axios参数
  */
-const $get = async (
-  url: string,
-  params: Object,
-  others?: AxiosRequestConfig
-) => {
+const $get = async (url: string, params: Object, others?: AxiosRequestConfig) => {
   const options: requestOption = {
     url,
     method: "get",
@@ -125,11 +128,7 @@ const $get = async (
  * @params {Object} paramsName: 参数
  * @params {AxiosRequestConfig} paramsName: 其他axios参数
  */
-const $post = async (
-  url: string,
-  data: Object,
-  others?: AxiosRequestConfig
-) => {
+const $post = async (url: string, data: Object, others?: AxiosRequestConfig) => {
   const options: requestOption = {
     url,
     method: "post",

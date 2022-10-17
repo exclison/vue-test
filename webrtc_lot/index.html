@@ -24,7 +24,8 @@
     <script src="./js//type_enum.js"></script>
     <script src="./js//ws_connection.js"></script>
     <script src="./js//rtc_connection.js"></script>
-    <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script>
+    <script src="./js/uuid.js"></script>
+    <!-- <script src="https://unpkg.com/uuid@latest/dist/umd/uuidv4.min.js"></script> -->
 
     <script>
       let localStream = null; //mediaStream
@@ -69,23 +70,28 @@
 
         // 根据消息类型执行相应的方法
         switch (type) {
+          // 有新增用户
           case CONNECTLIST:
             const { list, newUserId } = message;
             initConnection(newUserId, list);
             break;
+          // 收到对面发送来的信息
           case SENDOFFER:
             const { sdp: offer } = message;
             targetId === ownconnectionid &&
               connectionList[id].createAnswerAndSendMessage(offer, localStream);
             break;
+          // 收到对面发送的应答
           case SENDASWER:
             const { sdp: answer } = message;
             targetId === ownconnectionid && connectionList[id].setRemoteDescription(answer);
             break;
+          // 收到新的ice
           case NEWCAND:
             const { ice: candidate } = message;
             targetId === ownconnectionid && connectionList[id].addIceCandidate(candidate);
             break;
+          // 剩余链接用户列表
           case RESTCONNECTIONLIST:
             const { list: res_list } = message;
             restConnection(res_list);
@@ -102,7 +108,7 @@
       // 新增用户,并获取摄像头权限,将摄像头流缓存,之后的所有offer,answer共用一个流
       // 向信令服务器发送新增用户请求,等服务器返回所有用户后,执行initConnection
       const useradd = async function (username) {
-        const id = uuidv4();
+        const id = uuid();
         const params = JSON.stringify({
           id,
           username,
@@ -185,7 +191,7 @@
       };
       const userAddDisabled = function (show) {
         const useradd = document.getElementById("submit");
-        useradd.disabled = show ;
+        useradd.disabled = show;
       };
 
       window.onbeforeunload = () => {

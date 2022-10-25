@@ -4,8 +4,8 @@
   "description": "electron_test",
   "main": "main.js",
   "scripts": {
-    "dev": "nodemon --exec electron .",
-    "build": "node ./build/build",
+    "dev": "nodemon --exec electron . --param=111",
+    "build": "node ./build/build --param=111",
     "rebuild": "electron-rebuild"
   },
   "author": "exclison",

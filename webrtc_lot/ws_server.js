@@ -1,3 +1,11 @@
+/*
+ * @Author: Hanyuchen e-exclison@outlook.com
+ * @Date: 2022-06-22 14:47:36
+ * @LastEditors: Hanyuchen e-exclison@outlook.com
+ * @LastEditTime: 2022-10-17 16:33:43
+ * @FilePath: \vue-test\webrtc_lot\ws_server.js
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 // websocket信令服务器
 const NEWUSER = 'new_user';
 // const NEWCAND = 'new_candidate';
@@ -11,7 +19,7 @@ import WebSocket, { WebSocketServer } from 'ws';
 
 const connectionList = {}
 const connectionWS = {}
-const wss = new WebSocketServer({ port: 8000 });
+const wss = new WebSocketServer({ port: 8001 });
 
 wss.on('connection', function connection(ws) {
     ws.on('message', function message(data, isBinary) {

@@ -1,5 +1,6 @@
 const builder = require("electron-builder")
 const Platform = builder.Platform
+console.log(process.argv)
 
 // Let's get that intellisense working
 /**
@@ -37,7 +38,7 @@ const options = {
   },
   nsis: {
     deleteAppDataOnUninstall: true,
-    include: "installer/win/nsis-installer.nsh"
+    // include: "installer/win/nsis-installer.nsh"
   },
 
   mac: {

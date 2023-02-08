@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      let ctx = null;
+      let canvas = null;
+      const img = new Image();
+      img.onload = function () {
+        const scale = 2; // 缩放参数
+        const w = img.width * scale;
+        const h = img.height * scale;
+        canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        ctx = canvas.getContext("2d");
+
+        // ctx.beginPath();
+        // ctx.arc(0, 0, 60, 0, Math.PI * 2, true);
+        // ctx.clip();
+
+        ctx.drawImage(img, 0, 0, w, h); // 核心函数
+        ctx.globalCompositeOperation = "source-in";
+        // ctx.clip();
+        // ctx.fill()
+
+        const img_child = new Image();
+        img_child.onload = function () {
+          ctx.drawImage(img_child, 0, 0, w, h); // 核心函数
+          ctx.globalCompositeOperation = "source-in";
+          ctx.globalAlpha = 0.4
+        };
+        img_child.src = "./images/message_bg.png";
+
+        document.body.appendChild(canvas);
+      };
+      img.src = "./images/manage_bg.png";
+    </script>
+  </body>
+</html>

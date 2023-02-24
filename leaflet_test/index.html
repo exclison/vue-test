@@ -1,0 +1,213 @@
+<!--
+ * @Author: Hanyuchen e-exclison@outlook.com
+ * @Date: 2023-02-23 11:53:39
+ * @LastEditors: Hanyuchen e-exclison@outlook.com
+ * @LastEditTime: 2023-02-23 15:38:50
+ * @FilePath: \vue-test\leaflet_test\index.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!--
+ * @Author: Hanyuchen e-exclison@outlook.com
+ * @Date: 2023-02-23 11:53:39
+ * @LastEditors: Hanyuchen e-exclison@outlook.com
+ * @LastEditTime: 2023-02-23 13:56:20
+ * @FilePath: \vue-test\leaflet_test\index.html
+ * @Description: 
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+      integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+      integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+      crossorigin=""
+    ></script>
+    <script src="./geoJson.js"></script>
+
+    <style>
+      #map {
+        height: 1280px;
+      }
+      .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+      }
+      .info h4 {
+        margin: 0 0 5px;
+        color: #777;
+      }
+      .legend {
+        line-height: 18px;
+        color: #555;
+      }
+      .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.7;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script>
+      var map = L.map("map", { crs: L.CRS.Simple }).setView([0, 0], 0);
+      map.fitBounds([
+        [432, -400],
+        [-432, 400],
+      ]);
+      //   L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      //     maxZoom: 19,
+      //     // attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      //   }).addTo(map);
+
+      var imageUrl = "./qingdaoditu.png",
+        imageBounds = [
+          [432, -400],
+          [-432, 400],
+        ];
+      const imageOverLay = L.imageOverlay(imageUrl, imageBounds).addTo(map);
+
+      //   var map = L.map("map").setView([37.8, -96], 4);
+
+      //   var tiles = L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      //     maxZoom: 19,
+      //     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      //   }).addTo(map);
+
+      //   L.geoJson(statesData).addTo(map);
+
+      //   function getColor(d) {
+      //     return d > 1000
+      //       ? "#800026"
+      //       : d > 500
+      //       ? "#BD0026"
+      //       : d > 200
+      //       ? "#E31A1C"
+      //       : d > 100
+      //       ? "#FC4E2A"
+      //       : d > 50
+      //       ? "#FD8D3C"
+      //       : d > 20
+      //       ? "#FEB24C"
+      //       : d > 10
+      //       ? "#FED976"
+      //       : "#FFEDA0";
+      //   }
+
+      //   function style(feature) {
+      //     return {
+      //       fillColor: getColor(feature.properties.density),
+      //       weight: 2,
+      //       opacity: 1,
+      //       color: "white",
+      //       dashArray: "3",
+      //       fillOpacity: 0.7,
+      //     };
+      //   }
+
+      //   const geoJson = L.geoJson(statesData, { style: style, pointToLayer: () => {} }).addTo(map);
+      //   //   geoJson.setBounds(imageOverLay.getBounds())
+      //   //   imageOverLay.setBounds(geoJson.getBounds());
+      //   map.fitBounds(geoJson.getBounds());
+
+      //   function highlightFeature(e) {
+      //     console.log(e.target, "kkk");
+      //     var layer = e.target;
+
+      //     layer.setStyle({
+      //       weight: 5,
+      //       //   color: "#666",
+      //       fillColor: "#fff",
+      //       dashArray: "",
+      //       fillOpacity: 1,
+      //     });
+
+      //     layer.bringToFront();
+      //     info.update(layer.feature.properties);
+      //   }
+      //   function resetHighlight(e) {
+      //     geojson.resetStyle(e.target);
+      //     info.update();
+      //   }
+      //   function zoomToFeature(e) {
+      //     map.fitBounds(e.target.getBounds());
+      //   }
+      //   function onEachFeature(feature, layer) {
+      //     layer.on({
+      //       mouseover: highlightFeature,
+      //       mouseout: resetHighlight,
+      //       click: zoomToFeature,
+      //     });
+      //   }
+
+      //   geojson = L.geoJson(statesData, {
+      //     style: style,
+      //     onEachFeature: onEachFeature,
+      //   }).addTo(map);
+
+      //   var info = L.control();
+
+      //   info.onAdd = function (map) {
+      //     this._div = L.DomUtil.create("div", "info"); // create a div with a class "info"
+      //     this.update();
+      //     return this._div;
+      //   };
+
+      //   // method that we will use to update the control based on feature properties passed
+      //   info.update = function (props) {
+      //     this._div.innerHTML =
+      //       "<h4>US Population Density</h4>" +
+      //       (props
+      //         ? "<b>" + props.name + "</b><br />" + props.density + " people / mi<sup>2</sup>"
+      //         : "Hover over a state");
+      //   };
+
+      //   info.addTo(map);
+
+      //   var legend = L.control({ position: "bottomright" });
+
+      //   legend.onAdd = function (map) {
+      //     var div = L.DomUtil.create("div", "info legend"),
+      //       grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+      //       labels = [];
+
+      //     // loop through our density intervals and generate a label with a colored square for each interval
+      //     for (var i = 0; i < grades.length; i++) {
+      //       div.innerHTML +=
+      //         '<i style="background:' +
+      //         getColor(grades[i] + 1) +
+      //         '"></i> ' +
+      //         grades[i] +
+      //         (grades[i + 1] ? "&ndash;" + grades[i + 1] + "<br>" : "+");
+      //     }
+
+      //     return div;
+      //   };
+
+      //   legend.addTo(map);
+
+      var myIcon = L.divIcon({ className: "my-div-icon",html:`<div>2222222</div>` });
+      // 你可以在 .my-div-icon CSS 中设置样式
+
+      const marker = L.marker([100, -100], { icon: myIcon }).addTo(map);
+    //   marker.bringToFront();
+    </script>
+  </body>
+</html>

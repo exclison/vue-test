@@ -1,3 +1,11 @@
+/*
+ * @Author: Hanyuchen e-exclison@outlook.com
+ * @Date: 2022-05-17 15:07:21
+ * @LastEditors: Hanyuchen e-exclison@outlook.com
+ * @LastEditTime: 2023-02-24 10:58:24
+ * @FilePath: \vue-test\tour-plat\src\library\tools.js
+ * @Description: 
+ */
 /**
  * @time: 2020/8/10
  * @name: exChangeArray
@@ -33,7 +41,7 @@ export function getFileTimes(file) {
       const audioElement = new Audio(url);
 
       let duration;
-      audioElement.addEventListener("loadedmetadata", function(_event) {
+      audioElement.addEventListener("loadedmetadata", function (_event) {
         duration = audioElement.duration;
         resolve(duration);
         console.log(duration);
@@ -60,4 +68,20 @@ export function getParamsForUrl(url) {
     return r;
   }, {});
   return params;
+}
+
+
+//数据分组函数（每组num条）
+export function group_array(data, num) {
+  let result = [];
+  let groupItem;
+  for (let i = 0; i < data.length; i++) {
+    if (i % num == 0) {
+      groupItem != null && result.push(groupItem);
+      groupItem = [];
+    }
+    groupItem.push(data[i]);
+  }
+  result.push(groupItem);
+  return result;
 }

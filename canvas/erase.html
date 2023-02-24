@@ -1,0 +1,116 @@
+<!--
+ * @Author: Hanyuchen e-exclison@outlook.com
+ * @Date: 2023-02-17 09:05:46
+ * @LastEditors: Hanyuchen e-exclison@outlook.com
+ * @LastEditTime: 2023-02-17 11:17:24
+ * @FilePath: \vue-test\canvas\erase.html
+ * @Description: 擦除效果
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div>
+      <img
+        src="./images/manage_bg.png"
+        style="position: absolute; width: 1000px; height: 1000px; left: 0px; top: 0px"
+      />
+      <canvas
+        id="theCanvas"
+        texsrc="./images/manage_bg.png"
+        imgsrc="./images/message_bg.png"
+        width="1000"
+        height="1000"
+        style="
+          position: absolute;
+          width: 1000px;
+          height: 1000px;
+          left: 0px;
+          top: 0px;
+          background: transparent;
+        "
+      ></canvas>
+    </div>
+
+    <script>
+      const config = { x: 150, y: 150, r: 10, f: 40 };
+      const maxR = 100;
+      const init_time = new Date().getTime();
+
+      const pointList = [
+        { x: 150, y: 150, r: 10, f: 40, maxR: 100, speed: 1, delay: 0 },
+        { x: 250, y: 250, r: 0, f: 40, maxR: 100, speed: 1, delay: 2000 },
+      ];
+
+      function clipArc(ctx, pointList) {
+        // ctx, x, y, r, f, type = "destination-in"
+        const temp = document.createElement("canvas"),
+          tx = temp.getContext("2d");
+        temp.width = ctx.canvas.width;
+        temp.height = ctx.canvas.height;
+        tx.translate(-temp.width, 0);
+        tx.shadowOffsetX = temp.width;
+        tx.shadowOffsetY = 0;
+        tx.shadowColor = "#000";
+
+        tx.shadowBlur = 40;
+        // tx.arc(x, y, r, 0, 2 * Math.PI);
+        pointList.forEach((item) => {
+          tx.arc(item.x, item.y, item.r, 0, 2 * Math.PI);
+        });
+        tx.closePath();
+        tx.fill();
+
+        ctx.save();
+        ctx.globalCompositeOperation = "destination-in";
+        // ctx.globalCompositeOperation = "destination-in";
+        ctx.drawImage(temp, 200, 200);
+        ctx.restore();
+      }
+
+      class CanvasFade {
+        constructor(canvas) {
+          this.canvas = canvas;
+          this.ctx = canvas.getContext("2d");
+          this.imgSrc = canvas.getAttribute("imgSrc");
+          this.width = canvas.width;
+          this.height = canvas.height;
+        }
+        init(pointList) {
+          const _self = this;
+          const img = new Image();
+          img.onload = function () {
+            const pat = _self.ctx.createPattern(img, "no-repeat");
+            _self.ctx.fillStyle = pat;
+            _self.ctx.fillRect(0, 0, _self.width, _self.height);
+            clipArc(_self.ctx, pointList);
+          };
+          img.src = this.imgSrc;
+        }
+      }
+      const c = document.querySelector("#theCanvas");
+      const cf = new CanvasFade(c);
+
+      function pointUpdate() {
+        pointList.forEach((item, index) => {
+          if (new Date().getTime() - init_time > item.delay) {
+            item.r = item.r + item.speed > item.maxR ? item.maxR : item.r + item.speed;
+          }
+        });
+      }
+
+        cf.init(pointList);
+
+      function render() {
+        pointUpdate();
+        cf.init(pointList);
+        requestAnimationFrame(render);
+      }
+      render();
+    </script>
+  </body>
+</html>

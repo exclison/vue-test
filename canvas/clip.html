@@ -1,3 +1,11 @@
+<!--
+ * @Author: Hanyuchen e-exclison@outlook.com
+ * @Date: 2022-11-28 16:49:53
+ * @LastEditors: Hanyuchen e-exclison@outlook.com
+ * @LastEditTime: 2023-03-06 14:18:07
+ * @FilePath: \vue-test\canvas\clip.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -12,7 +20,7 @@
       let canvas = null;
       const img = new Image();
       img.onload = function () {
-        const scale = 2; // 缩放参数
+        const scale = 1; // 缩放参数
         const w = img.width * scale;
         const h = img.height * scale;
         canvas = document.createElement("canvas");
@@ -31,15 +39,38 @@
 
         const img_child = new Image();
         img_child.onload = function () {
-          ctx.drawImage(img_child, 0, 0, w, h); // 核心函数
+          console.log(img_child.width, img_child.height, "kkk");
+          const img_width = img_child.width;
+          const img_height = img_child.height;
+
+          const aspet_ratio = w / h;
+
+          let img_w = img_width,
+            img_h = img_height;
+          let img_x = 0,
+            img_y = 0;
+          if (img_width > img_height) {
+            console.log(aspet_ratio, img_height);
+            img_w = aspet_ratio * img_height;
+            img_x = (img_width - img_height) / 2;
+          } else {
+            img_h = img_width / aspet_ratio;
+            img_y = (img_height - img_width) / 2;
+          }
+
+          console.log(img_x, img_y, img_w, img_h, "lll");
+          // ctx.drawImage(img_child, 0, 0); // 核心函数
+          // ctx.drawImage(img_child, 0, 0, w, h); // 核心函数
+          ctx.drawImage(img_child, img_x, img_y, img_w, img_h, 0, 0, w, h); // 核心函数
           ctx.globalCompositeOperation = "source-in";
-          ctx.globalAlpha = 0.4
+          ctx.globalAlpha = 0.4;
         };
-        img_child.src = "./images/message_bg.png";
+        img_child.src = "./images/shutu.png";
+        // img_child.src = "./images/message_bg.png";
 
         document.body.appendChild(canvas);
       };
-      img.src = "./images/manage_bg.png";
+      img.src = "./images/test.png";
     </script>
   </body>
 </html>

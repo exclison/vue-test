@@ -6,26 +6,38 @@
  * @date: 2020-12-26 19:23
  * @params: {String} paramsName: 参数
 */
-const dateFormat = function(timestamp,format="yyyy-MM-DD HH:mm:ss"){
-  const date = new Date(Number(timestamp))
-  const year = date.getFullYear()
-  const month = date.getMonth().toString().padStart(2,'0')
-  const day = date.getDate().toString().padStart(2,'0')
-  const hour = date.getHours().toString().padStart(2,'0')
-  const minute = date.getMinutes().toString().padStart(2,'0')
-  const second = date.getSeconds().toString().padStart(2,'0')
+const dateFormat = function (datestring, format = "yyyy-MM-DD HH:mm:ss") {
+  let date = null
+  const date_type = Object.prototype.toString.call(datestring)
 
-  let str = format
-  str = str.replace(/yyyy/,year)
-  str = str.replace(/MM/,month)
-  str = str.replace(/DD/,day)
-  str = str.replace(/HH/,hour)
-  str = str.replace(/mm/,minute)
-  str = str.replace(/ss/,second)
+  switch (date_type) {
+    case '[object Date]':
+      date = datestring
+      break;
+    case '[object String]':
+      date = new Date(datestring)
+      break;
+    case '[object Number]':
+      date = new Date(datestring)
+      break;
+  }
+  const year = date.getFullYear().toString();
+  const month = date.getMonth().toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  const hour = date.getHours().toString().padStart(2, "0");
+  const minute = date.getMinutes().toString().padStart(2, "0");
+  const second = date.getSeconds().toString().padStart(2, "0");
 
-  return str
+  let str = format;
+  str = str.replace(/yyyy/, year);
+  str = str.replace(/MM/, month);
+  str = str.replace(/DD/, day);
+  str = str.replace(/HH/, hour);
+  str = str.replace(/mm/, minute);
+  str = str.replace(/ss/, second);
 
-}
+  return str;
+};
 
 /**
  * @time: 2020/8/8
@@ -36,7 +48,7 @@ const dateFormat = function(timestamp,format="yyyy-MM-DD HH:mm:ss"){
  * value:时间 单位为后边type判断
  * type:单位 h m s S
  **/
-const timeFormatToString = function(value = 0, type = 's') {
+const timeFormatToString = function (value = 0, type = 's') {
   let setValue = 0
   switch (type) {
     case 'h':
@@ -94,7 +106,7 @@ const timeFormatToString = function(value = 0, type = 's') {
  * type: h:小时 m:分钟 s:秒 S:毫秒
  *
  **/
-const timeFormatToNum = function(str, type) {
+const timeFormatToNum = function (str, type) {
   console.log(str, type, 'getTimeFormat')
   const hour = str.match(/^\d{2}/).length > 0 ? str.match(/^\d{2}/)[0] : 0
   const minutes =
@@ -144,7 +156,7 @@ const timeFormatToNum = function(str, type) {
 }
 
 // 音频时间格式
-const formatSeconds = function(value, format) {
+const formatSeconds = function (value, format) {
   console.log(value, format, 44444)
   let second = parseInt(value) // 需要转换的时间秒
   let minute = '00' // 分
@@ -183,4 +195,4 @@ const formatSeconds = function(value, format) {
   return str
 }
 
-export { timeFormatToNum, timeFormatToString, formatSeconds,dateFormat }
+export { timeFormatToNum, timeFormatToString, formatSeconds, dateFormat }

@@ -11,12 +11,15 @@
   },
   "dependencies": {
     "axios": "^0.27.2",
+    "lodash-es": "^4.17.21",
+    "reflect-metadata": "^0.1.13",
     "sass": "^1.52.2",
     "vue": "^3.2.25",
     "vue-router": "^4.0.15",
     "vuex": "^4.0.2"
   },
   "devDependencies": {
+    "@types/lodash-es": "^4.17.10",
     "@types/mockjs": "^1.0.6",
     "@types/node": "^17.0.40",
     "@vitejs/plugin-vue": "^2.3.3",

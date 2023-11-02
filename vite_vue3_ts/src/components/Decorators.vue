@@ -2,7 +2,7 @@
  * @Author: Hanyuchen e-exclison@outlook.com
  * @Date: 2023-11-01 10:40:29
  * @LastEditors: Hanyuchen e-exclison@outlook.com
- * @LastEditTime: 2023-11-01 13:37:05
+ * @LastEditTime: 2023-11-02 09:46:53
  * @FilePath: \vue-test\vite_vue3_ts\src\components\Decorators.vue
  * @Description: ts装饰器
 -->
@@ -17,10 +17,11 @@ export default {
 </script>
 <script setup lang="ts">
 import { ref, reactive } from "vue";
+import "reflect-metadata";
 
 function f() {
   console.log("f(): evaluated");
-  return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     console.log("f(): called");
     console.log(target, propertyKey, descriptor, "f_target");
   };
@@ -28,7 +29,7 @@ function f() {
 
 function g() {
   console.log("g(): evaluated");
-  return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     console.log("g(): called");
     console.log(target, propertyKey, descriptor, "g_target");
   };
@@ -152,57 +153,64 @@ class C {
 
 // 属性装饰器-----------------------------------------
 
-// class Greeter {
-//   @format("Hello, %s")
-//   greeting: string;
-
-//   constructor(message: string) {
-//     this.greeting = message;
-//   }
-//   greet() {
-//     let formatString = this.greeting;
-//     return formatString.replace("%s", this.greeting);
-//   }
-// }
-
-// function format(formatstr: string) {
-//   return function (target: any, propertyKey: string) {
-//         console.log(target,propertyKey,'llll')
-//   };
-// }
-
-// const greeter = new Greeter('张三')
-// console.log(greeter.greeting,'grkkk')
-
-// 参数装饰器
+const formatMetadataKey = Symbol("format");
 
 class Greeter {
+  @format("Hello, %s")
   greeting: string;
 
   constructor(message: string) {
     this.greeting = message;
   }
+  greet() {
+    let formatString = getFormat(this, "greeting");
 
-  @validate
-  greet(@required name: string) {
-    return "Hello " + name + ", " + this.greeting;
+    console.log(formatString, "string");
+    return formatString.replace("%s", this.greeting);
   }
 }
 
-function required(target: any, propertyKey: string, propertyIndex: number) {
-  console.log(target, propertyIndex, "kkkkk");
+function format(formatString: string) {
+  console.log(formatString, "sss");
+  return Reflect.metadata(formatMetadataKey, formatString);
 }
 
-function validate(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-
-    console.log(target,descriptor,'llll')
-
+function getFormat(target: any, propertyKey: string) {
+  return Reflect.getMetadata(formatMetadataKey, target, propertyKey);
 }
 
-const greeter = new Greeter('message')
+const greeter = new Greeter("张三");
+console.log(greeter.greet(), "grkkk");
+console.log(Reflect.getMetadata(formatMetadataKey, greeter, "greeting"), "grkkk");
 
-console.log(greeter.greet('zhangsan'))
+// 参数装饰器
 
+// class Greeter {
+//   greeting: string;
+//
+//   constructor(message: string) {
+//     this.greeting = message;
+//   }
+//
+//   @validate
+//   greet(@required name: string) {
+//     return "Hello " + name + ", " + this.greeting;
+//   }
+// }
+//
+// function required(target: any, propertyKey: string, propertyIndex: number) {
+//   console.log(target, propertyIndex, "kkkkk");
+// }
+//
+// function validate(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+//
+//     console.log(target,descriptor,'llll')
+//
+// }
+//
+// const greeter = new Greeter('message')
+//
+// console.log(greeter.greet('zhangsan'))
 </script>
 
 <style scoped lang="scss">

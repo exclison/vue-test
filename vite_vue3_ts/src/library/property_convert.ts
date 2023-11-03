@@ -1,39 +1,37 @@
-
-import 'reflect-metadata'
-import { get, set } from 'lodash-es'
+import "reflect-metadata";
+import { get, set } from "lodash-es";
 // import { ConverterConfig } from './json_property';
 
 export const enum ConvertTag {
-    TO_JSON = 'TO_JSON',
-    FROM_JSON = 'FROM_JSON',
+    TO_JSON = "TO_JSON",
+    FROM_JSON = "FROM_JSON",
 }
 
-export const globalUniqueKeyForJsonProperty = Symbol.for('$JsonProperty$')
-
+export const globalUniqueKeyForJsonProperty = Symbol.for("$JsonProperty$");
 
 export function JsonProperty(jsonName: string, converterConfig: ConverterConfig) {
     return function (target: Object, propertyName: string) {
-        const metaData = Reflect.getMetadata(globalUniqueKeyForJsonProperty, target) || {}
-        console.log(metaData, 'meta')
+        // 获取元数据
+        const metaData = Reflect.getMetadata(globalUniqueKeyForJsonProperty, target) || {};
 
+        // 写入FromJson对应的参数
         metaData[Symbol(jsonName)] = {
             name: propertyName,
             $tag: ConvertTag.FROM_JSON,
             fn: converterConfig.fromJson,
-            defaultValue: converterConfig.fromJsonDef
-        }
+            defaultValue: converterConfig.fromJsonDef,
+        };
+        // 写入ToJson需要的参数
         metaData[Symbol(propertyName)] = {
             name: jsonName,
             $tag: ConvertTag.TO_JSON,
             fn: converterConfig.toJson,
-            defaultValue: converterConfig.toJsonDef
-        }
+            defaultValue: converterConfig.toJsonDef,
+        };
 
-        Reflect.defineMetadata(globalUniqueKeyForJsonProperty, metaData, target)
-
-        console.log(metaData)
-
-    }
+        // 写入元数据
+        Reflect.defineMetadata(globalUniqueKeyForJsonProperty, metaData, target);
+    };
 }
 
 /**
@@ -63,43 +61,134 @@ export interface BaseJsonConverter<FromValue = unknown, ToValue = unknown> {
  */
 export class JsonConverter<F = unknown, T = unknown> implements BaseJsonConverter<F, T> {
     fromJson(json: T): F {
-        return this.suffixObj(this.convert(this.prefixJson(json), ConvertTag.FROM_JSON))
+        return this.suffixObj(this.convert(this.prefixJson(json), ConvertTag.FROM_JSON));
     }
     toJson(obj: F): T {
-        return this.suffixJson(this.convert(this.prefixObj(obj), ConvertTag.TO_JSON))
+        return this.suffixJson(this.convert(this.prefixObj(obj), ConvertTag.TO_JSON));
     }
 
     /**
      * 前处理fromJson的入参
      */
     protected prefixJson<T>(json: T): T {
-        return json
+        return json;
     }
     /**
      * 后处理fromJson的返回值
      */
     protected suffixObj<F>(obj: F): F {
-        return obj
+        return obj;
     }
 
     /**
-    * 前处理toJson的入参
-    */
+     * 前处理toJson的入参
+     */
     protected prefixObj<F>(obj: F): F {
-        return obj
+        return obj;
     }
     /**
      * 后处理toJson的返回值
      */
     protected suffixJson<T>(json: T): T {
-        return json
+        return json;
     }
-
 
     private convert<FromValue, ToValue>(value: FromValue, tag: ConvertTag): ToValue {
-        return {} as ToValue
+
+        // 从元数据中取出对应关系以及处理函数
+        const metaData: MetaGroup<FromValue, ToValue> =
+            Reflect.getMetadata(globalUniqueKeyForJsonProperty, this) || {};
+
+        if (Array.isArray(value)) {
+            return value.map((val) => this.baseConvert(val, metaData, tag)) as ToValue;
+        }
+
+        return this.baseConvert(value, metaData, tag);
+    }
+
+    private baseConvert<FromValue, ToValue>(
+        value: FromValue,
+        metaDataGroup: MetaGroup<FromValue, ToValue>,
+        tag: ConvertTag
+    ): ToValue {
+
+        // 过滤对应的元数据   ToJson 还是 FromJson
+        const collectedMetaGroup = Reflect.ownKeys(metaDataGroup).filter(
+            (key) => tag == metaDataGroup[key].$tag
+        );
+
+        return collectedMetaGroup.reduce((total, key) => {
+            const { name } = metaDataGroup[key];
+
+            const result = this.getValueByPath(value, key, metaDataGroup);
+
+            this.setValueByPath(result, name, total);
+
+            console.log(result, "result");
+
+            return total;
+        }, {}) as ToValue;
+    }
+
+    private getValueByPath<FromValue, ToValue>(
+        value: FromValue,
+        key: string | symbol,
+        metaDataGroup: MetaGroup<FromValue, ToValue>
+    ): ToValue {
+
+        const { fn, defaultValue } = metaDataGroup[key];
+
+        // 应对获取多个数据的情况
+        const paths = this.extractKeyStrFromSymbol(key).split("|");
+
+        const values = paths.map((path) => get(value, path, undefined) as FromValue);
+
+        if (values.length <= 1) {
+            return (
+                isUndefined(values[0]) ? defaultValue : fn?.(values[0]) ?? values[0] ?? defaultValue
+            ) as ToValue;
+        }
+        return (
+            values.every(isUndefined) ? defaultValue : fn?.(values as FromValue) ?? values ?? defaultValue
+        ) as ToValue;
+    }
+
+    private setValueByPath<FromValue, ToValue>(
+        value: FromValue | ToValue,
+        key: string | symbol,
+        accumulativeData: Record<string | symbol, ToValue>
+    ) {
+        const paths = this.extractKeyStrFromSymbol(key).split("|");
+
+        paths.forEach((path) => {
+            set(accumulativeData, path, value);
+        });
+    }
+
+    private extractKeyStrFromSymbol(key: string | symbol): string {
+        if (typeof key == "string") {
+            return key;
+        }
+        const matched = key.toString().match(/Symbol\((\S*)\)/);
+
+        return matched ? matched[1] : "";
     }
 }
+
+/**
+ * @name:
+ * @description:
+ * @author: hanyuchen
+ */
+export type MetaGroup<FromValue, ToValue> = Record<
+    string | symbol,
+    {
+        name: string;
+        $tag: ConvertTag;
+        fn?(value: FromValue): ToValue;
+        defaultValue?: ToValue;
+    }
+>;
 
 /**
  * @name:ConverterConfig
@@ -110,7 +199,6 @@ export class JsonConverter<F = unknown, T = unknown> implements BaseJsonConverte
  * @params {any} T: ToValue json 数据
  */
 export type ConverterConfig<FromValue = unknown, ToValue = unknown> = Partial<{
-
     /**
      * 自定义 json转obj函数
      */
@@ -127,5 +215,8 @@ export type ConverterConfig<FromValue = unknown, ToValue = unknown> = Partial<{
      * tojson默认值
      */
     toJsonDef: ToValue;
+}>;
 
-}>
+export const isUndefined = (value: any): boolean => {
+    return value == undefined || value == null || value == "";
+};

@@ -14,6 +14,8 @@ export function JsonProperty(jsonName: string, converterConfig: ConverterConfig)
         // 获取元数据
         const metaData = Reflect.getMetadata(globalUniqueKeyForJsonProperty, target) || {};
 
+        //  name:转换后的key, $tag:转换类型, fn:自定义转换函数, defaultValue:转换后默认值
+
         // 写入FromJson对应的参数
         metaData[Symbol(jsonName)] = {
             name: propertyName,
@@ -96,6 +98,7 @@ export class JsonConverter<F = unknown, T = unknown> implements BaseJsonConverte
     private convert<FromValue, ToValue>(value: FromValue, tag: ConvertTag): ToValue {
 
         // 从元数据中取出对应关系以及处理函数
+        // { symbol(user_name):{name:'userNmae',$tag:FROM_JSON,fn:()=>{},defaultValue:''} }
         const metaData: MetaGroup<FromValue, ToValue> =
             Reflect.getMetadata(globalUniqueKeyForJsonProperty, this) || {};
 
@@ -113,15 +116,20 @@ export class JsonConverter<F = unknown, T = unknown> implements BaseJsonConverte
     ): ToValue {
 
         // 过滤对应的元数据   ToJson 还是 FromJson
+        // [ symbol(user_name) ]
         const collectedMetaGroup = Reflect.ownKeys(metaDataGroup).filter(
             (key) => tag == metaDataGroup[key].$tag
         );
 
         return collectedMetaGroup.reduce((total, key) => {
+            // key : symbol(user_name)
+            // metaDataGroup : { symbol(user_name):{name:'userNmae',$tag:FROM_JSON,fn:()=>{},defaultValue:''} }
             const { name } = metaDataGroup[key];
 
+            // key可能为多条数据的组合
             const result = this.getValueByPath(value, key, metaDataGroup);
 
+            // name可能为多条数据的组合
             this.setValueByPath(result, name, total);
 
             console.log(result, "result");
@@ -141,6 +149,7 @@ export class JsonConverter<F = unknown, T = unknown> implements BaseJsonConverte
         // 应对获取多个数据的情况
         const paths = this.extractKeyStrFromSymbol(key).split("|");
 
+        // 取到数据数组(原因为可能依赖多个数据)
         const values = paths.map((path) => get(value, path, undefined) as FromValue);
 
         if (values.length <= 1) {
@@ -148,6 +157,7 @@ export class JsonConverter<F = unknown, T = unknown> implements BaseJsonConverte
                 isUndefined(values[0]) ? defaultValue : fn?.(values[0]) ?? values[0] ?? defaultValue
             ) as ToValue;
         }
+        // 多个数据直接完整返回,具体怎么处理交给传入的fn处理
         return (
             values.every(isUndefined) ? defaultValue : fn?.(values as FromValue) ?? values ?? defaultValue
         ) as ToValue;
@@ -158,8 +168,10 @@ export class JsonConverter<F = unknown, T = unknown> implements BaseJsonConverte
         key: string | symbol,
         accumulativeData: Record<string | symbol, ToValue>
     ) {
+        // 获取多个数据的key
         const paths = this.extractKeyStrFromSymbol(key).split("|");
 
+        // 给每个key填充数据
         paths.forEach((path) => {
             set(accumulativeData, path, value);
         });
@@ -169,6 +181,7 @@ export class JsonConverter<F = unknown, T = unknown> implements BaseJsonConverte
         if (typeof key == "string") {
             return key;
         }
+        // 如果key为symbol类型,则截取出对应的字符串key
         const matched = key.toString().match(/Symbol\((\S*)\)/);
 
         return matched ? matched[1] : "";

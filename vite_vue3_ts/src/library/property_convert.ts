@@ -14,6 +14,7 @@ export function JsonProperty(jsonName: string, converterConfig: ConverterConfig)
         // 获取元数据
         const metaData = Reflect.getMetadata(globalUniqueKeyForJsonProperty, target) || {};
 
+        // Symbol(jsonName)为转换前的key
         //  name:转换后的key, $tag:转换类型, fn:自定义转换函数, defaultValue:转换后默认值
 
         // 写入FromJson对应的参数
@@ -38,7 +39,7 @@ export function JsonProperty(jsonName: string, converterConfig: ConverterConfig)
 
 /**
  * @name:BaseJsonConverter
- * @description:数据转换基类
+ * @description:数据转换接口
  * @author: hanyuchen
  * @date 2023-11-02 11:01:51
  */
@@ -55,7 +56,7 @@ export interface BaseJsonConverter<FromValue = unknown, ToValue = unknown> {
 
 /**
  * @name:JsonConverter
- * @description:数据转换类
+ * @description:数据转换基类
  * @author: hanyuchen
  * @date 2023-11-02 11:30:41
  * @params {any} F: FromValue js obj数据
@@ -71,12 +72,14 @@ export class JsonConverter<F = unknown, T = unknown> implements BaseJsonConverte
 
     /**
      * 前处理fromJson的入参
+     * 子类可重写该方法
      */
     protected prefixJson<T>(json: T): T {
         return json;
     }
     /**
      * 后处理fromJson的返回值
+     * 子类可重写该方法
      */
     protected suffixObj<F>(obj: F): F {
         return obj;
@@ -84,12 +87,14 @@ export class JsonConverter<F = unknown, T = unknown> implements BaseJsonConverte
 
     /**
      * 前处理toJson的入参
+     * 子类可重写该方法
      */
     protected prefixObj<F>(obj: F): F {
         return obj;
     }
     /**
      * 后处理toJson的返回值
+     * 子类可重写该方法
      */
     protected suffixJson<T>(json: T): T {
         return json;
@@ -146,6 +151,9 @@ export class JsonConverter<F = unknown, T = unknown> implements BaseJsonConverte
 
         const { fn, defaultValue } = metaDataGroup[key];
 
+        // 1. 首先对key进行正则解析,去除 Symbol()
+        // 2. 然后取"|"分隔符 ,依赖多条数据时,key为userinfo.user_id|userinfo.user_name这种
+
         // 应对获取多个数据的情况
         const paths = this.extractKeyStrFromSymbol(key).split("|");
 
@@ -168,10 +176,12 @@ export class JsonConverter<F = unknown, T = unknown> implements BaseJsonConverte
         key: string | symbol,
         accumulativeData: Record<string | symbol, ToValue>
     ) {
+        // 1. 首先对key进行正则解析,去除 Symbol()
+        // 2. 然后取"|"分隔符 ,依赖多条数据时,key为userinfo.user_id|userinfo.user_name这种
         // 获取多个数据的key
         const paths = this.extractKeyStrFromSymbol(key).split("|");
 
-        // 给每个key填充数据
+        // 给每个key填充数据 set方法为loadsh提供
         paths.forEach((path) => {
             set(accumulativeData, path, value);
         });

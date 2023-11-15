@@ -1,11 +1,4 @@
-<!--
- * @Author: Hanyuchen e-exclison@outlook.com
- * @Date: 2023-11-14 11:01:55
- * @LastEditors: Hanyuchen e-exclison@outlook.com
- * @LastEditTime: 2023-11-14 13:09:06
- * @FilePath: \vue-test\vite_vue3_ts\src\readme\decorators.md
- * @Description:
--->
+
 
 # Typescript 装饰器
 

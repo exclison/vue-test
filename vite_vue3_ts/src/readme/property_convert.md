@@ -1,11 +1,4 @@
-<!--
- * @Author: Hanyuchen e-exclison@outlook.com
- * @Date: 2023-11-15 13:28:06
- * @LastEditors: Hanyuchen e-exclison@outlook.com
- * @LastEditTime: 2023-11-15 14:50:21
- * @FilePath: \vue-test\vite_vue3_ts\src\readme\property_convert.md
- * @Description:
--->
+
 
 # 基于 Typescript 装饰器实现前后端数据转换
 

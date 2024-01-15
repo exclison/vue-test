@@ -1,0 +1,44 @@
+<!--
+ * @Author: Hanyuchen e-exclison@outlook.com
+ * @Date: 2023-12-06 10:41:52
+ * @LastEditors: Hanyuchen e-exclison@outlook.com
+ * @LastEditTime: 2023-12-06 11:23:57
+ * @FilePath: \vue-test\canvas\xifu.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Scroll snap</title>
+    <style>
+      ul {
+        width: 200px;
+        height: 200px;
+        overflow: auto;
+        /* scroll-snap-type: y; */
+        scroll-snap-type: y mandatory;
+        scroll-snap-stop: normal;
+      }
+      li {
+        width: 200px;
+        height: 200px;
+        scroll-snap-align: start;
+      }
+      li:nth-child(2) {
+        scroll-snap-align: start;
+      }
+    </style>
+  </head>
+
+  <body>
+    <ul>
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+    </ul>
+
+    <script></script>
+  </body>
+</html>

@@ -2,7 +2,7 @@
  * @Author: Hanyuchen e-exclison@outlook.com
  * @Date: 2023-11-01 10:40:29
  * @LastEditors: Hanyuchen e-exclison@outlook.com
- * @LastEditTime: 2023-11-03 13:55:00
+ * @LastEditTime: 2023-11-20 18:30:45
  * @FilePath: \vue-test\vite_vue3_ts\src\components\Decorators.vue
  * @Description: ts装饰器
 -->
@@ -41,7 +41,7 @@ import "reflect-metadata";
 //   method() {}
 // }
 
-// 类装饰器-------------------------------------------------
+// // 类装饰器-------------------------------------------------
 // function sealed(constructor: Function) {
 //   Object.seal(constructor);
 //   Object.seal(constructor.prototype);
@@ -153,35 +153,35 @@ import "reflect-metadata";
 
 // 属性装饰器-----------------------------------------
 
-// const formatMetadataKey = Symbol("format");
+const formatMetadataKey = Symbol("format");
 
-// class Greeter {
-//   @format("Hello, %s")
-//   greeting: string;
+class Greeter {
+  @format("Hello, %s")
+  greeting: string;
 
-//   constructor(message: string) {
-//     this.greeting = message;
-//   }
-//   greet() {
-//     let formatString = getFormat(this, "greeting");
+  constructor(message: string) {
+    this.greeting = message;
+  }
+  greet() {
+    let formatString = getFormat(this, "greeting");
 
-//     console.log(formatString, "string");
-//     return formatString.replace("%s", this.greeting);
-//   }
-// }
+    console.log(formatString, "string");
+    return formatString.replace("%s", this.greeting);
+  }
+}
 
-// function format(formatString: string) {
-//   console.log(formatString, "sss");
-//   return Reflect.metadata(formatMetadataKey, formatString);
-// }
+function format(formatString: string) {
+  console.log(formatString, "sss");
+  return Reflect.metadata(formatMetadataKey, formatString);
+}
 
-// function getFormat(target: any, propertyKey: string) {
-//   return Reflect.getMetadata(formatMetadataKey, target, propertyKey);
-// }
+function getFormat(target: any, propertyKey: string) {
+  return Reflect.getMetadata(formatMetadataKey, target, propertyKey);
+}
 
-// const greeter = new Greeter("张三");
-// console.log(greeter.greet(), "grkkk");
-// console.log(Reflect.getMetadata(formatMetadataKey, greeter, "greeting"), "grkkk");
+const greeter = new Greeter("张三");
+console.log(greeter.greet(), "grkkk");
+console.log(Reflect.getMetadata(formatMetadataKey, greeter, "greeting"), "grkkk");
 
 // 参数装饰器
 

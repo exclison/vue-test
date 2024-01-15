@@ -1,12 +1,21 @@
+/*
+ * @Author: Hanyuchen e-exclison@outlook.com
+ * @Date: 2022-06-07 14:57:50
+ * @LastEditors: Hanyuchen e-exclison@outlook.com
+ * @LastEditTime: 2024-01-15 10:29:07
+ * @FilePath: \vue-test\vite_vue3_ts\src\router\index.ts
+ * @Description: 
+ */
 
-import {createRouter,createWebHashHistory} from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 
 // 2. 定义一些路由
 // 每个路由都需要映射到一个组件。
 // 我们后面再讨论嵌套路由。
 const routes = [
-  { path: "/", component: ()=>import('../views/home.vue') },
+  { path: "/", component: () => import('../views/home.vue') },
+  { path: "/map", component: () => import('../views/map/map.vue') },
 ];
 
 // 3. 创建路由实例并传递 `routes` 配置

@@ -1,0 +1,24 @@
+@import "./mixin.scss";
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box !important;
+}
+html,
+body {
+  background: #f7f5f3;
+  font: 30px/1.5 SimSun, Microsoft YaHei, PingFang SC, Heiti SC, sans-serif;
+  box-sizing: border-box !important;
+}
+:root {
+  --van-pagination-height: 60px;
+  --van-pagination-font-size: 30px !important;
+  --van-pagination-item-width: 60px;
+  --van-pagination-item-default-color: #fff;
+  --van-pagination-item-disabled-color: var(--van-gray-7);
+  --van-pagination-item-disabled-background: transparent;
+  --van-pagination-background: transparent;
+  --van-pagination-desc-color: hsla(0, 0%, 100%, 0.3);
+  --van-pagination-disabled-opacity: var(--van-disabled-opacity);
+}

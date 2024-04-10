@@ -1,0 +1,18 @@
+@mixin ellipsis($line: 1, $height: '') {
+    @if $line==1 {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        white-space: nowrap;
+    } @else {
+        max-height: $height;
+        line-height: $height / $line;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        display: -webkit-box;
+        /*! autoprefixer: off */
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: $line;
+    }
+}

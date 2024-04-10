@@ -1,0 +1,80 @@
+{
+    "src/views/ymjf/ljjh_detail.vue": {
+        "description": "丽居静好详情"
+    },
+    "src/views/ymjf/ljjh.vue": {
+        "description": "丽居静好"
+    },
+    "src/views/xlcw/szfd.vue": {
+        "description": "梳妆粉黛"
+    },
+    "src/views/xlcw/szfd_detail.vue": {
+        "description": "梳妆粉黛详情"
+    },
+    "src/views/xlcw/zeyl.vue": {
+        "description": "簪珥璎珞"
+    },
+    "src/views/xlcw/zeyl_detail.vue": {
+        "description": "簪珥璎珞详情"
+    },
+    "src/views/xlcw/index.vue": {
+        "description": "绣罗翠微"
+    },
+    "src/views/ymjf/index.vue": {
+        "description": "云幕椒房"
+    },
+    "src/views/ymjf/msss.vue": {
+        "description": "名山胜水"
+    },
+    "src/views/ymjf/msss_detail.vue": {
+        "description": "名山胜水详情"
+    },
+    "src/views/ssln": {
+        "description": "逝水流年"
+    },
+    "src/views/ssln/index.vue": {
+        "description": "逝水流年"
+    },
+    "src/views/ggfw": {
+        "description": "闺阁芳菲"
+    },
+    "src/views/ggff": {
+        "description": "闺阁芳菲"
+    },
+    "src/views/czrs": {
+        "description": "策展人说"
+    },
+    "src/views/jy": {
+        "description": "结语"
+    },
+    "src/views/tnyy": {
+        "description": "态浓意远"
+    },
+    "src/views/tnyy/index.vue": {
+        "description": "态浓意远"
+    },
+    "src/views/xlcw": {
+        "description": "绣罗翠微"
+    },
+    "src/views/research": {
+        "description": "学术研究"
+    },
+    "src/views/leave_word": {
+        "description": "留言"
+    },
+    "src/views/collection": {
+        "description": "展品图库"
+    },
+    "src/views/leaveword": {
+        "description": "留言"
+    },
+    "src/views/culture": {
+        "description": "文创展示"
+    },
+    "src/views/digital": {
+        "description": "数字体验展"
+    },
+    "src/views/digital/digital_detail.vue": {
+        "description": "数字体验展详情"
+    }
+}

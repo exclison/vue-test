@@ -1,0 +1,100 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "129286836",
+      "name": "播放",
+      "font_class": "bofang",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "129286837",
+      "name": "暂停",
+      "font_class": "zanting",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "129286838",
+      "name": "停止",
+      "font_class": "stop-circle",
+      "unicode": "ea91",
+      "unicode_decimal": 60049
+    },
+    {
+      "icon_id": "129286985",
+      "name": "24gf-volumeMiddle",
+      "font_class": "24gf-volumeMiddle",
+      "unicode": "ea11",
+      "unicode_decimal": 59921
+    },
+    {
+      "icon_id": "129364820",
+      "name": "yanjiu-01",
+      "font_class": "yanjiu-01",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "129364821",
+      "name": "tuku-01",
+      "font_class": "tuku-01",
+      "unicode": "e628",
+      "unicode_decimal": 58920
+    },
+    {
+      "icon_id": "129364822",
+      "name": "wenchuang-01",
+      "font_class": "wenchuang-01",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "129364823",
+      "name": "meaaage-01",
+      "font_class": "meaaage-01",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "129364824",
+      "name": "diaocha-01",
+      "font_class": "diaocha-01",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "129733120",
+      "name": "更多",
+      "font_class": "gengduo",
+      "unicode": "e785",
+      "unicode_decimal": 59269
+    },
+    {
+      "icon_id": "129743314",
+      "name": "quanjing-01",
+      "font_class": "quanjing-01",
+      "unicode": "e62d",
+      "unicode_decimal": 58925
+    },
+    {
+      "icon_id": "129840752",
+      "name": "后退",
+      "font_class": "houtui-back",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "129840753",
+      "name": "forward",
+      "font_class": "qianjin-forward",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    }
+  ]
+}

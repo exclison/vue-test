@@ -11,6 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@js-temporal/polyfill": "^0.4.4",
+    "@vitejs/plugin-legacy": "^5.3.2",
     "axios": "^1.6.7",
     "consola": "^3.2.3",
     "pinia": "^2.1.7",
@@ -24,6 +26,7 @@
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-record-and-tuple": "^7.24.1",
     "@types/axios": "^0.14.0",
     "@types/mockjs": "^1.0.10",
     "@types/node": "^20.11.10",
@@ -34,6 +37,7 @@
     "postcss-px-to-viewport-8-plugin": "^1.2.3",
     "typescript": "^5.3.3",
     "vite": "^5.0.12",
+    "vite-plugin-babel": "^1.2.0",
     "vite-plugin-style-import": "^2.0.0",
     "vue-tsc": "^1.8.27"
   }

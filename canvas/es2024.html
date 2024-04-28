@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+
+    const {promise, resolve, reject} = Promise.withResolvers();
+
+    setTimeout(() => resolve('Resolved after 2 seconds'), 2000);
+
+    promise.then(value => console.log(value));
+
+
+    const pets = [
+        { gender: '男', name: '张三' },
+        { gender: '女', name: '李四' },
+        { gender: '男', name: '王五' }
+    ];
+
+    const res = Object.groupBy(pets, pet => pet.gender);
+    console.log(res);
+    // 输出:
+    // {
+    //   女: [{ gender: '女', name: '李四' }]
+    //   男: [{ gender: '男', name: '张三' }, { gender: '男', name: '王五' }],
+    // }
+
+
+    const today = Temporal.PlainDate.from({ year: 2023, month: 11, day: 19 });
+    console.log(today.toString()); // 输出: 2023-11-19
+
+    const duration = Temporal.Duration.from({ hours: 3, minutes: 30 });
+    const tomorrow = today.add(duration);
+    console.log(tomorrow.toString()); // 输出: 2023-11-20
+
+
+
+</script>
+</body>
+</html>

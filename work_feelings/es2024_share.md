@@ -57,6 +57,53 @@ const tomorrow = today.add(duration);
 console.log(tomorrow.toString()); // 输出: 2023-11-20
 
 ```
+### Temporal.Now
+- Temporal.Now.instant()- 获取当前系统的准确时间
+- Temporal.Now.timeZoneId()- 获取当前系统时区
+- Temporal.Now.zonedDateTime(calendar)- 获取系统时区和指定日历中的当前日期和挂钟时间
+- Temporal.Now.zonedDateTimeISO()- 获取系统时区的当前日期和挂钟时间以及 ISO-8601 日历
+- Temporal.Now.plainDate(calendar)- 获取系统时区的当前日期和指定的日历
+- Temporal.Now.plainDateISO()- 获取系统时区和 ISO-8601 日历中的当前日期
+- Temporal.Now.plainTimeISO()- 获取系统时区的当前挂钟时间和ISO-8601日历
+- Temporal.Now.plainDateTime(calendar)- 获取系统时区中的当前系统日期/时间，但返回一个不记得其时区的对象，因此不应用于在使用夏令时的时区中派生其他值（例如 12 小时后）（夏令时）。
+- Temporal.Now.plainDateTimeISO()- 与上面相同，但返回 ISO-8601 日历中的日期时间
+
+
+### Temporal.Instant
+Temporal.Instant表示固定时间点（称为“精确时间”），与日历或位置无关，例如 1969 年 7 月 20 日 20:17 UTC
+```javascript
+const instant = Temporal.Instant.from('1969-07-20T20:17Z');
+instant.toString(); // => '1969-07-20T20:17:00Z'
+instant.epochMilliseconds; // => -14182980000
+```
+
+### Temporal.ZonedDateTime
+Temporal.ZonedDateTime是一个时区感知、日历感知的日期/时间对象，代表从地球上特定区域的角度来看在特定精确时间已经发生（或将要发生）的真实事件，例如 1995 年 12 月 7 日下午 3 点：美国太平洋时间（公历）上午 24 点。此类型针对需要时区的用例进行了优化，包括 DST 安全算术以及与 RFC 5545 (iCalendar) 的互操作性。
+
+### Temporal.PlainDate
+对象Temporal.PlainDate表示与特定时间或时区无关的日历日期，例如 2006 年 8 月 24 日。
+```javascript
+const date = Temporal.PlainDate.from({ year: 2006, month: 8, day: 24 }); // => 2006-08-24
+date.year; // => 2006
+date.inLeapYear; // => false
+date.toString(); // => '2006-08-24'
+```
+
+### Temporal.PlainTime
+对象Temporal.PlainTime表示与特定日期或时区无关的挂钟时间，例如晚上 7:39。
+```javascript
+const time = Temporal.PlainTime.from({
+  hour: 19,
+  minute: 39,
+  second: 9,
+  millisecond: 68,
+  microsecond: 346,
+  nanosecond: 205
+}); // => 19:39:09.068346205
+
+time.second; // => 9
+time.toString(); // => '19:39:09.068346205'
+```
 
 注意事项:
 现阶段需要借助 [@js-temporal/polyfill](https://www.npmjs.com/package/@js-temporal/polyfill) 来使用这个功能
@@ -68,11 +115,11 @@ Records 和 Tuples 是全新的数据结构，提供了一种更简洁和类型�
 - Tuples 类似于数组，但具有固定长度，每个元素可以具有不同类型。
 
 ```javascript
-let record = #{
-  id: 1,
-  name: "JavaScript",
-  year: 2024
-};
+// let record = #{
+//   id: 1,
+//   name: "JavaScript",
+//   year: 2024
+// };
 console.log(record.name); // 输出: JavaScript
 
 ```

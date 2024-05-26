@@ -261,3 +261,19 @@ export function handleMergeCell(
 
   return row;
 }
+
+
+/*
+ * @name:pxToVw
+ * @description:像素转vw
+ * @author: hanyuchen
+ * @date 2024/5/26
+ * @params {Number} value: 像素值
+ * @params {Number} unit: 参考单位
+ */
+export function pxToVw(value, unit = 1920) {
+  //   100vw = unit
+  //   1vw = unit/100  19.2px
+  // vw =  36px / 19.2px
+  return value / (unit / 100)
+}

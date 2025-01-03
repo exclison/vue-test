@@ -12,8 +12,8 @@
 </rect>
 <rect name='F01'  x="0" y="0" width="358" height="183"    fill="#FFFFFF" >
 </rect>
-<path fill-rule="evenodd"  fill="rgba(0, 0, 0, 1)"  d="M356 -2L-2 -2L-2 183L2 183L2 2L356 2L356 183L360 183L360 -2L356 -2Z">
-</path>
+<!--<path fill-rule="evenodd"  fill="rgba(0, 0, 0, 1)"  d="M356 -2L-2 -2L-2 183L2 183L2 2L356 2L356 183L360 183L360 -2L356 -2Z">-->
+<!--</path>-->
 <path    stroke="rgba(0, 0, 0, 1)" stroke-width="4"    d="M0 183L317 183">
 </path>
 <g >
